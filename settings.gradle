@@ -1,0 +1,2 @@
+rootProject.name = "nmb"
+include ':app'
