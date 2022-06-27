@@ -5,5 +5,5 @@ import com.yollpoll.framework.fast.FastApplication
 /**
  * Created by spq on 2022/6/22
  */
-//open class NMBApplication :FastApplication(){
-//}
+open class NMBApplication :FastApplication(){
+}

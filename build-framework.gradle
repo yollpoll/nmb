@@ -1,18 +1,23 @@
 dependencies{
-    api myArch.arch
-    api myArch.framework
+    implementation myArch.arch
+    implementation myArch.framework
     kapt myArch.arch_kapt
 
     //hilt support begin
-    api myDependencies.hilt
+    implementation myDependencies.hilt
     kapt myDependencies.hilt_kapt
-    api myDependencies.hilt_lifecycle_viewmodel
+    implementation myDependencies.hilt_lifecycle_viewmodel
 
     //lifecycleKtx
-    api myDependencies.viewModelKtx
-    api myDependencies.lifecycleruntimeKtx
-    api myDependencies.liveDataKtx
-    api myDependencies.activityKtx
-    api myDependencies.coroutines
-    api myDependencies.appcompat
+    implementation myDependencies.viewModelKtx
+    implementation myDependencies.lifecycleruntimeKtx
+    implementation myDependencies.liveDataKtx
+    implementation myDependencies.activityKtx
+    implementation myDependencies.coroutines
+    implementation myDependencies.appcompat
+
+    //moshi
+    kapt myDependencies.moshiKapt
+    implementation myDependencies.moshi
+    implementation myDependencies.moshiConvert
 }

@@ -1,5 +1,6 @@
 package com.yollpoll.nmb.router
 
+import com.yollpoll.arch.log.LogUtils
 import com.yollpoll.framework.dispatch.DispatchInterceptor
 import com.yollpoll.framework.dispatch.DispatchResponse
 import com.yollpoll.framework.dispatch.DispatcherManager
@@ -35,7 +36,8 @@ object DispatcherLogInterceptor : DispatchInterceptor {
         val request = chain.getRequest()
         val url = request.url
         val param = request.params
-//        LogUtils.i("DispatchLog: url is $url params is ${param.toMapJson()}")
+//        LogUtils.i("DispatchLog: url is $url params is ${param.toMapJson<String,String>()}")
+//        LogUtils.i("DispatchLog: url is $url params is ${param.toMapJson<String,String>()}")
         return chain.proceed(request)
     }
 }

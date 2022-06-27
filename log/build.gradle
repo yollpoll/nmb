@@ -4,7 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'//hilt support
 }
-//apply from: "${rootProject.projectDir}/build-framework.gradle"
+apply from: "${rootProject.projectDir}/build-framework.gradle"
 android {
     compileSdkVersion 33
     buildToolsVersion "31.0.0"
@@ -46,8 +46,4 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     implementation myDependencies.work_manager
-    //hilt support begin
-    api myDependencies.hilt
-    kapt myDependencies.hilt_kapt
-    api myDependencies.hilt_lifecycle_viewmodel
 }

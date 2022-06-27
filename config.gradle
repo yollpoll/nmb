@@ -2,7 +2,7 @@ ext {
     androidConfig = [
             compileSdkVersion: 33,
             buildToolsVersion: "31.0.0",
-            applicationId    : "com.nmb.yollpoll",
+            applicationId    : "com.yollpoll.nmb",
             minSdkVersion    : 21,
             targetSdkVersion : 33,
             versionCode      : 1,
@@ -31,7 +31,8 @@ ext {
             hilt_jetpack_version: "1.0.0-alpha01",
             coroutines          : "1.5.2",
             work_manager        : "2.7.1",
-            ativityKtx          : "1.4.0"
+            ativityKtx          : "1.4.0",
+            moshiKapt           : "1.12.0"
 
     ]
     //自建框架依赖
@@ -92,7 +93,7 @@ ext {
             //json解析库Moshi
             moshi                   : "com.squareup.moshi:moshi-kotlin:$dependVersion.moshi",
             moshiConvert            : "com.squareup.retrofit2:converter-moshi:$dependVersion.moshiConvert",
-
+            moshiKapt               : "com.squareup.moshi:moshi-kotlin-codegen:$dependVersion.moshiKapt",
             //retrofit
             retrofit                : "com.squareup.retrofit2:retrofit:$dependVersion.retrofit",
             gsonConvert             : "com.squareup.retrofit2:converter-gson:$dependVersion.retrofit",

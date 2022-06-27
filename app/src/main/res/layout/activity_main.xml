@@ -4,12 +4,18 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-
+    <variable
+        name="view"
+        type="com.yollpoll.nmb.LauncherActivity" />
+        <variable
+            name="viewModel"
+            type="com.yollpoll.nmb.LauncherVM" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#000000"
         tools:context=".MainActivity">
 
         <TextView

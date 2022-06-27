@@ -4,7 +4,7 @@ plugins {
     id 'kotlin-kapt'
     id 'dagger.hilt.android.plugin'//hilt support
 }
-//apply from: "${rootProject.projectDir}/build-framework.gradle"
+apply from: "${rootProject.projectDir}/build-framework.gradle"
 android {
     compileSdkVersion androidConfig.compileSdkVersion
     buildToolsVersion androidConfig.buildToolsVersion
@@ -19,8 +19,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     def stringArray = "{" +
-            "\"com.yollpoll.app\"," +
-            "\"com.yollpoll.base\"," +
+            "\"com.yollpoll.nmb\"," +
+            "\"com.yollpoll.business\"," +
             "}"
     buildTypes {
         release {
@@ -57,8 +57,8 @@ dependencies {
 
     implementation project(path: ':ilog')
     implementation project(path: ':log')
-
-    api myDependencies.hilt
-    kapt myDependencies.hilt_kapt
-    api myDependencies.hilt_lifecycle_viewmodel
+    implementation project(path: ':business')
+//    api myDependencies.hilt
+//    kapt myDependencies.hilt_kapt
+//    api myDependencies.hilt_lifecycle_viewmodel
 }

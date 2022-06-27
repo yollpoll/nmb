@@ -1,4 +1,4 @@
-package com.yollpoll.nmb
+package com.yollpoll.business
 
 import org.junit.Test
 
