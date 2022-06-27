@@ -1,0 +1,115 @@
+ext {
+    androidConfig = [
+            compileSdkVersion: 33,
+            buildToolsVersion: "31.0.0",
+            applicationId    : "com.nmb.yollpoll",
+            minSdkVersion    : 21,
+            targetSdkVersion : 33,
+            versionCode      : 1,
+            versionName      : "0.0.1"
+    ]
+
+    dependVersion = [
+            arch                : "0.0.3",
+            framework           : "0.0.11",
+            arch_kapt           : "0.0.4",
+            glide               : "4.5.0",
+            paging              : "3.0.0-rc01",
+            pagingCompose       : "1.0.0-alpha14",
+            lifeKtxVersion      : "2.4.0",//官方kotlin扩展库版本
+            dataStore           : "1.0.0",
+            moshi               : "1.11.0",
+            moshiConvert        : "2.7.1",
+            retrofit            : "2.9.0",
+            gson                : "2.8.6",
+            lifecycle_version   : "2.4.0",
+            lifecycle_arch      : "2.1.0",
+            logger              : "2.2.0",
+            androidxKtx         : "1.3.2",
+            appcompat           : "1.1.0",
+            hilt                : "2.37",
+            hilt_jetpack_version: "1.0.0-alpha01",
+            coroutines          : "1.5.2",
+            work_manager        : "2.7.1",
+            ativityKtx          : "1.4.0"
+
+    ]
+    //自建框架依赖
+    myArch = [
+            arch     : "io.github.yollpoll:arch:${dependVersion.arch}",
+            framework: "io.github.yollpoll:framework:${dependVersion.framework}@aar",
+            arch_kapt: "io.github.yollpoll:kapt:${dependVersion.arch_kapt}"
+    ]
+    //三方依赖
+    myDependencies = [
+            //appcompat
+            appcompat               : "androidx.appcompat:appcompat:${dependVersion.appcompat}",
+            //androidx
+            androidxKtx             : "androidx.core:core-ktx:${dependVersion.androidxKtx}",
+            //lifecycles
+            // ViewModel
+//            viewModel               : "androidx.lifecycle:lifecycle-viewmodel-ktx:${dependVersion.lifecycle_version}",
+            // LiveData
+            liveData                : "androidx.lifecycle:lifecycle-livedata-ktx:${dependVersion.lifecycle_version}",
+            // Lifecycles only (without ViewModel or LiveData)
+            lifycycles              : "androidx.lifecycle:lifecycle-runtime-ktx:${dependVersion.lifecycle_version}",
+            // Saved state module for ViewModel
+            viewModelSaveState      : "androidx.lifecycle:lifecycle-viewmodel-savedstate:${dependVersion.lifecycle_version}",
+            // Annotation processor,kapt
+            lifecycleProcessor      : "androidx.lifecycle:lifecycle-compiler:${dependVersion.lifecycle_version}",
+            // alternately - if using Java8, use the following instead of lifecycle-compiler
+            lifecycleJava8          : "androidx.lifecycle:lifecycle-common-java8:${dependVersion.lifecycle_version}",
+            // optional - helpers for implementing LifecycleOwner in a Service
+            lifecycleService        : "androidx.lifecycle:lifecycle-service:${dependVersion.lifecycle_version}",
+            // optional - ProcessLifecycleOwner provides a lifecycle for the whole application process
+            lifecycleProcess        : "androidx.lifecycle:lifecycle-process:${dependVersion.lifecycle_version}",
+            // optional - ReactiveStreams support for LiveData
+            lifecycleStream         : "androidx.lifecycle:lifecycle-reactivestreams-ktx:${dependVersion.lifecycle_version}",
+            // optional - Test helpers for LiveData,testImplementation
+            liveDataTestHelper      : "androidx.arch.core:core-testing:${dependVersion.lifecycle_arch}",
+            activityKtx             : "androidx.activity:activity-ktx:${dependVersion.ativityKtx}",
+            coroutines              : "org.jetbrains.kotlinx:kotlinx-coroutines-android:${dependVersion.coroutines}",
+
+            //Glide
+            glide                   : "com.github.bumptech.glide:glide:${dependVersion.glide}",
+            glideCompiler           : "com.github.bumptech.glide:compiler:${dependVersion.glide}",
+
+            //paging
+            pagingRuntimeKtx        : "androidx.paging:paging-runtime-ktx:$dependVersion.paging",
+            // alternatively - without Android dependencies for tests
+            pagingTest              : "androidx.paging:paging-common-ktx:$dependVersion.paging",
+            pagingCompose           : "androidx.paging:paging-compose:$dependVersion.pagingCompose",
+
+            //lifecycle官方库ktx
+            viewModelKtx            : "androidx.lifecycle:lifecycle-viewmodel-ktx:$dependVersion.lifeKtxVersion",
+            lifecycleruntimeKtx     : "androidx.lifecycle:lifecycle-runtime-ktx:$dependVersion.lifeKtxVersion",
+            liveDataKtx             : "androidx.lifecycle:lifecycle-livedata-ktx:$dependVersion.lifeKtxVersion",
+
+            //datastore
+            dataStore               : "androidx.datastore:datastore:$dependVersion.dataStore",
+            dataStorePreferences    : "androidx.datastore:datastore-preferences:$dependVersion.dataStore",
+
+            //json解析库Moshi
+            moshi                   : "com.squareup.moshi:moshi-kotlin:$dependVersion.moshi",
+            moshiConvert            : "com.squareup.retrofit2:converter-moshi:$dependVersion.moshiConvert",
+
+            //retrofit
+            retrofit                : "com.squareup.retrofit2:retrofit:$dependVersion.retrofit",
+            gsonConvert             : "com.squareup.retrofit2:converter-gson:$dependVersion.retrofit",
+
+            //gson
+            gson                    : "com.google.code.gson:gson:$dependVersion.gson",
+
+            //logger
+            logger                  : "com.orhanobut:logger:${dependVersion.logger}",
+
+            //hilt
+            hilt                    : "com.google.dagger:hilt-android:$dependVersion.hilt",
+            hilt_kapt               : "com.google.dagger:hilt-android-compiler:$dependVersion.hilt",
+            hilt_lifecycle_viewmodel: "androidx.hilt:hilt-lifecycle-viewmodel:$dependVersion.hilt_jetpack_version",
+            hilt_lifecycle_kapt     : "androidx.hilt:hilt-compiler:$dependVersion.hilt_jetpack_version",
+
+            //workManager
+            work_manager            : "androidx.work:work-runtime-ktx:$dependVersion.work_manager"
+    ]
+}

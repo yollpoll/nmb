@@ -1,2 +1,6 @@
 rootProject.name = "nmb"
 include ':app'
+include ':base'
+include ':log'
+include ':ilog'
+include ':nmb'

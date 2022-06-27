@@ -1,0 +1,18 @@
+dependencies{
+    api myArch.arch
+    api myArch.framework
+    kapt myArch.arch_kapt
+
+    //hilt support begin
+    api myDependencies.hilt
+    kapt myDependencies.hilt_kapt
+    api myDependencies.hilt_lifecycle_viewmodel
+
+    //lifecycleKtx
+    api myDependencies.viewModelKtx
+    api myDependencies.lifecycleruntimeKtx
+    api myDependencies.liveDataKtx
+    api myDependencies.activityKtx
+    api myDependencies.coroutines
+    api myDependencies.appcompat
+}

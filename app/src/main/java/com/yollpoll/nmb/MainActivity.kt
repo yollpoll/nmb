@@ -1,11 +1,16 @@
 package com.yollpoll.nmb
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
+import android.app.Application
+import com.yollpoll.framework.fast.FastActivity
+import com.yollpoll.framework.fast.FastViewModel
+import com.yollpoll.nmb.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-    }
+/**
+ * Created by spq on 2022/6/23
+ */
+class MainActivity :FastActivity<ActivityMainBinding,MainVM>(){
+
+}
+class MainVM(app:Application):FastViewModel(app){
+
 }
