@@ -7,6 +7,7 @@ import com.yollpoll.arch.annotation.ViewModel
 import com.yollpoll.business.R
 import com.yollpoll.business.ROUTE_HOME
 import com.yollpoll.business.databinding.ActivityHomeBinding
+import com.yollpoll.framework.extensions.saveBean
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.fast.FastActivity
 import com.yollpoll.framework.fast.FastViewModel
@@ -20,13 +21,6 @@ import kotlinx.coroutines.launch
 @Route(url = ROUTE_HOME)
 class HomeActivity: FastActivity<ActivityHomeBinding, HomeVm>() {
     override fun getContentViewId()= R.layout.activity_home
-    override fun onResume() {
-        super.onResume()
-        lifecycleScope.launch {
-            delay(5000)
-            "hello world".shortToast()
-        }
-    }
 }
 
 class HomeVm(app: Application): FastViewModel(app){

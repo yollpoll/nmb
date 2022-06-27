@@ -20,4 +20,7 @@ dependencies{
     kapt myDependencies.moshiKapt
     implementation myDependencies.moshi
     implementation myDependencies.moshiConvert
+    
+    implementation myDependencies.swipeRefresh
+
 }
