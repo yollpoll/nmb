@@ -33,7 +33,8 @@ ext {
             work_manager        : "2.7.1",
             ativityKtx          : "1.4.0",
             moshiKapt           : "1.12.0",
-            swipeRefresh        : "1.1.0"
+            swipeRefresh        : "1.1.0",
+            material            : "1.5.0"
 
     ]
     //自建框架依赖
@@ -114,6 +115,7 @@ ext {
             //workManager
             work_manager            : "androidx.work:work-runtime-ktx:$dependVersion.work_manager",
 
-            swipeRefresh            : "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
+            swipeRefresh            : "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0",
+            material                : "com.google.android.material:material:material"
     ]
 }

@@ -22,5 +22,8 @@ dependencies{
     implementation myDependencies.moshiConvert
     
     implementation myDependencies.swipeRefresh
+    //material库
+    implementation myDependencies.material
+
 
 }

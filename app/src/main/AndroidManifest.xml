@@ -9,7 +9,7 @@
         android:name=".MyApplication"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.Nmb">
+        android:theme="@style/NmbTheme.Overlay">
         <activity android:name=".LauncherActivity"
             android:exported="true"
             >
