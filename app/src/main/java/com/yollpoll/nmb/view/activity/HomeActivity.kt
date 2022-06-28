@@ -1,4 +1,4 @@
-package com.yollpoll.business.view.activity
+package com.yollpoll.nmb.view.activity
 
 import android.app.Application
 import android.os.Bundle
@@ -11,17 +11,17 @@ import com.yollpoll.arch.annotation.ViewModel
 import com.yollpoll.arch.log.LogUtils
 import com.yollpoll.base.NMBActivity
 import com.yollpoll.base.TAG
-import com.yollpoll.business.KEY_FORUM_LIST
-import com.yollpoll.business.R
-import com.yollpoll.business.ROUTE_HOME
-import com.yollpoll.business.databinding.ActivityHomeBinding
-import com.yollpoll.business.model.repository.HomeRepository
 import com.yollpoll.framework.extensions.saveBean
 import com.yollpoll.framework.extensions.saveList
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.fast.FastActivity
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.framework.utils.ToastUtil
+import com.yollpoll.nmb.KEY_FORUM_LIST
+import com.yollpoll.nmb.R
+import com.yollpoll.nmb.ROUTE_HOME
+import com.yollpoll.nmb.databinding.ActivityHomeBinding
+import com.yollpoll.nmb.model.repository.HomeRepository
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext

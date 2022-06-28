@@ -1,4 +1,4 @@
-package com.yollpoll.business.net
+package com.yollpoll.nmb.net
 
 import com.yollpoll.arch.log.LogUtils
 import com.yollpoll.framework.net.http.RetrofitFactory

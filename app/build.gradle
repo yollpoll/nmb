@@ -57,7 +57,7 @@ dependencies {
 
     implementation project(path: ':ilog')
     implementation project(path: ':log')
-    implementation project(path: ':business')
+//    implementation project(path: ':business')
 //    api myDependencies.hilt
 //    kapt myDependencies.hilt_kapt
 //    api myDependencies.hilt_lifecycle_viewmodel

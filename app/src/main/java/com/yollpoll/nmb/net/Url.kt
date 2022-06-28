@@ -1,4 +1,4 @@
-package com.yollpoll.business.net
+package com.yollpoll.nmb.net
 
 
 const val BASE_URL = "https://www.nmbxd1.com/"

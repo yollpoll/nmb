@@ -1,12 +1,12 @@
-package com.yollpoll.business.model.repository
+package com.yollpoll.nmb.model.repository
 
 import android.util.Log
 import com.yollpoll.base.TAG
-import com.yollpoll.business.di.HomeRepositoryAnnotation
-import com.yollpoll.business.model.bean.ArticleItem
-import com.yollpoll.business.net.HttpService
 import com.yollpoll.framework.net.http.RetrofitFactory
 import com.yollpoll.framework.paging.BasePagingSource
+import com.yollpoll.nmb.di.HomeRepositoryAnnotation
+import com.yollpoll.nmb.model.bean.ArticleItem
+import com.yollpoll.nmb.net.HttpService
 import javax.inject.Inject
 
 
