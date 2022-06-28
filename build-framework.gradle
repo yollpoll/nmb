@@ -24,6 +24,8 @@ dependencies{
     implementation myDependencies.swipeRefresh
     //material库
     implementation myDependencies.material
+    //paging
+    implementation myDependencies.pagingRuntimeKtx
 
 
 }

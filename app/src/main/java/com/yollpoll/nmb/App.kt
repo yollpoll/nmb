@@ -1,20 +1,16 @@
 package com.yollpoll.nmb
 
 import android.annotation.SuppressLint
-import android.os.Build.VERSION
-import android.os.Build.VERSION_CODES
+import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.yollpoll.base.NMBApplication
+import com.yollpoll.base.R
 import dagger.hilt.android.HiltAndroidApp
 
-
-/**
- * Created by spq on 2022/6/22
- */
 @HiltAndroidApp
-class MyApplication : NMBApplication() {
+class App :NMBApplication(){
     override fun onCreate() {
         super.onCreate()
         // Apply dynamic color
@@ -29,12 +25,11 @@ class MyApplication : NMBApplication() {
     }
 
     @SuppressLint("DefaultLocale")
-    @ChecksSdkIntAtLeast(api = VERSION_CODES.S)
+    @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.S)
     fun isDynamicColorAvailable(): Boolean {
-        if (VERSION.SDK_INT < VERSION_CODES.S) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
             return false
         }
         return true
     }
-
 }
