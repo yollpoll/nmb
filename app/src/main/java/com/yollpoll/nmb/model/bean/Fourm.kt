@@ -1,9 +1,12 @@
 package com.yollpoll.nmb.model.bean
 
+import com.squareup.moshi.JsonClass
+
 class ForumList : ArrayList<Forum>()
 
 
 //板块
+@JsonClass(generateAdapter = true)
 data class Forum(
     val forums: List<ForumDetail>,
     val id: String,
@@ -13,6 +16,7 @@ data class Forum(
 )
 
 //详细版本
+@JsonClass(generateAdapter = true)
 data class ForumDetail(
     var createdAt: String? = null,
     var fgroup: String?,

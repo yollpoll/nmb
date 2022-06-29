@@ -37,45 +37,35 @@ import javax.inject.Inject
 class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     val vm:HomeVm by viewModels()
     override fun getLayoutId() = R.layout.activity_home
-    override fun onResume() {
-        super.onResume()
-        try {
-//            vm.initData()
-        }catch (e:Exception){
-            ToastUtil.showLongToast("xxxxx")
-        }
-//        lifecycleScope.launch(Dispatchers.IO){
-//            repository.getForumList()
-//        }
-    }
 
     override fun initViewModel()=vm
 }
 @HiltViewModel
-class HomeVm @Inject constructor(val app: Application) : FastViewModel(app) {
-    @Inject lateinit var repository: HomeRepository
+class HomeVm @Inject constructor(val app: Application,val repository: HomeRepository) : FastViewModel(app) {
 
-    fun initData() {
-        ToastUtil.showLongToast("sasa")
+    init {
+        initData()
+    }
+    private fun initData() {
         viewModelScope.launch {
-//            getForumList()
+            getForumList()
         }
     }
 
-//    /**
-//     * 板块列表
-//     */
-//    private suspend fun getForumList() {
-//        try {
-//            if(null==repository){
+    /**
+     * 板块列表
+     */
+    private suspend fun getForumList() {
+        try {
+            if(null==repository){
 //                "asa".shortToast()
-//            }
-//            val list = repository.getForumList()
-//            LogUtils.e("getListL: ${list.size}")
-//            saveList(KEY_FORUM_LIST, list)
-//            "sasas".shortToast()
-//        } catch (e: Exception) {
-//            LogUtils.e("getForumList error: ${e.message}")
-//        }
-//    }
+            }
+            val list = repository.getForumList()
+            LogUtils.e("getListL: ${list.size}")
+            saveList(KEY_FORUM_LIST, list)
+            "${list.size}".shortToast()
+        } catch (e: Exception) {
+            LogUtils.e("getForumList error: ${e.message}")
+        }
+    }
 }
