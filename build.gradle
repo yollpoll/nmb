@@ -28,6 +28,6 @@ task clean(type: Delete) {
 }
 configurations.all {
     resolutionStrategy {
-//        force myDependencies.androidxKtx
+//        force
     }
 }
