@@ -10,4 +10,9 @@ import com.yollpoll.framework.fast.FastViewModel
 abstract class NMBActivity<BIND : ViewDataBinding, VM : FastViewModel>:FastActivity<BIND,VM>() {
     override  fun getContentViewId()=getLayoutId()
     abstract fun getLayoutId():Int
+    override fun getViewModel(): VM {
+        mViewModel=initViewModel()
+        return mViewModel
+    }
+    abstract fun initViewModel():VM
 }

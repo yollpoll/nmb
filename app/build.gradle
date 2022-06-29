@@ -20,7 +20,6 @@ android {
     }
     def stringArray = "{" +
             "\"com.yollpoll.nmb\"," +
-            "\"com.yollpoll.business\"," +
             "}"
     buildTypes {
         release {
@@ -57,6 +56,8 @@ dependencies {
 
     implementation project(path: ':ilog')
     implementation project(path: ':log')
+//    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha01'
+
 //    implementation project(path: ':business')
 //    api myDependencies.hilt
 //    kapt myDependencies.hilt_kapt

@@ -1,6 +1,7 @@
 package com.yollpoll.nmb.net
 
 import com.yollpoll.arch.log.LogUtils
+import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.net.http.RetrofitFactory
 import com.yollpoll.framework.net.http.RetrofitIntercept
 import okhttp3.OkHttpClient
@@ -16,7 +17,14 @@ val launcherRetrofitFactory by lazy {
         }
 
         override fun okHttpClientBuilder(builder: OkHttpClient.Builder) {
-            builder.addInterceptor(CoverImgInterceptor())
+            try {
+                val client =builder.build()
+                val a=1
+            }catch (e:Exception){
+                LogUtils.e("spq: ${e.message}")
+                "wqwq".shortToast()
+            }
+//            builder.addInterceptor(CoverImgInterceptor())
         }
 
 

@@ -4,13 +4,14 @@ import android.util.Log
 import com.yollpoll.base.TAG
 import com.yollpoll.framework.net.http.RetrofitFactory
 import com.yollpoll.framework.paging.BasePagingSource
+import com.yollpoll.nmb.di.CommonRetrofitFactory
 import com.yollpoll.nmb.di.HomeRepositoryAnnotation
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.net.HttpService
 import javax.inject.Inject
 
 
-class HomeRepository @Inject constructor(@HomeRepositoryAnnotation val retrofitFactory: RetrofitFactory) :
+class HomeRepository @Inject constructor(@CommonRetrofitFactory val retrofitFactory: RetrofitFactory) :
     IRepository {
     private val service = retrofitFactory.createService(HttpService::class.java)
 

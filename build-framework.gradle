@@ -6,6 +6,7 @@ dependencies{
     //hilt support begin
     implementation myDependencies.hilt
     kapt myDependencies.hilt_kapt
+    kapt myDependencies.hilt_lifecycle_kapt
     implementation myDependencies.hilt_lifecycle_viewmodel
 
     //lifecycleKtx

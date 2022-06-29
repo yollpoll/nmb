@@ -6,10 +6,10 @@
     <data>
     <variable
         name="view"
-        type="com.yollpoll.nmb.LauncherActivity" />
+        type="com.yollpoll.nmb.view.activity.LauncherActivity" />
         <variable
             name="viewModel"
-            type="com.yollpoll.nmb.LauncherVM" />
+            type="com.yollpoll.nmb.view.activity.LauncherVM" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
