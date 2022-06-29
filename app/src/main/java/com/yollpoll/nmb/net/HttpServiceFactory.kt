@@ -17,14 +17,7 @@ val launcherRetrofitFactory by lazy {
         }
 
         override fun okHttpClientBuilder(builder: OkHttpClient.Builder) {
-            try {
-                val client =builder.build()
-                val a=1
-            }catch (e:Exception){
-                LogUtils.e("spq: ${e.message}")
-                "wqwq".shortToast()
-            }
-//            builder.addInterceptor(CoverImgInterceptor())
+            builder.addInterceptor(CoverImgInterceptor())
         }
 
 

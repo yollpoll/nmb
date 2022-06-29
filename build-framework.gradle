@@ -27,6 +27,7 @@ dependencies{
     implementation myDependencies.material
     //paging
     implementation myDependencies.pagingRuntimeKtx
-
-
+    //okhttp版本
+    implementation myDependencies.okhttp
+    implementation myDependencies.gsonConvert
 }

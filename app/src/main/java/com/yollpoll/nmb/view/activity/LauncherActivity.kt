@@ -51,54 +51,15 @@ class LauncherActivity : NMBActivity<ActivityMainBinding, LauncherVM>() {
         }
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        val builder=OkHttpClient.Builder()
-        builder.build()
-    }
-
-
 }
 @HiltViewModel
 class LauncherVM @Inject constructor(val app: Application) : FastViewModel(app) {
     init {
-//        viewModelScope.launch {
-//            "sasa".shortToast()
-//            delay(1000)
-//            sendEmptyMessage(MR.LauncherActivity_gotoMain)
-//        }
+        viewModelScope.launch {
+            "sasa".shortToast()
+            delay(10000)
+            sendEmptyMessage(MR.LauncherActivity_gotoMain)
+        }
     }
-//    val launcherRetrofitFactory by lazy {
-//        RetrofitFactory(object : RetrofitIntercept {
-//            override fun baseUrl(): String {
-//                return BASE_URL
-//            }
-//
-//            override fun okHttpClient(client: OkHttpClient) {
-//            }
-//
-//            override fun okHttpClientBuilder(builder: OkHttpClient.Builder) {
-//                try {
-//                    val client =builder.build()
-//                    val a=1
-//                }catch (e:Exception){
-//                    LogUtils.e("spq: ${e.message}")
-//                    "wqwq".shortToast()
-//                }
-////            builder.addInterceptor(CoverImgInterceptor())
-//            }
-//
-//
-//            override fun retrofit(retrofit: Retrofit) {
-//            }
-//
-//            override fun retrofitBuilder(builder: Retrofit.Builder) {
-////            builder.addConverterFactory(MoshiConverterFactory.create())
-//            }
-//
-//        })
-//    }
-    fun test(){
 
-    }
 }

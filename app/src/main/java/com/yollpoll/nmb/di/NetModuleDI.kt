@@ -30,7 +30,7 @@ class NetModuleDI {
     @Provides
     @CommonRetrofitFactory
     fun provideCommonRetrofitFactory(): RetrofitFactory {
-        return launcherRetrofitFactory
+        return commonRetrofitFactory
     }
 
 }
