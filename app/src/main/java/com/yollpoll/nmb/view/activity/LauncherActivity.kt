@@ -41,6 +41,10 @@ class LauncherActivity : NMBActivity<ActivityMainBinding, LauncherVM>() {
     override fun initViewModel()=vm
     override fun getLayoutId() = R.layout.activity_main
 
+    override fun onResume() {
+        super.onResume()
+        vm.init()
+    }
     @OnMessage
     fun gotoMain() {
         lifecycleScope.launch {
@@ -48,16 +52,16 @@ class LauncherActivity : NMBActivity<ActivityMainBinding, LauncherVM>() {
                 hashMapOf("from" to "from")
             ).build()
             DispatchClient.manager?.dispatch(this@LauncherActivity, req)
+            this@LauncherActivity.finish()
         }
     }
 
 }
 @HiltViewModel
 class LauncherVM @Inject constructor(val app: Application) : FastViewModel(app) {
-    init {
+    public fun init(){
         viewModelScope.launch {
-            "sasa".shortToast()
-            delay(10000)
+            delay(200)
             sendEmptyMessage(MR.LauncherActivity_gotoMain)
         }
     }

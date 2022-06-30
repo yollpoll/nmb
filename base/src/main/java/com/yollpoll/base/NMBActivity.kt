@@ -15,4 +15,5 @@ abstract class NMBActivity<BIND : ViewDataBinding, VM : FastViewModel>:FastActiv
         return mViewModel
     }
     abstract fun initViewModel():VM
+
 }

@@ -30,4 +30,7 @@ dependencies{
     //okhttp版本
     implementation myDependencies.okhttp
     implementation myDependencies.gsonConvert
+    //dataStore
+    implementation myDependencies.dataStore
+    implementation myDependencies.dataStorePreferences
 }

@@ -7,7 +7,9 @@ plugins {
 apply from: "${rootProject.projectDir}/build-framework.gradle"
 android {
     compileSdkVersion androidConfig.compileSdkVersion
+//    compileSdkVersion 33
     buildToolsVersion androidConfig.buildToolsVersion
+//    buildToolsVersion "33.0.0"
 
     defaultConfig {
         applicationId androidConfig.applicationId

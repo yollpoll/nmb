@@ -1,6 +1,6 @@
 ext {
     androidConfig = [
-            compileSdkVersion: 33,
+            compileSdkVersion: 32,
             buildToolsVersion: "31.0.0",
             applicationId    : "com.yollpoll.nmb",
             minSdkVersion    : 21,
