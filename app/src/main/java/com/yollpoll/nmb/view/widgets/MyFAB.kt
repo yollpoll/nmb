@@ -7,15 +7,17 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
-import com.google.android.material.R
+import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.yollpoll.arch.log.LogUtils
 import com.yollpoll.base.logD
 import com.yollpoll.base.logE
 import com.yollpoll.framework.extensions.shortToast
+import com.yollpoll.nmb.R
 import kotlin.math.abs
 
-class MyFAB : FloatingActionButton {
+class MyFAB : FloatingActionButton , CoordinatorLayout.AttachedBehavior {
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
     constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(
@@ -49,23 +51,23 @@ class MyFAB : FloatingActionButton {
                 val y2 = e2?.y ?: 0f
                 val dx = x2 - x1
                 val dy = y2 - y1
-                if(abs(dx)> abs(dy)){
+                if (abs(dx) > abs(dy)) {
                     //横向移动
-                    return if(dx>0){
+                    return if (dx > 0) {
                         //向右
-                        onRight?.invoke()?:super.onFling(e1, e2, velocityX, velocityY)
-                    }else{
+                        onRight?.invoke() ?: super.onFling(e1, e2, velocityX, velocityY)
+                    } else {
                         //向左
-                        onLeft?.invoke()?:super.onFling(e1, e2, velocityX, velocityY)
+                        onLeft?.invoke() ?: super.onFling(e1, e2, velocityX, velocityY)
                     }
-                }else{
+                } else {
                     //竖向移动
-                    return if(dy>0){
+                    return if (dy > 0) {
                         //向下
-                        onBottom?.invoke()?:super.onFling(e1, e2, velocityX, velocityY)
-                    }else{
+                        onBottom?.invoke() ?: super.onFling(e1, e2, velocityX, velocityY)
+                    } else {
                         //向上
-                        onTop?.invoke()?:super.onFling(e1, e2, velocityX, velocityY)
+                        onTop?.invoke() ?: super.onFling(e1, e2, velocityX, velocityY)
                     }
                 }
             }
@@ -78,5 +80,24 @@ class MyFAB : FloatingActionButton {
             gestureDetector.onTouchEvent(event)
         }
 
+    }
+}
+
+class MyFBABehavior : CoordinatorLayout.Behavior<MyFAB>() {
+    override fun layoutDependsOn(
+        parent: CoordinatorLayout,
+        child: MyFAB,
+        dependency: View
+    ): Boolean {
+        return dependency.id == R.id.rv_forum
+    }
+
+    override fun onDependentViewChanged(
+        parent: CoordinatorLayout,
+        child: MyFAB,
+        dependency: View
+    ): Boolean {
+        child.x = (dependency.x - child.width);
+        return true
     }
 }

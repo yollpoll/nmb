@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="elevation_toolbar">2dp</dimen>
+    <dimen name="line">0.5dp</dimen>
+    <dimen name="commonRadius">20dp</dimen>
 </resources>

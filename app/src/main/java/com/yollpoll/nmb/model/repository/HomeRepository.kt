@@ -2,6 +2,8 @@ package com.yollpoll.nmb.model.repository
 
 import android.util.Log
 import com.yollpoll.base.TAG
+import com.yollpoll.base.logE
+import com.yollpoll.framework.extensions.toListJson
 import com.yollpoll.framework.net.http.RetrofitFactory
 import com.yollpoll.framework.paging.BasePagingSource
 import com.yollpoll.nmb.di.CommonRetrofitFactory
@@ -45,8 +47,10 @@ class HomeRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
     fun getTimeLinePagingSource(): BasePagingSource<ArticleItem> {
         return object : BasePagingSource<ArticleItem>() {
             override suspend fun load(pos: Int): List<ArticleItem> {
-                Log.d(TAG, "load: timeLine pos ${pos}")
-                return getTimeLine(pos)
+                val data=getTimeLine(pos)
+                "asasasas".logE()
+                "loadTimeLine: ${data.toListJson()}".logE()
+                return data
             }
         }
 //        return TimeLineSource(this)
