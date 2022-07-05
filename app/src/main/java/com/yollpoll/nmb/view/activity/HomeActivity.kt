@@ -4,47 +4,52 @@ import android.app.ActionBar
 import android.app.Activity
 import android.app.Application
 import android.graphics.Point
+import android.graphics.Rect
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
 import android.util.Log
 import android.view.Gravity
+import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
 import androidx.customview.widget.ViewDragHelper
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
-import androidx.paging.PagingData
-import androidx.paging.cachedIn
-import androidx.paging.flatMap
+import androidx.lifecycle.*
+import androidx.paging.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.yollpoll.annotation.annotation.OnMessage
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.ViewModel
 import com.yollpoll.arch.log.LogUtils
-import com.yollpoll.base.NMBActivity
-import com.yollpoll.base.NmbPagingDataAdapter
-import com.yollpoll.base.logD
-import com.yollpoll.base.logE
+import com.yollpoll.base.*
 import com.yollpoll.framework.extensions.saveList
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.framework.paging.BasePagingDataAdapter
 import com.yollpoll.framework.paging.BasePagingSource
 import com.yollpoll.framework.paging.getCommonPager
+import com.yollpoll.framework.widgets.BaseDialog
 import com.yollpoll.nmb.BR
 import com.yollpoll.nmb.KEY_FORUM_LIST
+import com.yollpoll.nmb.MR
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.databinding.ActivityHomeBinding
 import com.yollpoll.nmb.databinding.ItemForumBinding
 import com.yollpoll.nmb.databinding.ItemThreadBinding
 import com.yollpoll.nmb.model.bean.*
 import com.yollpoll.nmb.model.repository.HomeRepository
+import com.yollpoll.nmb.net.imgThumbUrl
+import com.yollpoll.nmb.net.realCover
 import com.yollpoll.nmb.router.ROUTE_HOME
+import com.yollpoll.nmb.view.widgets.getCommonGlideOptions
+import com.yollpoll.nmb.view.widgets.initLeftDrawerLayout
+import com.yollpoll.nmb.view.widgets.initRightDrawerLayout
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -70,22 +75,63 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     }
 
     //板块列表
-    private val adapterForum = BasePagingDataAdapter<ForumDetail>(
+    private val forumManager = LinearLayoutManager(this)
+    private val adapterForum = NmbPagingDataAdapter<ForumDetail>(
         R.layout.item_forum,
         BR.bean,
-        onBindDataBinding = { _, binding ->
+        onBindDataBinding = { item, _, binding ->
             (binding as ItemForumBinding).llForum.setOnClickListener { v ->
-
+                //点击事件
+                if (null == item) {
+                    return@setOnClickListener
+                }
+                vm.selectForum(item)
+                if (mDataBinding.drawer.isDrawerOpen(Gravity.RIGHT)) {
+                    mDataBinding.drawer.closeDrawer(Gravity.RIGHT)
+                }
+                threadManager.scrollToPosition(0)
             }
         })
+
+    //串
+    private val threadManager = LinearLayoutManager(this)
     private val adapterThread = NmbPagingDataAdapter<ArticleItem>(
         R.layout.item_thread,
         BR.bean,
-        onBindDataBinding = { item,_, binding->
+        onBindDataBinding = { item, _, binding ->
+            if (null == item) {
+                return@NmbPagingDataAdapter
+            }
+            //html文本
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                (binding as ItemThreadBinding).tvContent.text=Html.fromHtml(item?.content,FROM_HTML_MODE_COMPACT)
-            }else{
-                (binding as ItemThreadBinding).tvContent.text=Html.fromHtml(item?.content)
+                (binding as ItemThreadBinding).tvContent.text =
+                    Html.fromHtml(item.content, FROM_HTML_MODE_COMPACT)
+            } else {
+                (binding as ItemThreadBinding).tvContent.text = Html.fromHtml(item.content)
+            }
+            //图片加载
+            binding.ivContent.apply {
+                if (item.img.isEmpty()) {
+                    this.visibility = View.GONE
+                } else {
+
+                    this.visibility = View.VISIBLE
+                    //图片加载
+                    Glide.with(context)
+                        .asBitmap()
+                        .apply(getCommonGlideOptions(context))
+                        .load(imgThumbUrl + item.img + item.ext)
+                        .into(this)
+                }
+            }
+            //回复数量
+            item.ReplyCount.apply {
+                if (this.isNotEmpty()) {
+                    item.ReplyCount = "0"
+                }
+            }
+            binding.llRoot.setOnClickListener {
+                "跳转".shortToast()
             }
         })
 
@@ -100,6 +146,8 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     private fun initView() {
         setSupportActionBar(mDataBinding.toolbar)
         mDataBinding.drawer.addDrawerListener(actionBarDrawerToggle)
+        //手势冲突处理
+        mDataBinding.drawer.initLeftDrawerLayout(this)
         actionBarDrawerToggle.syncState()
         mDataBinding.fabAction.onTop = {
             mDataBinding.drawer.isDrawerOpen(Gravity.RIGHT).let {
@@ -112,7 +160,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
                     mDataBinding.drawer.closeDrawer(Gravity.LEFT)
                 }
             }
-            mDataBinding.rvContent.scrollToPosition(0)
+            threadManager.smoothScrollToPosition(mDataBinding.rvContent, RecyclerView.State(), 0)
             true
         }
         //初始化操作按钮
@@ -147,12 +195,14 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
                     mDataBinding.drawer.closeDrawer(Gravity.LEFT)
                 }
             }
-            mDataBinding.refresh.isRefreshing = true
+            refreshThread()
             true
         }
+        mDataBinding.rvContent.adapter = adapterThread
+        mDataBinding.rvContent.layoutManager = threadManager
         //rvForum
         mDataBinding.rvForum.adapter = adapterForum
-        mDataBinding.rvForum.layoutManager = LinearLayoutManager(this)
+        mDataBinding.rvForum.layoutManager = forumManager
         //refresh
         mDataBinding.refresh.setColorSchemeColors(
             getAttrColor(R.attr.colorPrimary),
@@ -160,53 +210,213 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
             getAttrColor(R.attr.colorTertiary),
         )
         mDataBinding.refresh.setOnRefreshListener {
-            adapterThread.refresh()
+            refreshThread()
         }
-
-        mDataBinding.rvContent.adapter=adapterThread
-        mDataBinding.rvContent.layoutManager = LinearLayoutManager(this)
     }
 
+    //数据处理
     private fun initData() {
-        lifecycleScope.launchWhenResumed {
-            vm.forumList.collectLatest {
-                adapterForum.submitData(it)
+        adapterThread.addLoadStateListener {
+            when (it.refresh) {
+                is LoadState.Loading -> mDataBinding.refresh.isRefreshing = true
+                is LoadState.NotLoading -> mDataBinding.refresh.isRefreshing = false
+                is LoadState.Error -> {
+                    mDataBinding.refresh.isRefreshing = false
+                    "刷新失败".shortToast()
+                }
             }
-            vm.threadList.collectLatest {
-                adapterThread.submitData(it)
+        }
+
+        lifecycleScope.launchWhenResumed {
+            launch {
+                vm.forumList.collectLatest {
+                    adapterForum.submitData(it)
+                }
+            }
+            vm.threadPager.observe(this@HomeActivity, Observer {
+                launch {
+                    it.flow.cachedIn(lifecycleScope).collectLatest {
+                        adapterThread.submitData(it)
+                    }
+                }
+            })
+            //加载封面
+            launch {
+                vm.refreshCover()
             }
         }
     }
 
+    /**
+     * 新建串
+     */
+    fun createArticle(view: View) {
+
+    }
+
+    fun checkAuthor(view: View) {
+
+    }
+
+    //封面图片刷新
+    @OnMessage
+    fun onRefreshCover() {
+        Glide.with(context).asBitmap().load(realCover)
+            .into(mDataBinding.root.findViewById(R.id.iv_cover))
+    }
+
+    @OnMessage
+    fun showAnnouncement() {
+        CommonDialog(vm.announcement.value?.content, context).show()
+    }
+
+    //刷新串
+    private fun refreshThread() {
+        adapterThread.refresh()
+        if (!mDataBinding.refresh.isRefreshing) {
+            mDataBinding.refresh.isRefreshing = true
+        }
+    }
+
+    //处理标题栏
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.action_forum) {
+            if (mDataBinding.drawer.isDrawerOpen(Gravity.RIGHT)) {
+                mDataBinding.drawer.closeDrawer(Gravity.RIGHT)
+            } else {
+                mDataBinding.drawer.openDrawer(Gravity.RIGHT)
+            }
+            return true
+        } else if (item.itemId == R.id.action_announcement) {
+            showAnnouncement()
+        }
         // navigation icon的点击交给actionbardrawertoggle来处理
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
             return true
         }
         return super.onOptionsItemSelected(item)
     }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_home, menu)
+        return true
+    }
 }
 
+//viewModel
 @HiltViewModel
 class HomeVm @Inject constructor(val app: Application, val repository: HomeRepository) :
     FastViewModel(app) {
-    //板块列表
-    val forumList = getCommonPager {
-        object : BasePagingSource<Forum>() {
-            override suspend fun load(pos: Int): List<Forum> {
-                if (pos > 1) {
-                    return arrayListOf()
-                }
-                return repository.getForumList()
-            }
-        }
-    }.flow.flatMapConcat {
-        flowOf(it.flatMap { forum ->
-            forum.forums
-        })
+    //当前板块Id
+    private var curForumId = MutableLiveData(-1)
+
+    //当前板块
+    private var curForumDetail = MutableLiveData<ForumDetail>()
+
+    //公告
+    private val _announcement: MutableLiveData<Announcement> = MutableLiveData()
+    val announcement: LiveData<Announcement> = _announcement
+
+    init {
+        curForumId.value = -1
+        getAnnouncement()
     }
 
+    //板块列表
+    val forumList =
+        getCommonPager {
+            object : BasePagingSource<Forum>() {
+                override suspend fun load(pos: Int): List<Forum> {
+                    if (pos > 1) {
+                        return arrayListOf()
+                    }
+                    return repository.getForumList()
+                }
+            }
+        }.flow.flatMapConcat {
+            flowOf(it.flatMap { forum ->
+                if (forum.sort == "1") {
+                    val childForums = arrayListOf<ForumDetail>()
+                    forum.forums.forEach { childForum ->
+                        childForums.add(childForum.apply {
+                            if (this.id == "-1") {
+                                this.name = "时间线1"
+                            }
+                        })
+                        if (childForum.id == "-1") {
+                            //添加创作类时间线
+                            childForums.add(
+                                ForumDetail(
+                                    null,
+                                    null,
+                                    "-2",
+                                    null,
+                                    null,
+                                    "时间线2",
+                                    "时间线2",
+                                    "1",
+                                    null,
+                                    null
+                                )
+                            )
+                        }
+                    }
+                    return@flatMap childForums
+                }
+                forum.forums
+            })
+        }.cachedIn(viewModelScope)
+
     //串列表
-    var threadList =
-        getCommonPager { repository.getTimeLinePagingSource() }.flow.cachedIn(viewModelScope)
+    private val _threadPager = MutableLiveData<Pager<Int, ArticleItem>>(getCommonPager {
+        repository.getTimeLinePagingSource(curForumId.value!!)
+    })
+
+    val threadPager: LiveData<Pager<Int, ArticleItem>> = _threadPager
+
+    //刷新封面
+    suspend fun refreshCover() {
+        try {
+            repository.refreshCover()
+            sendEmptyMessage(MR.HomeActivity_onRefreshCover)
+        } catch (e: Exception) {
+            "封面加载失败".shortToast()
+        }
+    }
+
+    //选择板块
+    fun selectForum(forum: ForumDetail) {
+        viewModelScope.launch {
+            curForumDetail.value = forum
+            curForumId.value = forum.id.toInt()
+            when (forum.id) {
+                "-1" -> {
+                    //时间线1
+                    _threadPager.value = getNMBCommonPager { repository.getTimeLinePagingSource(1) }
+                }
+                "-2" -> {
+                    //时间线2
+                    _threadPager.value = getNMBCommonPager { repository.getTimeLinePagingSource(2) }
+                }
+                else -> {
+                    //普通串
+                    _threadPager.value =
+                        getNMBCommonPager { repository.getThreadsPagingSource(forum.id) }
+                }
+            }
+        }
+
+    }
+
+    //获取公告
+    fun getAnnouncement() {
+        viewModelScope.launch {
+            val res = repository.getAnnouncement()
+            _announcement.value = res
+            if(res.enable){
+                sendEmptyMessage(MR.HomeActivity_showAnnouncement)
+            }
+        }
+    }
+
 }

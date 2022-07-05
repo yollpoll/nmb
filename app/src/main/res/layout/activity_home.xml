@@ -34,10 +34,8 @@
 
             <androidx.appcompat.widget.Toolbar
                 android:id="@+id/toolbar"
-                style="@style/Widget.MaterialComponents.Toolbar.Surface"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/height_toolbar"
-
                 android:background="?attr/colorPrimary"
                 android:elevation="@dimen/elevation_toolbar"
                 app:titleTextColor="?attr/colorOnPrimary" />
@@ -59,8 +57,8 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rv_content"
-                    android:visibility="gone"
                     android:layout_width="match_parent"
+                    android:background="?attr/colorSecondaryContainer"
                     android:layout_height="match_parent" />
 
             </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
@@ -88,6 +86,9 @@
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
             android:id="@+id/fab_action"
+            android:src="@mipmap/ic_action"
+            android:onClick="createArticle"
+            android:backgroundTint="?attr/colorTertiaryContainer"
             />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

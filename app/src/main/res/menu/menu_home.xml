@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_forum" android:title="板块" app:showAsAction="always"/>
+    <group android:id="@+id/menu_list">
+        <item android:id="@+id/action_announcement" android:title="公告"/>
+        <item android:id="@+id/action_search" android:title="搜索"/>
+    </group>
+</menu>

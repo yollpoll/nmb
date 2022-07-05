@@ -7,9 +7,9 @@ const val DIRECT_BASE_URL = "https://adnmb3.com/"//重定向以后的url，应�
 const val ROOT_URL = "Api/backupUrl"//重定向获取根url
 
 const val CDN_URL = "Api/getCdnPath"//图片cdn地址
-const val COVER = "http://cover.acfunwiki.org/cover.php"//封面地址,会重定向
+const val COVER = "http://nmb.ovear.info/h.php"//封面地址,会重定向
 var realCover = ""//封面图片重定向以后的真实地址
-const val ANNOUNCEMENT = "http://cover.acfunwiki.org/nmb-notice.json"//公告
+const val ANNOUNCEMENT = "http://nmb.ovear.info/nmb-notice.json"//公告
 const val IMG_THUMB_URL = "/thumb/"
 const val IMG_URL = "/image/"
 
@@ -36,6 +36,6 @@ const val TIME_LINE_ID = "-1"
 
 var realUrl: String? = null//重定向以后获取到的根url
 
-var imagHead = "https://nmbimg.fastmirror.org/"//应该动态获取
+var imagHead = "https://image.nmb.best"//应该动态获取
 var imgUrl = imagHead + IMG_URL
 var imgThumbUrl = imagHead + IMG_THUMB_URL

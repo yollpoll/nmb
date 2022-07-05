@@ -59,4 +59,5 @@
     <color name="md_theme_dark_inversePrimary">#7A5456</color>
     <color name="md_theme_dark_surfaceTint">#EBBBBB</color>
     <color name="md_theme_dark_surfaceTintColor">#EBBBBB</color>
+    <color name="color_hint">#978F8E</color>
 </resources>

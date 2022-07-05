@@ -33,4 +33,7 @@ dependencies{
     //dataStore
     implementation myDependencies.dataStore
     implementation myDependencies.dataStorePreferences
+    //glide
+    implementation myDependencies.glide
+    kapt myDependencies.glideCompiler
 }

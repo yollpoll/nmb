@@ -1,5 +1,6 @@
 package com.yollpoll.nmb.net
 
+import com.yollpoll.nmb.model.bean.Announcement
 import com.yollpoll.nmb.model.bean.Article
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.model.bean.ForumList
@@ -21,7 +22,10 @@ interface HttpService {
     suspend fun getThreadList(@Query("id") id: String, @Query("page") page: Int): Article//获取串列表
 
     @GET(TIME_LINE)
-    suspend fun getTimeLine(@Query("page") page: Int): Article//时间线
+    suspend fun getTimeLine(@Query("id") id:Int,@Query("page") page: Int): Article//时间线
+
+    @GET(ANNOUNCEMENT)
+    suspend fun getAnnouncement():Announcement//公告
 
     @GET(GET_CHILD_ARTICLE)
     suspend fun getArticleDetail(

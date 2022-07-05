@@ -28,7 +28,7 @@ class ArticleDetailRepository @Inject constructor(val retrofitFactory: RetrofitF
         return object : BasePagingSource<Reply>() {
             override suspend fun load(pos: Int): List<Reply> {
                 service.getArticleDetail(id, pos).let {
-                    return if ((it.replyCount.toInt()) < pos * PAGE_SIZE) {
+                    return if ((it.ReplyCount.toInt()) < pos * PAGE_SIZE) {
                         arrayListOf()
                     } else {
                         it.replys

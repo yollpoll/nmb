@@ -7,8 +7,8 @@ plugins {
 apply from: "${rootProject.projectDir}/build-framework.gradle"
 
 android {
-    compileSdkVersion 33
-    buildToolsVersion "31.0.0"
+    compileSdkVersion androidConfig.compileSdkVersion
+    buildToolsVersion androidConfig.buildToolsVersion
 
     defaultConfig {
         minSdkVersion 21

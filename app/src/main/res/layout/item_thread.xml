@@ -8,8 +8,9 @@
     </data>
 
     <LinearLayout
+        android:id="@+id/ll_root"
+        android:background="?attr/selectableItemBackground"
         android:layout_width="match_parent"
-        android:background="?attr/colorPrimaryContainer"
         android:orientation="vertical"
         android:layout_height="wrap_content">
         <LinearLayout
@@ -17,77 +18,84 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:padding="20dp"
+            android:padding="10dp"
             >
             <TextView
-                android:textColor="?attr/colorOnPrimaryContainer"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_title"
                 android:text="@{bean.title}"
-                android:gravity="center"
+                android:maxLines="1"
+                android:ellipsize="end"
+                android:gravity="left"
                 />
             <TextView
-                android:textColor="?attr/colorOnPrimaryContainer"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_id"
                 android:gravity="center"
-                android:text="@{bean.id}"
+                android:text='@{"NO."+bean.id}'
                 />
             <TextView
-                android:textColor="?attr/colorOnPrimaryContainer"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
-                android:text="@{bean.userid}"
-                android:gravity="center"
+                android:text="@{bean.user_hash}"
+                android:gravity="right"
                 />
         </LinearLayout>
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:padding="20dp"
+            android:paddingRight="20dp"
             android:layout_height="wrap_content">
             <ImageView
                 android:id="@+id/iv_content"
                 android:layout_width="100dp"
+                android:layout_marginLeft="10dp"
                 android:layout_height="100dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_content"
-                android:layout_marginLeft="20dp"
+                android:layout_marginLeft="10dp"
+                android:maxLines="10"
                 />
         </LinearLayout>
-        <LinearLayout
+        <RelativeLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:padding="20dp"
-            android:gravity="right"
+            android:padding="10dp"
             android:layout_height="wrap_content">
             <TextView
+                android:textColor="@color/color_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_reply_count"
-                android:text='@{@string/reply+bean.replyCount}'
+                android:layout_alignParentLeft="true"
+                android:textSize="@dimen/sec_content_sp"
+                android:text='@{@string/reply+bean.ReplyCount}'
                 />
 
             <TextView
-                android:textColor="?attr/colorOnPrimaryContainer"
+                android:textColor="@color/color_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_time"
+                android:layout_alignParentRight="true"
                 android:text="@{bean.now}"
+                android:textSize="@dimen/sec_content_sp"
                 android:gravity="center"
                 />
-        </LinearLayout>
+        </RelativeLayout>
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/line"
             android:background="?attr/colorOutline"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             />
     </LinearLayout>
 </layout>

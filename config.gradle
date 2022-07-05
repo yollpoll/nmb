@@ -13,8 +13,9 @@ ext {
             arch                : "0.0.3",
             framework           : "0.0.11",
             arch_kapt           : "0.0.4",
-            glide               : "4.5.0",
-            paging              : "3.0.0-rc01",
+            glide               : "4.11.0",
+            glide_compiler      : "4.5.0",
+            paging              : "3.1.1",
             pagingCompose       : "1.0.0-alpha14",
             lifeKtxVersion      : "2.4.0",//官方kotlin扩展库版本
             dataStore           : "1.0.0",
@@ -75,7 +76,7 @@ ext {
 
             //Glide
             glide                   : "com.github.bumptech.glide:glide:${dependVersion.glide}",
-            glideCompiler           : "com.github.bumptech.glide:compiler:${dependVersion.glide}",
+            glideCompiler           : "com.github.bumptech.glide:compiler:${dependVersion.glide_compiler}",
 
             //paging
             pagingRuntimeKtx        : "androidx.paging:paging-runtime-ktx:$dependVersion.paging",

@@ -1,8 +1,11 @@
 package com.yollpoll.nmb.model.repository
 
 import android.util.Log
+import com.yollpoll.base.NMBBasePagingSource
 import com.yollpoll.base.TAG
 import com.yollpoll.base.logE
+import com.yollpoll.base.logI
+import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.extensions.toListJson
 import com.yollpoll.framework.net.http.RetrofitFactory
 import com.yollpoll.framework.paging.BasePagingSource
@@ -25,51 +28,38 @@ class HomeRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
     /**
      * 时间线
      */
-    suspend fun getTimeLine(page: Int) = service.getTimeLine(page = page)
+    suspend fun getTimeLine(page: Int, id: Int) = service.getTimeLine(page = page, id = id)
 
 
     /**
      * 获取串列表的pagingSource
      */
-    fun getThreadsPagingSource(id: String): BasePagingSource<ArticleItem> {
-        return object : BasePagingSource<ArticleItem>() {
+    fun getThreadsPagingSource(id: String): NMBBasePagingSource<ArticleItem> {
+        return object : NMBBasePagingSource<ArticleItem>() {
             override suspend fun load(pos: Int): List<ArticleItem> {
-                Log.d(TAG, "load: thread id $id")
                 return getThreadList(id, pos)
             }
         }
-//        return ThreadSource(this, id)
     }
 
     /**
      * 获取时间线
      */
-    fun getTimeLinePagingSource(): BasePagingSource<ArticleItem> {
-        return object : BasePagingSource<ArticleItem>() {
+    fun getTimeLinePagingSource(id: Int): NMBBasePagingSource<ArticleItem> {
+        return object : NMBBasePagingSource<ArticleItem>() {
             override suspend fun load(pos: Int): List<ArticleItem> {
-                val data=getTimeLine(pos)
-                "asasasas".logE()
-                "loadTimeLine: ${data.toListJson()}".logE()
-                return data
+                return getTimeLine(pos, id)
             }
         }
-//        return TimeLineSource(this)
     }
 
-    class ThreadSource(val repository: HomeRepository, val id: String) :
-        BasePagingSource<ArticleItem>() {
-        override suspend fun load(pos: Int): List<ArticleItem> {
-            return repository.getThreadList(id, pos)
-        }
-    }
-
-    class TimeLineSource(val repository: HomeRepository) : BasePagingSource<ArticleItem>() {
-        override suspend fun load(pos: Int): List<ArticleItem> {
-            return repository.getTimeLine(pos)
-        }
-
-    }
 
     suspend fun getForumList() = service.getForumList()
+
+    //获取封面真实地址
+    suspend fun refreshCover() = service.refreshCover()
+
+    //获取公告
+    suspend fun getAnnouncement() = service.getAnnouncement()
 
 }

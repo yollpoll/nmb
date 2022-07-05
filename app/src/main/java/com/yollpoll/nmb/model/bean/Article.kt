@@ -1,7 +1,11 @@
 package com.yollpoll.nmb.model.bean
 
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
 class Article : ArrayList<ArticleItem>()
 
+@JsonClass(generateAdapter = true)
 data class ArticleItem(
     val admin: String,
     val content: String,
@@ -11,12 +15,13 @@ data class ArticleItem(
     val img: String,
     val name: String,
     val now: String,
-    val replyCount: String,
+    var ReplyCount: String,
     val replys: List<Reply>,
     val title: String,
-    val userid: String
+    val user_hash: String
 )
 
+@JsonClass(generateAdapter = true)
 data class Reply(
     val admin: String? = null,
     val content: String? = null,
