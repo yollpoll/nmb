@@ -9,28 +9,15 @@ class Article : ArrayList<ArticleItem>()
 data class ArticleItem(
     val admin: String,
     val content: String,
-    val email: String,
+    val email: String?,
     val ext: String,
     val id: String,
     val img: String,
     val name: String,
     val now: String,
     var ReplyCount: String,
-    val replys: List<Reply>,
+    val Replies: List<ArticleItem>?,
     val title: String,
-    val user_hash: String
-)
-
-@JsonClass(generateAdapter = true)
-data class Reply(
-    val admin: String? = null,
-    val content: String? = null,
-    val email: String? = null,
-    val ext: String? = null,
-    val id: String? = null,
-    val img: String? = null,
-    val name: String? = null,
-    val now: String? = null,
-    val title: String? = null,
-    val userid: String? = null
+    val user_hash: String,
+    var master: String?//是否是发帖人
 )

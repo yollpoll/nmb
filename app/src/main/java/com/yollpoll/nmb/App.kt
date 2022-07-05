@@ -2,6 +2,7 @@ package com.yollpoll.nmb
 
 import android.annotation.SuppressLint
 import android.os.Build
+import android.util.TypedValue
 import androidx.annotation.ChecksSdkIntAtLeast
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
@@ -10,9 +11,14 @@ import com.yollpoll.base.R
 import dagger.hilt.android.HiltAndroidApp
 
 @HiltAndroidApp
-class App :NMBApplication(){
+class App : NMBApplication() {
+    companion object {
+        lateinit var INSTANCE: App
+    }
+
     override fun onCreate() {
         super.onCreate()
+        INSTANCE = this
         // Apply dynamic color
         if (isDynamicColorAvailable()) {
             DynamicColors.applyToActivitiesIfAvailable(this)
@@ -31,5 +37,12 @@ class App :NMBApplication(){
             return false
         }
         return true
+    }
+
+    /**
+     * 获取attr中的颜色
+     */
+    fun getAttrColor(id: Int):Int {
+        return this.getAttrColor(id)
     }
 }

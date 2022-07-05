@@ -43,6 +43,7 @@
                 android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:text="@{bean.user_hash}"
+                android:id="@+id/tv_user"
                 android:gravity="right"
                 />
         </LinearLayout>

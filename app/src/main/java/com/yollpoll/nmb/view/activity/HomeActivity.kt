@@ -3,6 +3,7 @@ package com.yollpoll.nmb.view.activity
 import android.app.ActionBar
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.graphics.Point
 import android.graphics.Rect
 import android.os.Build
@@ -17,6 +18,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
 import androidx.customview.widget.ViewDragHelper
+import androidx.databinding.Bindable
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.*
 import androidx.paging.*
@@ -25,9 +27,13 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.yollpoll.annotation.annotation.OnMessage
 import com.yollpoll.annotation.annotation.Route
+import com.yollpoll.arch.annotation.PermissionAuto
 import com.yollpoll.arch.annotation.ViewModel
 import com.yollpoll.arch.log.LogUtils
 import com.yollpoll.base.*
+import com.yollpoll.framework.dispatch.DispatchRequest
+import com.yollpoll.framework.dispatch.OnBackListener
+import com.yollpoll.framework.dispatch.StartType
 import com.yollpoll.framework.extensions.saveList
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.fast.FastViewModel
@@ -39,13 +45,16 @@ import com.yollpoll.nmb.BR
 import com.yollpoll.nmb.KEY_FORUM_LIST
 import com.yollpoll.nmb.MR
 import com.yollpoll.nmb.R
+import com.yollpoll.nmb.adapter.ThreadAdapter
 import com.yollpoll.nmb.databinding.ActivityHomeBinding
 import com.yollpoll.nmb.databinding.ItemForumBinding
 import com.yollpoll.nmb.databinding.ItemThreadBinding
 import com.yollpoll.nmb.model.bean.*
 import com.yollpoll.nmb.model.repository.HomeRepository
+import com.yollpoll.nmb.net.MY_GIT
 import com.yollpoll.nmb.net.imgThumbUrl
 import com.yollpoll.nmb.net.realCover
+import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_HOME
 import com.yollpoll.nmb.view.widgets.getCommonGlideOptions
 import com.yollpoll.nmb.view.widgets.initLeftDrawerLayout
@@ -56,19 +65,20 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.lang.reflect.Field
+import java.util.HashMap
 import javax.inject.Inject
 import kotlin.math.max
 
 @Route(url = ROUTE_HOME)
-@ViewModel(HomeVm::class)
 @AndroidEntryPoint
+@PermissionAuto
 class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     private val vm: HomeVm by viewModels()
     private val actionBarDrawerToggle by lazy {
         ActionBarDrawerToggle(
             this,
             mDataBinding.drawer,
-            mDataBinding.toolbar,
+            mDataBinding.layoutTitle.toolbar,
             R.string.open,
             R.string.close
         )
@@ -93,47 +103,15 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
             }
         })
 
-    //串
+    //串列表
     private val threadManager = LinearLayoutManager(this)
-    private val adapterThread = NmbPagingDataAdapter<ArticleItem>(
-        R.layout.item_thread,
-        BR.bean,
-        onBindDataBinding = { item, _, binding ->
-            if (null == item) {
-                return@NmbPagingDataAdapter
-            }
-            //html文本
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                (binding as ItemThreadBinding).tvContent.text =
-                    Html.fromHtml(item.content, FROM_HTML_MODE_COMPACT)
-            } else {
-                (binding as ItemThreadBinding).tvContent.text = Html.fromHtml(item.content)
-            }
-            //图片加载
-            binding.ivContent.apply {
-                if (item.img.isEmpty()) {
-                    this.visibility = View.GONE
-                } else {
-
-                    this.visibility = View.VISIBLE
-                    //图片加载
-                    Glide.with(context)
-                        .asBitmap()
-                        .apply(getCommonGlideOptions(context))
-                        .load(imgThumbUrl + item.img + item.ext)
-                        .into(this)
-                }
-            }
-            //回复数量
-            item.ReplyCount.apply {
-                if (this.isNotEmpty()) {
-                    item.ReplyCount = "0"
-                }
-            }
-            binding.llRoot.setOnClickListener {
-                "跳转".shortToast()
-            }
-        })
+    private val adapterThread = ThreadAdapter(onUrlClick = {
+        vm.onThreadUrlClick(it)
+    }) { item ->
+        lifecycleScope.launch {
+            ThreadDetailActivity.gotoThreadDetailActivity(item.id, context)
+        }
+    }
 
     override fun getLayoutId() = R.layout.activity_home
     override fun initViewModel() = vm
@@ -144,7 +122,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     }
 
     private fun initView() {
-        setSupportActionBar(mDataBinding.toolbar)
+        initTitle(mDataBinding.layoutTitle.toolbar)
         mDataBinding.drawer.addDrawerListener(actionBarDrawerToggle)
         //手势冲突处理
         mDataBinding.drawer.initLeftDrawerLayout(this)
@@ -216,6 +194,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
     //数据处理
     private fun initData() {
+        vm.getAnnouncement()
         adapterThread.addLoadStateListener {
             when (it.refresh) {
                 is LoadState.Loading -> mDataBinding.refresh.isRefreshing = true
@@ -254,8 +233,15 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
     }
 
+    /**
+     * 跳转git
+     */
     fun checkAuthor(view: View) {
-
+        lifecycleScope.launch {
+            DispatchClient.manager?.dispatch(
+                context, DispatchRequest.UrlBuilder(MY_GIT).build()
+            )
+        }
     }
 
     //封面图片刷新
@@ -267,7 +253,14 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
     @OnMessage
     fun showAnnouncement() {
-        CommonDialog(vm.announcement.value?.content, context).show()
+        AnnouncementDialog(vm.announcement.value?.content, context).show()
+    }
+
+    @OnMessage
+    fun gotoThreadDetail(id: String) {
+        lifecycleScope.launch {
+            ThreadDetailActivity.gotoThreadDetailActivity(id, context)
+        }
     }
 
     //刷新串
@@ -313,13 +306,17 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
     //当前板块
     private var curForumDetail = MutableLiveData<ForumDetail>()
 
+    //标题
+    @Bindable
+    var title: String = "时间线1"
+
     //公告
     private val _announcement: MutableLiveData<Announcement> = MutableLiveData()
     val announcement: LiveData<Announcement> = _announcement
 
+
     init {
         curForumId.value = -1
-        getAnnouncement()
     }
 
     //板块列表
@@ -387,6 +384,8 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
     //选择板块
     fun selectForum(forum: ForumDetail) {
         viewModelScope.launch {
+            title = forum.name ?: "匿名版"
+            notifyPropertyChanged(BR.title)
             curForumDetail.value = forum
             curForumId.value = forum.id.toInt()
             when (forum.id) {
@@ -413,9 +412,21 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
         viewModelScope.launch {
             val res = repository.getAnnouncement()
             _announcement.value = res
-            if(res.enable){
+            if (res.enable) {
                 sendEmptyMessage(MR.HomeActivity_showAnnouncement)
             }
+        }
+    }
+
+    //url点击
+    fun onThreadUrlClick(url: String) {
+        if (url.startsWith("/t/")) {
+            url.split("/").let {
+                if (it.size > 2) {
+                    sendMessage(MR.HomeActivity_gotoThreadDetail, it[2])
+                }
+            }
+        } else if (url.startsWith(">>No.")) {
         }
     }
 

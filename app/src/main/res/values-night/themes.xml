@@ -29,5 +29,9 @@
 <!--        <item name="colorSurfaceTint">@color/md_theme_dark_surfaceTint</item>-->
 <!--        <item name="colorSurfaceTintColor">@color/md_theme_dark_surfaceTintColor</item>-->
         <item name="colorPrimaryInverse">@color/md_theme_dark_inversePrimary</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- Optional, but recommended for full edge-to-edge rendering -->
+<!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
     </style>
 </resources>

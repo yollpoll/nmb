@@ -1,5 +1,7 @@
 package com.yollpoll.base
 
+import android.content.Context
+import android.util.TypedValue
 import com.yollpoll.arch.log.LogUtils
 
 fun String.logI() {
@@ -12,4 +14,10 @@ fun String.logE() {
 
 fun String.logD() {
     LogUtils.d(this)
+}
+
+fun Context.getAttrColor(id: Int): Int {
+    val typedValue = TypedValue()
+    theme.resolveAttribute(id, typedValue, true)
+    return typedValue.data
 }

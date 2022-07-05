@@ -8,7 +8,7 @@ import androidx.viewbinding.ViewBinding
 import com.yollpoll.base.databinding.DialogCommonBinding
 import com.yollpoll.framework.widgets.BaseDialog
 
-class CommonDialog(val content: String?, val context: Context) :
+class AnnouncementDialog(val content: String?, val context: Context) :
     NMBDialog<DialogCommonBinding, AlertDialog>(context) {
     override fun getLayoutId() = R.layout.dialog_common
 

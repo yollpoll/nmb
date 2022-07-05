@@ -14,15 +14,15 @@
         android:src="@mipmap/bg_cover" />
 
     <LinearLayout
+        android:id="@+id/ll_author"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="16dp"
-        android:gravity="center"
-        android:id="@+id/ll_author"
-        android:paddingTop="5dp"
-        android:onClick="checkAuthor"
         android:background="?attr/selectableItemBackground"
+        android:gravity="center"
+        android:onClick="checkAuthor"
+        android:paddingTop="5dp"
         android:paddingBottom="5dp">
 
         <ImageView
