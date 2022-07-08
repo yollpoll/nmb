@@ -196,6 +196,13 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         mDataBinding.refresh.init(this) {
             refreshThread()
         }
+        initDrawer()
+    }
+
+    private fun initDrawer() {
+        mDataBinding.layoutDrawer.llCookie.setOnClickListener {
+
+        }
     }
 
     //数据处理
@@ -247,6 +254,12 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
             DispatchClient.manager?.dispatch(
                 context, DispatchRequest.UrlBuilder(MY_GIT).build()
             )
+        }
+    }
+
+    fun gotoCookie() {
+        lifecycleScope.launch {
+            gotoCookieActivity(context)
         }
     }
 

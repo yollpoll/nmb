@@ -36,4 +36,13 @@ dependencies{
     //glide
     implementation myDependencies.glide
     kapt myDependencies.glideCompiler
+
+//    implementation 'com.permissionx.guolindev:permissionx:1.4.0'
+    //google mlkit库
+    implementation 'com.google.mlkit:barcode-scanning:16.1.1'
+    def camerax_version = "1.0.0-rc03"
+    // 对camera 及 camera2的支持，可自行选择
+    implementation "androidx.camera:camera-core:${camerax_version}"
+    implementation "androidx.camera:camera-camera2:${camerax_version}"
+    implementation "androidx.camera:camera-view:1.0.0-alpha22"
 }

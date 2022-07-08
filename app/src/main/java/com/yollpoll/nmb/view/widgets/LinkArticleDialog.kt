@@ -13,11 +13,13 @@ import com.yollpoll.nmb.R
 import com.yollpoll.nmb.databinding.ItemThreadBinding
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.net.imgThumbUrl
+import com.yollpoll.nmb.net.imgUrl
 import com.yollpoll.utils.TransFormContent
 
 class LinkArticleDialog(
     private val context: Context,
     private val item: ArticleItem,
+    private val onImgClick: ((String) -> Unit)? = null,
     private val onUrlClick: ((String) -> Unit)? = null
 ) :
     NMBDialog<ItemThreadBinding, Dialog>(context) {
@@ -35,7 +37,6 @@ class LinkArticleDialog(
             if (item.img.isEmpty()) {
                 this.visibility = View.GONE
             } else {
-
                 this.visibility = View.VISIBLE
                 //图片加载
                 Glide.with(context)
@@ -43,6 +44,9 @@ class LinkArticleDialog(
                     .apply(getCommonGlideOptions(context))
                     .load(imgThumbUrl + item.img + item.ext)
                     .into(this)
+                this.setOnClickListener {
+                    onImgClick?.invoke(  item.img + item.ext)
+                }
             }
         }
         //回复数量

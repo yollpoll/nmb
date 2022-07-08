@@ -157,7 +157,17 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
 
     @OnMessage
     fun showLinkArticle(articleItem: ArticleItem) {
-        LinkArticleDialog(context, articleItem) {
+        LinkArticleDialog(context, articleItem, onImgClick = {
+            //浏览大图
+            lifecycleScope.launch {
+                ImageActivity.gotoImageActivity(
+                    context,
+                    cur = 0,
+                    arrayListOf(articleItem.id),
+                    arrayListOf(articleItem.img + articleItem.ext)
+                )
+            }
+        }) {
             vm.onUrlClick(it)
         }.show()
     }

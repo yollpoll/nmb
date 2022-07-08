@@ -1,40 +1,104 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/shape_drawer"
-    android:orientation="vertical">
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <ImageView
-        android:id="@+id/iv_cover"
-        android:layout_width="match_parent"
-        android:layout_height="250dp"
-        android:layout_alignParentTop="true"
-        android:scaleType="fitXY"
-        android:src="@mipmap/bg_cover" />
+    <data>
+        <variable
+            name="view"
+            type="com.yollpoll.nmb.view.activity.HomeActivity" />
+    </data>
 
-    <LinearLayout
-        android:id="@+id/ll_author"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="16dp"
-        android:background="?attr/selectableItemBackground"
-        android:gravity="center"
-        android:onClick="checkAuthor"
-        android:paddingTop="5dp"
-        android:paddingBottom="5dp">
+        android:layout_height="match_parent"
+        android:background="@drawable/shape_drawer"
+        android:orientation="vertical">
 
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@mipmap/ic_github" />
+            android:id="@+id/iv_cover"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_alignParentTop="true"
+            android:scaleType="fitXY"
+            android:src="@mipmap/bg_cover" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:onClick="@{()->view.gotoCookie()}"
+            android:id="@+id/ll_cookie"
+            android:layout_width="match_parent"
+            android:background="?attr/selectableItemBackground"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:text="@string/author" />
-    </LinearLayout>
+            android:layout_below="@+id/iv_cover"
+            android:orientation="vertical">
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/tv_cookie"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:text="@string/cookie"
+                android:gravity="center"
+                android:textColor="?attr/colorTertiary" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="?attr/selectableItemBackground"
+            android:id="@+id/ll_collect"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_cookie"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_collect"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center"
+                android:text="@string/collect"
+                android:textColor="?attr/colorTertiary" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="?attr/selectableItemBackground"
+            android:id="@+id/ll_setting"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/ll_collect"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_setting"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center"
+                android:text="@string/setting"
+                android:textColor="?attr/colorTertiary" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_author"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="16dp"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center"
+            android:onClick="checkAuthor"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/ic_github" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:text="@string/author" />
+        </LinearLayout>
+
+    </RelativeLayout>
+</layout>

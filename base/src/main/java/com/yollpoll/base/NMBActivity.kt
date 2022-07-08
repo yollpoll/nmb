@@ -37,7 +37,7 @@ abstract class NMBActivity<BIND : ViewDataBinding, VM : FastViewModel> : FastAct
     fun initTitle(
         toolbar: Toolbar,
         showBackBtn: Boolean = false,
-        onBackClick: ((View) -> Unit)? = null
+        onBackClick: ((View) -> Unit)? = { this.finish() }
     ) {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(showBackBtn)

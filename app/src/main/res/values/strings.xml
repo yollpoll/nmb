@@ -11,4 +11,8 @@
     <string name="check_img">图片浏览</string>
     <string name="down_load">下载</string>
     <string name="share">分享</string>
+    <string name="cookie">饼干</string>
+    <string name="collect">订阅</string>
+    <string name="setting">设置</string>
+    <string name="add_cookie">添加</string>
 </resources>

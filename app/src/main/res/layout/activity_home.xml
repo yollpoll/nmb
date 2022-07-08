@@ -72,6 +72,7 @@
                 android:id="@+id/layout_drawer"
                 layout="@layout/include_drawer"
                 android:layout_width="200dp"
+                bind:view="@{view}"
                 android:layout_height="match_parent"
                 android:layout_gravity="left" />
 
@@ -91,7 +92,7 @@
             android:layout_gravity="bottom|right"
             android:layout_margin="16dp"
             android:id="@+id/fab_action"
-            android:src="@mipmap/ic_action"
+            android:src="@android:drawable/ic_menu_edit"
             android:onClick="createArticle"
             android:backgroundTint="?attr/colorTertiaryContainer"
             />
