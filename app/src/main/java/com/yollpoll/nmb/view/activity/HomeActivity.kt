@@ -57,6 +57,7 @@ import com.yollpoll.nmb.net.realCover
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_HOME
 import com.yollpoll.nmb.view.widgets.getCommonGlideOptions
+import com.yollpoll.nmb.view.widgets.init
 import com.yollpoll.nmb.view.widgets.initLeftDrawerLayout
 import com.yollpoll.nmb.view.widgets.initRightDrawerLayout
 import dagger.hilt.android.AndroidEntryPoint
@@ -107,12 +108,22 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     private val threadManager = LinearLayoutManager(this)
     private val adapterThread = ThreadAdapter(onUrlClick = {
         vm.onThreadUrlClick(it)
+    }, onImageClick = { item, pos ->
+        lifecycleScope.launch {
+            ImageActivity.gotoImageActivity(
+                context,
+                0,
+                listOf(item.id),
+                listOf(item.img + item.ext)
+            )
+        }
     }) { item ->
         lifecycleScope.launch {
             ThreadDetailActivity.gotoThreadDetailActivity(item.id, context)
         }
     }
 
+    override fun getMenuLayout() = R.menu.menu_home
     override fun getLayoutId() = R.layout.activity_home
     override fun initViewModel() = vm
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -182,12 +193,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         mDataBinding.rvForum.adapter = adapterForum
         mDataBinding.rvForum.layoutManager = forumManager
         //refresh
-        mDataBinding.refresh.setColorSchemeColors(
-            getAttrColor(R.attr.colorPrimary),
-            getAttrColor(R.attr.colorSecondary),
-            getAttrColor(R.attr.colorTertiary),
-        )
-        mDataBinding.refresh.setOnRefreshListener {
+        mDataBinding.refresh.init(this) {
             refreshThread()
         }
     }
@@ -290,10 +296,6 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_home, menu)
-        return true
-    }
 }
 
 //viewModel

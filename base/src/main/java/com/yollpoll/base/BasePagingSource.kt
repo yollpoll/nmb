@@ -11,8 +11,8 @@ import kotlin.math.log
 /**
  * Created by spq on 2021/5/11
  */
-const val START_INDEX = 0
-const val PAGE_SIZE = 20
+const val START_INDEX = 1
+const val PAGE_SIZE = 19
 
 fun <Key : Any, Value : Any> getNMBCommonPager(
     pageSize: Int = PAGE_SIZE,
@@ -23,7 +23,13 @@ fun <Key : Any, Value : Any> getNMBCommonPager(
     }
 }
 
-abstract class NMBBasePagingSource<T : Any>(private val startIndex: Int = START_INDEX) :
+/**
+ * @param selectedPage 用来跳页使用，不传默认返回当前page
+ */
+abstract class NMBBasePagingSource<T : Any>(
+    private val startIndex: Int = START_INDEX,
+    private val selectedPage: ((PagingState<Int, T>) -> Int)? = null
+) :
     PagingSource<Int, T>() {
     override fun getRefreshKey(state: PagingState<Int, T>): Int? {
         //在初始化加载或者加载失效以后加载这个，给下个page提供key
@@ -34,10 +40,18 @@ abstract class NMBBasePagingSource<T : Any>(private val startIndex: Int = START_
         //  * nextKey == null -> anchorPage is the last page.
         //  * both prevKey and nextKey null -> anchorPage is the initial page, so
         //    just return null.
-        return state.anchorPosition?.let { anchorPosition ->
-            val anchorPage = state.closestPageToPosition(anchorPosition)
-            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+        return selectedPage?.let {
+            return it.invoke(state)
+        } ?: let {
+            return state.anchorPosition?.let { anchorPosition ->
+                val anchorPage = state.closestPageToPosition(anchorPosition)
+                anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+            }
         }
+//        return state.anchorPosition?.let { anchorPosition ->
+//            val anchorPage = state.closestPageToPosition(anchorPosition)
+//            anchorPage?.prevKey?.plus(1) ?: anchorPage?.nextKey?.minus(1)
+//        }
     }
 
     //返回一个LoadResult

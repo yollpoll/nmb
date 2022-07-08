@@ -26,11 +26,12 @@ import org.xml.sax.XMLReader
 class ThreadAdapter(
     home: Boolean = true,
     onUrlClick: ((String) -> Unit)? = null,
+    onImageClick:((ArticleItem,Int)->Unit)?=null,
     onItemClick: (((ArticleItem) -> Unit))? = null
 ) :
     NmbPagingDataAdapter<ArticleItem>(
         R.layout.item_thread,
-        BR.bean, onBindDataBinding = { item, _, binding ->
+        BR.bean, onBindDataBinding = { item, pos, binding ->
             if (null != item) {
                 binding as ItemThreadBinding
                 val context = binding.root.context
@@ -91,10 +92,15 @@ class ThreadAdapter(
                 ) { url ->
                     onUrlClick?.invoke(url)
                 }
-                if(!home){
-                    binding.tvReplyCount.visibility=View.GONE
-                }else{
-                    binding.tvReplyCount.visibility=View.VISIBLE
+                if (!home) {
+                    binding.tvReplyCount.visibility = View.GONE
+                    binding.tvContent.maxLines = Int.MAX_VALUE
+                } else {
+                    binding.tvReplyCount.visibility = View.VISIBLE
+                    binding.tvContent.maxLines = 10
+                }
+                binding.ivContent.setOnClickListener{
+                    onImageClick?.invoke(item,pos)
                 }
             }
         })

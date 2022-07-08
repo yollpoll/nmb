@@ -7,6 +7,10 @@
         <variable
             name="title"
             type="String" />
+
+        <variable
+            name="subTitle"
+            type="String" />
     </data>
 
     <androidx.appcompat.widget.Toolbar
@@ -15,6 +19,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/height_toolbar"
         android:elevation="@dimen/elevation_toolbar"
-        app:title="@{title}"
-        />
+        app:subtitle='@{subTitle,default=""}'
+        app:title="@{title}" />
 </layout>

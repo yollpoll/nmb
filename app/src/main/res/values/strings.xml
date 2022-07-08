@@ -3,5 +3,12 @@
     <string name="open">开启</string>
     <string name="close">关闭</string>
     <string name="reply">回复: </string>
+    <string name="reply_article">回复</string>
     <string name="author">作者</string>
+    <string name="go_page">翻页</string>
+    <string name="sure">确定</string>
+    <string name="cancel">取消</string>
+    <string name="check_img">图片浏览</string>
+    <string name="down_load">下载</string>
+    <string name="share">分享</string>
 </resources>

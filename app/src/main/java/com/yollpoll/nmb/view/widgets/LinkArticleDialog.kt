@@ -84,6 +84,7 @@ class LinkArticleDialog(
             onUrlClick?.invoke(url)
         }
         binding.tvReplyCount.visibility = View.GONE
+        binding.lineBottom.visibility = View.GONE
     }
 
     override fun onDialogDismiss(dialog: Dialog?) {

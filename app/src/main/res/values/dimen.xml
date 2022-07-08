@@ -3,4 +3,5 @@
     <dimen name="elevation_toolbar">2dp</dimen>
     <dimen name="line">0.5dp</dimen>
     <dimen name="commonRadius">20dp</dimen>
+    <dimen name="heightBtn">40dp</dimen>
 </resources>

@@ -62,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_content"
                 android:layout_marginLeft="10dp"
+                android:ellipsize="end"
                 android:maxLines="10"
                 />
         </LinearLayout>
@@ -96,6 +97,7 @@
             android:layout_height="@dimen/line"
             android:background="?attr/colorOutline"
             android:layout_marginLeft="10dp"
+            android:id="@+id/line_bottom"
             android:layout_marginRight="10dp"
             />
     </LinearLayout>

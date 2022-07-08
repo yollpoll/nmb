@@ -75,10 +75,13 @@ public abstract class NMBDialog<BIND extends ViewBinding, T extends Dialog> impl
     public abstract T createDialog(Context context);
 
     //初始化
-    public abstract void onInit(T dialog, BIND binding);
+    public void onInit(T dialog, BIND binding) {
+    }
 
-    public abstract void onDialogDismiss(T dialog);
+    public void onDialogDismiss(T dialog) {
+    }
 
-    public abstract void onDialogShow(T dialog);
+    public void onDialogShow(T dialog) {
+    }
 
 }

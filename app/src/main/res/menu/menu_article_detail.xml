@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/action_page"
+        android:title="@string/go_page"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/action_reply"
+        android:title="@string/reply_article"
+        app:showAsAction="always" />
+</menu>

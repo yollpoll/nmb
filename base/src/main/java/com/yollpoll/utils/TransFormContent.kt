@@ -22,8 +22,8 @@ object TransFormContent {
         tv: TextView,
         onClickListener: ((String) -> Unit)? = null
     ) {
+        //herf
         val spannableString = SpannableString(content)
-        //广告
         val urlSpans = spannableString.getSpans(0, content.length, URLSpan::class.java)
         urlSpans.forEach {
             spannableString.setSpan(
@@ -31,7 +31,7 @@ object TransFormContent {
                 spannableString.getSpanEnd(it), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
             )
         }
-
+        //串引用
         val pattern = Pattern.compile(">>No.\\d*")
         val matcher = pattern.matcher(content)
         while (matcher.find()) {
@@ -42,6 +42,23 @@ object TransFormContent {
                 }
             }, matcher.start(), matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
+
+//        val urlRegex =
+//            "www*"
+//        val patternUrl = Pattern.compile(urlRegex)
+//        val matcherUrl = patternUrl.matcher(content)
+//        while (matcherUrl.find()) {
+//            "find url ${
+//                spannableString.toString()
+//            }".logE()
+//            val group = matcherUrl.group()
+//            spannableString.setSpan(object : ClickableSpan() {
+//                override fun onClick(widget: View) {
+//                    onClickListener?.invoke(group)
+//                }
+//            }, matcherUrl.start(), matcherUrl.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+//        }
+
         tv.text = spannableString
         tv.setLinkTextColor(Color.parseColor("#7cb342"))
         //使用自定义的MovementMethod,解决子view不能把事件传递给父view的问题

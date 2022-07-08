@@ -1,6 +1,7 @@
 package com.yollpoll.base
 
 import android.util.TypedValue
+import android.view.Menu
 import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
@@ -45,4 +46,17 @@ abstract class NMBActivity<BIND : ViewDataBinding, VM : FastViewModel> : FastAct
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        val menuId = getMenuLayout()
+        return if (null != menuId) {
+            menuInflater.inflate(menuId, menu)
+            true
+        } else {
+            super.onCreateOptionsMenu(menu)
+        }
+    }
+
+    open fun getMenuLayout(): Int? {
+        return null
+    }
 }

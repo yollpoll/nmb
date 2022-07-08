@@ -3,6 +3,8 @@
     package="com.yollpoll.nmb">
 
     <uses-permission android:name="android.permission.INTERNET" />
+<!--    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />-->
+<!--    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />-->
 
     <application
         android:name=".App"
@@ -26,6 +28,7 @@
         <activity
             android:name=".view.activity.ThreadDetailActivity"
             android:parentActivityName=".view.activity.HomeActivity" />
+        <activity android:name=".view.activity.ImageActivity" />
     </application>
 
 </manifest>
