@@ -1,10 +1,7 @@
 package com.yollpoll.nmb.model.repository
 
 import android.util.Log
-import com.yollpoll.base.NMBBasePagingSource
-import com.yollpoll.base.TAG
-import com.yollpoll.base.logE
-import com.yollpoll.base.logI
+import com.yollpoll.base.*
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.extensions.toListJson
 import com.yollpoll.framework.net.http.RetrofitFactory
@@ -35,7 +32,9 @@ class HomeRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
      * 获取串列表的pagingSource
      */
     fun getThreadsPagingSource(id: String): NMBBasePagingSource<ArticleItem> {
-        return object : NMBBasePagingSource<ArticleItem>() {
+        return object : NMBBasePagingSource<ArticleItem>(selectedPage = {
+            START_INDEX//返回第一页
+        }) {
             override suspend fun load(pos: Int): List<ArticleItem> {
                 return getThreadList(id, pos)
             }
@@ -46,7 +45,10 @@ class HomeRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
      * 获取时间线
      */
     fun getTimeLinePagingSource(id: Int): NMBBasePagingSource<ArticleItem> {
-        return object : NMBBasePagingSource<ArticleItem>() {
+        return object : NMBBasePagingSource<ArticleItem>(selectedPage = {
+            //加载失败的时候刷新返回第一页
+            START_INDEX//返回第一页
+        }) {
             override suspend fun load(pos: Int): List<ArticleItem> {
                 return getTimeLine(pos, id)
             }

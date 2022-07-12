@@ -149,7 +149,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
                 }
             }
             threadManager.smoothScrollToPosition(mDataBinding.rvContent, RecyclerView.State(), 0)
-            true
+            false
         }
         //初始化操作按钮
         mDataBinding.fabAction.onLeft = {
@@ -160,7 +160,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
                     mDataBinding.drawer.openDrawer(Gravity.RIGHT)
                 }
             }
-            true
+            false
         }
         mDataBinding.fabAction.onRight = {
             mDataBinding.drawer.isDrawerOpen(Gravity.RIGHT).let {
@@ -170,7 +170,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
                     mDataBinding.drawer.openDrawer(Gravity.LEFT)
                 }
             }
-            true
+            false
         }
         mDataBinding.fabAction.onBottom = {
             mDataBinding.drawer.isDrawerOpen(Gravity.RIGHT).let {
@@ -184,6 +184,13 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
                 }
             }
             refreshThread()
+            false
+        }
+        mDataBinding.fabAction.onClick = {
+            "onCLick".logI()
+            lifecycleScope.launch {
+                gotoNewThreadActivity(context)
+            }
             true
         }
         mDataBinding.rvContent.adapter = adapterThread
@@ -209,9 +216,23 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         vm.getAnnouncement()
         adapterThread.addLoadStateListener {
             when (it.refresh) {
-                is LoadState.Loading -> mDataBinding.refresh.isRefreshing = true
-                is LoadState.NotLoading -> mDataBinding.refresh.isRefreshing = false
+                is LoadState.Loading -> {
+                    "refresh Loading".logI()
+                    mDataBinding.refresh.isRefreshing = true
+                }
+                is LoadState.NotLoading -> {
+                    "refresh NotLoading".logI()
+                    if (mDataBinding.refresh.isRefreshing) {
+                        mDataBinding.refresh.isRefreshing = false
+                        threadManager.smoothScrollToPosition(
+                            mDataBinding.rvContent,
+                            RecyclerView.State(),
+                            0
+                        )
+                    }
+                }
                 is LoadState.Error -> {
+                    "refresh Error".logI()
                     mDataBinding.refresh.isRefreshing = false
                     "刷新失败".shortToast()
                 }
@@ -280,6 +301,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
             ThreadDetailActivity.gotoThreadDetailActivity(id, context)
         }
     }
+
 
     //刷新串
     private fun refreshThread() {

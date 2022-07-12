@@ -17,4 +17,8 @@
     <string name="add_cookie">添加</string>
     <string name="using">使用中</string>
     <string name="unused">未使用</string>
+    <string name="title">标题</string>
+    <string name="content">内容</string>
+    <string name="camera">相机</string>
+    <string name="photo">相册</string>
 </resources>

@@ -13,11 +13,12 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.yollpoll.arch.log.LogUtils
 import com.yollpoll.base.logD
 import com.yollpoll.base.logE
+import com.yollpoll.base.logI
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.nmb.R
 import kotlin.math.abs
 
-class MyFAB : FloatingActionButton , CoordinatorLayout.AttachedBehavior {
+class MyFAB : FloatingActionButton, CoordinatorLayout.AttachedBehavior {
     constructor(context: Context) : super(context)
     constructor(context: Context, attributeSet: AttributeSet) : super(context, attributeSet)
     constructor(context: Context, attributeSet: AttributeSet, defStyleAttr: Int) : super(
@@ -35,6 +36,12 @@ class MyFAB : FloatingActionButton , CoordinatorLayout.AttachedBehavior {
 
     private val gestureDetector =
         GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
+            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+                "onClick".logI()
+                onClick?.invoke()
+                return true
+            }
+
             override fun onDown(e: MotionEvent?): Boolean {
                 return true
             }

@@ -37,7 +37,7 @@ dependencies{
     implementation myDependencies.glide
     kapt myDependencies.glideCompiler
 
-//    implementation 'com.permissionx.guolindev:permissionx:1.4.0'
+    implementation 'com.guolindev.permissionx:permissionx:1.5.0'
     //google mlkit库
     implementation 'com.google.mlkit:barcode-scanning:16.1.1'
     def camerax_version = "1.0.0-rc03"

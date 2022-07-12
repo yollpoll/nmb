@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="view"
+            type="com.yollpoll.nmb.view.activity.NewThreadActivity" />
+
+        <variable
+            name="viewModel"
+            type="com.yollpoll.nmb.view.activity.NewThreadVm" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSurface">
+
+        <include
+            android:id="@+id/layout_title"
+            layout="@layout/include_title"
+            bind:title="@{viewModel.title}" />
+
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="@dimen/height_toolbar"
+            android:layout_marginBottom="60dp"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/layout_title">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/title"
+                    android:text="@={viewModel.threadTitle}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_above="@+id/iv_selected"
+                android:layout_below="@+id/input_title"
+                android:layout_margin="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="left|top"
+                    android:hint="@string/content"
+                    android:text="@={viewModel.threadContent}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ImageView
+                android:id="@+id/iv_selected"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginBottom="10dp"
+                android:scaleType="fitXY" />
+        </RelativeLayout>
+
+
+        <!--                <EditText-->
+        <!--                    android:id="@+id/ed_title"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="40dp"-->
+        <!--                    android:layout_marginLeft="10dp"-->
+        <!--                    android:layout_marginTop="10dp"-->
+        <!--                    android:layout_marginRight="10dp"-->
+        <!--                    android:hint="标题"-->
+        <!--                    android:padding="5dp"-->
+        <!--                    android:textColor="@color/black" />-->
+
+        <!--                <EditText-->
+        <!--                    android:id="@+id/ed_content"-->
+        <!--                    android:layout_width="match_parent"-->
+        <!--                    android:layout_height="match_parent"-->
+        <!--                    android:layout_below="@+id/ed_title"-->
+        <!--                    android:layout_marginStart="10dp"-->
+        <!--                    android:layout_marginTop="10dp"-->
+        <!--                    android:layout_marginEnd="10dp"-->
+        <!--                    android:layout_marginBottom="10dp"-->
+        <!--                    android:gravity="left|top"-->
+        <!--                    android:hint="内容"-->
+        <!--                    android:inputType="textMultiLine"-->
+        <!--                    android:maxLines="10"-->
+        <!--                    android:minLines="5"-->
+        <!--                    android:padding="5dp"-->
+        <!--                    android:scrollbars="vertical"-->
+        <!--                    android:textColor="@color/black" />-->
+
+
+        <Button
+            android:id="@+id/btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="10dp"
+            android:text="Submit"
+            android:textSize="20sp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <RelativeLayout
+            android:id="@+id/rl_send"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:background="?attr/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+
+            <ImageView
+                android:id="@+id/img_emoji"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:foregroundTintMode="add"
+                android:onClick="@{()->view.chooseEmoji()}"
+                android:padding="5dp"
+                android:src="@mipmap/ic_emoji" />
+
+            <ImageView
+                android:id="@+id/img_pic"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/img_emoji"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:onClick="@{()->view.choosePic()}"
+                android:padding="5dp"
+                android:src="@mipmap/ic_pic" />
+
+            <ImageView
+                android:id="@+id/img_draw"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:layout_toRightOf="@+id/img_pic"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:padding="5dp"
+                android:src="@mipmap/ic_drawer" />
+
+            <ImageView
+                android:id="@+id/img_send"
+                android:layout_width="40dp"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:onClick="@{()->viewModel.submit()}"
+                android:padding="5dp"
+                android:src="@mipmap/ic_send" />
+        </RelativeLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

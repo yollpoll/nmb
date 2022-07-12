@@ -4,13 +4,17 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/shape_drawer.xml" value="0.25" />
+        <entry key="app/src/main/res/drawable/shape_line.xml" value="0.228" />
         <entry key="app/src/main/res/drawable/shape_right_drawer.xml" value="0.247" />
         <entry key="app/src/main/res/layout/activity_cookie.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.6148814390842191" />
         <entry key="app/src/main/res/layout/activity_image.xml" value="0.290625" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18703703703703703" />
+        <entry key="app/src/main/res/layout/activity_newthread.xml" value="0.33125" />
         <entry key="app/src/main/res/layout/activity_qr.xml" value="0.28541666666666665" />
         <entry key="app/src/main/res/layout/activity_thread_detail.xml" value="0.3328125" />
+        <entry key="app/src/main/res/layout/alert_choose_photo.xml" value="0.31197916666666664" />
+        <entry key="app/src/main/res/layout/dialog_choose_emoji.xml" value="0.3765625" />
         <entry key="app/src/main/res/layout/dialog_select_page.xml" value="0.375" />
         <entry key="app/src/main/res/layout/fragment_image.xml" value="0.290625" />
         <entry key="app/src/main/res/layout/include_drawer.xml" value="0.3729166666666667" />
@@ -19,13 +23,16 @@
         <entry key="app/src/main/res/layout/include_title.xml" value="0.328125" />
         <entry key="app/src/main/res/layout/item_cookie.xml" value="0.34791666666666665" />
         <entry key="app/src/main/res/layout/item_forum.xml" value="0.38697916666666665" />
+        <entry key="app/src/main/res/layout/item_pic_emoji.xml" value="0.3765625" />
         <entry key="app/src/main/res/layout/item_thread.xml" value="0.371875" />
+        <entry key="app/src/main/res/layout/item_word_emoji.xml" value="0.278125" />
         <entry key="app/src/main/res/layout/load_state_item.xml" value="0.35104166666666664" />
         <entry key="app/src/main/res/layout/tese.xml" value="0.40260416666666665" />
         <entry key="app/src/main/res/menu/main.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/menu/menu_article_detail.xml" value="0.375" />
         <entry key="app/src/main/res/menu/menu_home.xml" value="0.371875" />
         <entry key="app/src/main/res/menu/menu_img.xml" value="0.33177083333333335" />
+        <entry key="app/src/main/res/xml/provider_paths.xml" value="0.31979166666666664" />
         <entry key="base/src/main/res/layout/dialog_common.xml" value="0.3875" />
         <entry key="business/src/main/res/layout/activity_home.xml" value="0.4036458333333333" />
         <entry key="qrlib/src/main/res/layout/activity_qr_code.xml" value="0.34479166666666666" />

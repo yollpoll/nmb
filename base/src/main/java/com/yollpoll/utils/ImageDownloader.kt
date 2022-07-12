@@ -33,7 +33,7 @@ class ImageDownloader {
             .get()
         if (bitmap != null) {
             //保存图片，文件名跟随图片名
-            fileName = saveImageToSd(bitmap, imageName, path)
+            fileName = saveBitmapToSd(bitmap, imageName, path)
             file = File(fileName)
         }
         return DownloadImgRes(bitmap, file)

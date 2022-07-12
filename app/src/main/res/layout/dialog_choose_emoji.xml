@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="3dp">
+
+    <RelativeLayout
+        android:id="@+id/rl_choose_emoji"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.tabs.TabLayout
+            android:id="@+id/tab_emoji"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            app:tabIndicatorColor="?attr/colorPrimary"
+            app:tabSelectedTextColor="?attr/colorPrimary"
+            app:tabTextColor="?attr/colorSecondary" />
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/vp_emoji"
+            android:layout_width="match_parent"
+            android:layout_height="250dp"
+            android:layout_below="@+id/tab_emoji" />
+    </RelativeLayout>
+</androidx.cardview.widget.CardView>
