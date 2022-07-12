@@ -15,4 +15,6 @@
     <string name="collect">订阅</string>
     <string name="setting">设置</string>
     <string name="add_cookie">添加</string>
+    <string name="using">使用中</string>
+    <string name="unused">未使用</string>
 </resources>

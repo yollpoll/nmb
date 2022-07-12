@@ -72,7 +72,6 @@ import kotlin.math.max
 
 @Route(url = ROUTE_HOME)
 @AndroidEntryPoint
-@PermissionAuto
 class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     private val vm: HomeVm by viewModels()
     private val actionBarDrawerToggle by lazy {

@@ -14,6 +14,8 @@ import androidx.camera.core.ImageCapture
 import androidx.camera.view.LifecycleCameraController
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.base.NMBActivity
+import com.yollpoll.base.logE
+import com.yollpoll.base.logI
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.qrlib.databinding.ActivityQrCodeBinding
@@ -40,7 +42,6 @@ class QRCodeActivity : NMBActivity<ActivityQrCodeBinding, QrVm>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        "进入qr".shortToast()
         initController()
     }
 
@@ -90,7 +91,11 @@ class QRCodeActivity : NMBActivity<ActivityQrCodeBinding, QrVm>() {
     }
 
     private fun intentToResult(result: String) {
-        result.shortToast()
+        result.replace("\"", "\\\"")
+//        "cookie:? {\"cookie\":\"%07R5%89%FB%CE%9F%CC%DF%E4%2A%0B6%816%9D%B1%0E%CA%BBG%60%95%9A\",\"name\":\"ODFaQ9k\"}".logE()
+        intent.putExtra("cookie", result)
+        setResult(RESULT_OK, intent)
+        this.finish()
     }
 
     private var scaleX = 0f

@@ -19,7 +19,7 @@ ext {
             pagingCompose       : "1.0.0-alpha14",
             lifeKtxVersion      : "2.4.0",//官方kotlin扩展库版本
             dataStore           : "1.0.0",
-            moshi               : "1.11.0",
+            moshi               : "1.13.0",
             moshiConvert        : "2.7.1",
             retrofit            : "2.9.0",
             gson                : "2.8.6",
@@ -33,10 +33,11 @@ ext {
             coroutines          : "1.5.2",
             work_manager        : "2.7.1",
             ativityKtx          : "1.4.0",
-            moshiKapt           : "1.12.0",
+            moshiKapt           : "1.13.0",
             swipeRefresh        : "1.1.0",
             material            : "1.5.0",
-            okhttp              : "3.14.9"
+            okhttp              : "3.14.9",
+            room                : "2.3.0"
     ]
     //自建框架依赖
     myArch = [
@@ -118,6 +119,10 @@ ext {
 
             swipeRefresh            : "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0",
             material                : "com.google.android.material:material:material",
-            okhttp                  : "com.squareup.okhttp3:okhttp:$dependVersion.okhttp"
+            okhttp                  : "com.squareup.okhttp3:okhttp:$dependVersion.okhttp",
+
+            roomRuntime             : "androidx.room:room-runtime:$dependVersion.room",
+            roomCompiler            : "androidx.room:room-compiler:$dependVersion.room",
+            roomKtx                 : "androidx.room:room-ktx:$dependVersion.room"
     ]
 }

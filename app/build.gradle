@@ -19,6 +19,12 @@ android {
         versionName androidConfig.versionName
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+//        javaCompileOptions {
+//            annotationProcessorOptions {
+//                arguments = ["room.schemaLocation":
+//                                     "$projectDir/schemas".toString()]
+//            }
+//        }
     }
     def stringArray = "{" +
             "\"com.yollpoll.nmb\"," +

@@ -45,6 +45,7 @@ val commonRetrofitFactory by lazy {
         override fun okHttpClientBuilder(builder: OkHttpClient.Builder) {
             builder.addInterceptor(CoverImgInterceptor())
             builder.addInterceptor(NMBInterceptor())
+            builder.cookieJar(LocalCookieJar())
         }
 
 
