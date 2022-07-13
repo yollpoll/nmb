@@ -51,7 +51,7 @@ class LinkArticleDialog(
         }
         //回复数量
         item.ReplyCount.apply {
-            if (this.isNotEmpty()) {
+            if (this?.isNotEmpty() == true) {
                 item.ReplyCount = "0"
             }
         }

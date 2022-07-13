@@ -189,7 +189,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         mDataBinding.fabAction.onClick = {
             "onCLick".logI()
             lifecycleScope.launch {
-                gotoNewThreadActivity(context)
+                gotoNewThreadActivity(context,vm.curForumDetail.id)
             }
             true
         }
@@ -340,7 +340,9 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
     private var curForumId = MutableLiveData(-1)
 
     //当前板块
-    private var curForumDetail = MutableLiveData<ForumDetail>()
+    var curForumDetail: ForumDetail =
+        ForumDetail(null, null, "-1", null, null, "时间线", null, null, null, null)
+
 
     //标题
     @Bindable
@@ -422,7 +424,7 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
         viewModelScope.launch {
             title = forum.name ?: "匿名版"
             notifyPropertyChanged(BR.title)
-            curForumDetail.value = forum
+            curForumDetail = forum
             curForumId.value = forum.id.toInt()
             when (forum.id) {
                 "-1" -> {

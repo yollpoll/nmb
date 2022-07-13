@@ -15,7 +15,7 @@ data class ArticleItem(
     val img: String,
     val name: String,
     val now: String,
-    var ReplyCount: String,
+    var ReplyCount: String?,
     val Replies: List<ArticleItem>?,
     val title: String,
     val user_hash: String,

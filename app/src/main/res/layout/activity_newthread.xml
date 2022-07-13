@@ -47,15 +47,68 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <ImageView
+                android:id="@+id/img_show_more_title"
+                android:layout_width="wrap_content"
+                android:layout_height="20dp"
+                android:layout_below="@+id/input_title"
+                android:layout_centerHorizontal="true"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:onClick="@{()->view.showOrHideTitle()}"
+                android:src="@mipmap/icon_show" />
+
+            <LinearLayout
+                android:id="@+id/ll_more_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/img_show_more_title"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/input_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/name"
+                        android:text="@={viewModel.name}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/input_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/input_name"
+                    android:layout_margin="10dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="textEmailAddress"
+                        android:hint="@string/email"
+                        android:text="@={viewModel.email}" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+
+            </LinearLayout>
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_above="@+id/iv_selected"
-                android:layout_below="@+id/input_title"
+                android:layout_above="@+id/rl_img"
+                android:layout_below="@+id/ll_more_title"
                 android:layout_margin="10dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/edt_content"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:gravity="left|top"
@@ -64,14 +117,41 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <ImageView
-                android:id="@+id/iv_selected"
-                android:layout_width="100dp"
+            <RelativeLayout
+                android:id="@+id/rl_img"
+                android:layout_width="wrap_content"
                 android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 android:layout_marginLeft="10dp"
-                android:layout_marginBottom="10dp"
-                android:scaleType="fitXY" />
+                android:layout_marginBottom="10dp">
+
+                <ImageView
+                    android:id="@+id/iv_selected"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:scaleType="centerCrop" />
+
+                <CheckBox
+                    android:id="@+id/check_water"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/btn_del"
+                    android:layout_alignLeft="@+id/btn_del"
+                    android:layout_marginLeft="5dp"
+                    android:checked="@={viewModel.waterMask}"
+                    android:text="@string/water_mask" />
+
+                <Button
+                    android:id="@+id/btn_del"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="5dp"
+                    android:layout_toRightOf="@+id/iv_selected"
+                    android:onClick="@{()->viewModel.delImg()}"
+                    android:text="@string/delete" />
+            </RelativeLayout>
+
         </RelativeLayout>
 
 

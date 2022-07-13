@@ -1,6 +1,7 @@
 package com.yollpoll.nmb.net
 
 import android.util.Log
+import com.yollpoll.base.logI
 import okhttp3.Interceptor
 import okhttp3.Response
 
@@ -10,6 +11,7 @@ class CoverImgInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         try {
             val orgUrl = chain.request().url().toString()
+            "url:${orgUrl}".logI()
             val response = chain.proceed(chain.request())
             val realUrl = response.request().url().toString()
             if (orgUrl == COVER) {

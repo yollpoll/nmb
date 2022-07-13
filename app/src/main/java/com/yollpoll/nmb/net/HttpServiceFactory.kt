@@ -18,6 +18,7 @@ val launcherRetrofitFactory by lazy {
 
         override fun okHttpClientBuilder(builder: OkHttpClient.Builder) {
             builder.addInterceptor(CoverImgInterceptor())
+
         }
 
 
@@ -46,6 +47,7 @@ val commonRetrofitFactory by lazy {
             builder.addInterceptor(CoverImgInterceptor())
             builder.addInterceptor(NMBInterceptor())
             builder.cookieJar(LocalCookieJar())
+
         }
 
 

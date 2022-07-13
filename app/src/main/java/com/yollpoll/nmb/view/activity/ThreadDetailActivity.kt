@@ -260,7 +260,12 @@ class ThreadDetailVM @Inject constructor(
         notifyPropertyChanged(BR.title)
         head.master = "1"
         cache[head.id] = head
-        allPage = (head.ReplyCount.toInt() / PAGE_SIZE) + 1
+        allPage = if(head.ReplyCount==null){
+            1
+        }else{
+            (head.ReplyCount!!.toInt() / PAGE_SIZE) + 1
+        }
+
     }
 
     //点击了文本中的连接

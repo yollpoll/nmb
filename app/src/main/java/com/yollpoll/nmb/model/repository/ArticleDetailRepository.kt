@@ -18,7 +18,10 @@ import com.yollpoll.framework.paging.START_INDEX
 import com.yollpoll.nmb.di.CommonRetrofitFactory
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.net.HttpService
+import com.yollpoll.nmb.net.getRequestBody
 import kotlinx.coroutines.flow.flow
+import okhttp3.ResponseBody
+import java.io.File
 import javax.inject.Inject
 
 const val PAGE_SIZE = 20
@@ -29,6 +32,48 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
 
     suspend fun getArticleDetail(id: String, pos: Int) = service.getArticleDetail(id, pos)
 
+    suspend fun newThread(
+        fid: String,//板块id
+        name: String,//板块名字
+        title: String,
+        email: String,
+        content: String,
+        water: String,
+        file: File?
+    ) {
+        "newThread".logI()
+        return service.newThread(
+            getRequestBody(fid),
+            getRequestBody(name),
+            getRequestBody(title),
+            getRequestBody(email),
+            getRequestBody(content),
+            getRequestBody(water),
+            getRequestBody(file)
+        )
+    }
+
+    //回复
+    suspend fun reply(
+        reply: String,
+        name:String,
+        title: String,
+        email: String,
+        content: String,
+        water: String,
+        file: File?
+    ) {
+        "newThread".logI()
+        return service.replyThread(
+            getRequestBody(reply),
+            getRequestBody(content),
+            getRequestBody(name),
+            getRequestBody(title),
+            getRequestBody(email),
+            getRequestBody(water),
+            getRequestBody(file)
+        )
+    }
 //    //获取回复
 //    fun getReplyPagerSource(id: String): NMBBasePagingSource<ArticleItem> {
 //        return object : NMBBasePagingSource<ArticleItem>() {

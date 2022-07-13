@@ -21,4 +21,8 @@
     <string name="content">内容</string>
     <string name="camera">相机</string>
     <string name="photo">相册</string>
+    <string name="water_mask">水印</string>
+    <string name="delete">删除</string>
+    <string name="name">名称</string>
+    <string name="email">邮件</string>
 </resources>

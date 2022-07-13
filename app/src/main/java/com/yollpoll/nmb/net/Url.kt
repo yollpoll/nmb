@@ -21,10 +21,9 @@ const val FORUM_LIST = "Api/getForumList"
 //获取串
 const val GET_ARTICLE = "Api/showf/"
 const val GET_CHILD_ARTICLE = "Api/thread"
-const val GET_COOKIE = "/Api/getCookie"
 
-const val NEW_THREAD: String = "/Home/Forum/doPostThread.html"
-const val REPLY_THREAD: String = "/Home/Forum/doReplyThread.html"
+const val NEW_THREAD: String = "Home/Forum/doPostThread.html"
+const val REPLY_THREAD: String = "Home/Forum/doReplyThread.html"
 
 //查看订阅
 const val COLLECTION: String = "/Api/feed"

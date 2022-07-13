@@ -1,5 +1,6 @@
 package com.yollpoll.nmb.view.activity
 
+import android.animation.ObjectAnimator
 import android.app.Application
 import android.content.Context
 import android.content.Intent
@@ -9,24 +10,25 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.view.animation.AccelerateDecelerateInterpolator
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.view.animation.LayoutAnimationController
 import androidx.activity.viewModels
 import androidx.databinding.Bindable
 import androidx.fragment.app.DialogFragment
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.lifecycleScope
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.Extra
 import com.yollpoll.base.NMBActivity
-import com.yollpoll.base.logE
 import com.yollpoll.base.logI
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.extensions.shortToast
-import com.yollpoll.framework.extensions.startActivityForResult
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.nmb.BR
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.databinding.ActivityNewthreadBinding
+import com.yollpoll.nmb.model.repository.ArticleDetailRepository
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_NEW_THREAD
 import com.yollpoll.nmb.view.widgets.REQ_CAMERA
@@ -34,29 +36,35 @@ import com.yollpoll.nmb.view.widgets.REQ_CROP_PHOTO
 import com.yollpoll.nmb.view.widgets.REQ_PHOTO
 import com.yollpoll.nmb.view.widgets.emoji.ChooseEmojiDialogFragment
 import com.yollpoll.nmb.view.widgets.showChoosePicDialog
-import com.yollpoll.utils.*
+import com.yollpoll.utils.compressBitmap
+import com.yollpoll.utils.getPathByUri
+import com.yollpoll.utils.saveBitmapToSd
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.File
 import javax.inject.Inject
 
 const val ACTION_NEW = "new"
 const val ACTION_REPLAY = "replay"
-suspend fun gotoNewThreadActivity(context: Context) {
+
+suspend fun gotoNewThreadActivity(context: Context, forumId: String) {
     val req = DispatchRequest.RequestBuilder().host("nmb").module("new_thread").params(
         hashMapOf(
-            "action" to ACTION_NEW
+            "action" to ACTION_NEW,
+            "forumId" to forumId,
         )
     ).build()
     DispatchClient.manager?.dispatch(context, req)
 }
 
-suspend fun gotoRelyThreadActivity(context: Context) {
+suspend fun gotoRelyThreadActivity(context: Context, replyTo: String) {
     val req = DispatchRequest.RequestBuilder().host("nmb").module("new_thread").params(
         hashMapOf(
-            "action" to ACTION_REPLAY
+            "action" to ACTION_REPLAY,
+            "replyTo" to replyTo
         )
     ).build()
     DispatchClient.manager?.dispatch(context, req)
@@ -105,13 +113,32 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
     }
 
     @Extra
-    lateinit var action: String
+    var action: String = ""
+
+    @Extra
+    var forumId: String = ""
+
+    @Extra
+    var replyTo: String = ""
     private val vm: NewThreadVm by viewModels()
     override fun getLayoutId() = R.layout.activity_newthread
     override fun initViewModel() = vm
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
+        initData()
+    }
+
+    private fun initData() {
+        vm.action = action
+        when(action){
+            ACTION_NEW->{
+                vm.fid = forumId
+            }
+            ACTION_REPLAY->{
+                vm.replyTo = replyTo
+            }
+        }
     }
 
     private fun initView() {
@@ -121,15 +148,15 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
                 vm.title = "新串"
             }
             ACTION_REPLAY -> {
-                vm.title = "回复"
+                vm.title = "回复: >>NO.$replyTo"
             }
         }
-        vm.selectedImg.observe(this) {
+        vm.currentImgLD.observe(this) {
             it?.let {
-                mDataBinding.ivSelected.visibility = View.VISIBLE
+                mDataBinding.rlImg.visibility = View.VISIBLE
                 mDataBinding.ivSelected.setImageBitmap(it)
             } ?: kotlin.run {
-                mDataBinding.ivSelected.visibility = View.GONE
+                mDataBinding.rlImg.visibility = View.GONE
             }
         }
     }
@@ -159,20 +186,79 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
             this.cameraUri = it
         }
     }
+    //显示更多输入项目
+    fun showOrHideTitle(){
+        if (mDataBinding.llMoreTitle.visibility == View.VISIBLE) {
+            dismissMoreTitle()
+        } else {
+            showMoreTitle()
+        }
+    }
 
+    //更多标题参数
+    private fun showMoreTitle() {
+        mDataBinding.llMoreTitle.visibility = View.VISIBLE
+        val anim = ObjectAnimator.ofFloat(mDataBinding.imgShowMoreTitle, "rotation", 0f, 180f)
+        anim.duration = 400
+        anim.interpolator = AccelerateDecelerateInterpolator()
+        anim.start()
+
+        //layoutAnimation
+        val animation = AnimationUtils.loadAnimation(this, R.anim.new_thread_anim)
+        val layoutAnimationController = LayoutAnimationController(animation)
+        layoutAnimationController.delay = .1f
+        layoutAnimationController.interpolator = AccelerateDecelerateInterpolator()
+        layoutAnimationController.order = LayoutAnimationController.ORDER_REVERSE
+        mDataBinding.llMoreTitle.layoutAnimation = layoutAnimationController
+        mDataBinding.llMoreTitle.startLayoutAnimation()
+//        mDataBinding.edtContent.startAnimation(animation)
+//        mDataBinding.rlImg.startAnimation(animation)
+    }
+
+    private fun dismissMoreTitle() {
+        //动画监听
+        val mAnimationListener: Animation.AnimationListener = object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation) {
+            }
+            override fun onAnimationEnd(animation: Animation) {
+                mDataBinding.llMoreTitle.visibility = View.GONE
+
+            }
+
+            override fun onAnimationRepeat(animation: Animation) {}
+        }
+
+        //img anim
+        val anim = ObjectAnimator.ofFloat(mDataBinding.imgShowMoreTitle, "rotation", 180f, 0f)
+        anim.duration = 400
+        anim.interpolator = AccelerateDecelerateInterpolator()
+        anim.start()
+
+        //layoutAnimation
+        val animation = AnimationUtils.loadAnimation(this, R.anim.new_thread_anim_close)
+        animation.setAnimationListener(mAnimationListener)
+        val layoutAnimationController = LayoutAnimationController(animation)
+        layoutAnimationController.delay = .1f
+        layoutAnimationController.interpolator = AccelerateDecelerateInterpolator()
+        layoutAnimationController.order = LayoutAnimationController.ORDER_NORMAL
+        mDataBinding.llMoreTitle.layoutAnimation = layoutAnimationController
+        mDataBinding.llMoreTitle.startLayoutAnimation()
+
+//        edt anim
+//        mDataBinding.edtContent.startAnimation(animation)
+//        mDataBinding.rlImg.startAnimation(animation)
+    }
 
 }
 
 @HiltViewModel
-class NewThreadVm @Inject constructor(val app: Application) : FastViewModel(app) {
-    //当前显示的图片
-//    var selectPicBitMap: Bitmap? = null
-//        set(value) {
-//            field = value
-//
-//        }
-    private val selectedImgFlow = MutableStateFlow<Bitmap?>(null)
-    val selectedImg = selectedImgFlow.asLiveData()
+class NewThreadVm @Inject constructor(
+    val app: Application,
+    val repository: ArticleDetailRepository
+) : FastViewModel(app) {
+    //当前选择图片
+    private val currentImg = MutableLiveData<Bitmap?>(null)
+    val currentImgLD: LiveData<Bitmap?> = currentImg
 
     @Bindable
     var title: String = ""
@@ -182,7 +268,7 @@ class NewThreadVm @Inject constructor(val app: Application) : FastViewModel(app)
         }
 
     @Bindable
-    var threadTitle: String = "无标题"
+    var threadTitle: String = ""
         set(value) {
             field = value
             notifyPropertyChanged(BR.threadTitle)
@@ -195,10 +281,43 @@ class NewThreadVm @Inject constructor(val app: Application) : FastViewModel(app)
             notifyPropertyChanged(BR.threadContent)
         }
 
+    @Bindable
+    var waterMask: Boolean = true
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.waterMask)
+        }
+
+    @Bindable
+    var name: String = ""
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.name)
+        }
+
+    @Bindable
+    var email: String = ""
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.email)
+        }
+
+    var action: String = ""
+    var fid: String = ""
+    var replyTo: String = ""
+
+    //提交
     fun submit() {
         if (threadContent.isEmpty())
             "文本内容为空".shortToast()
-        "Title is $threadTitle content is $threadContent".logI()
+        when (action) {
+            ACTION_NEW -> {
+                newThread()
+            }
+            ACTION_REPLAY -> {
+                reply()
+            }
+        }
     }
 
     //选择照片
@@ -211,7 +330,67 @@ class NewThreadVm @Inject constructor(val app: Application) : FastViewModel(app)
         }
     }
 
+    //选择图片
     suspend fun selectImg(bitmap: Bitmap?) {
-        selectedImgFlow.emit(bitmap)
+        withContext(Dispatchers.Main) {
+            currentImg.value = bitmap
+        }
+    }
+
+    fun delImg() {
+        viewModelScope.launch(Dispatchers.Main) {
+            currentImg.value = null
+        }
+    }
+
+    //发表新串
+    private fun newThread() {
+        viewModelScope.launch(Dispatchers.IO) {
+            showLoading()
+            val bitmap = currentImg.value
+            val path = if (null != bitmap)
+                saveBitmapToSd(bitmap, "img.jpg", app.filesDir.absolutePath)
+            else null
+            val file = if (null != path) File(path) else null
+            repository.newThread(
+                fid,
+                name,
+                threadTitle,
+                name,
+                threadContent,
+                if (waterMask) "1" else "0",
+                file
+            )
+            finish()
+            hideLoading()
+        }
+    }
+
+    //回复
+    private fun reply() {
+        viewModelScope.launch(Dispatchers.IO) {
+            showLoading()
+            val bitmap = currentImg.value
+            val path = if (null != bitmap)
+                saveBitmapToSd(bitmap, "img.jpg", app.filesDir.absolutePath)
+            else null
+            val file = if (null != path) File(path) else null
+            repository.reply(
+                replyTo,
+                name,
+                threadTitle,
+                email,
+                threadContent,
+                if (waterMask) "1" else "0",
+                file
+            )
+            finish()
+            hideLoading()
+        }
+    }
+
+    //举报
+    fun report() {
+
     }
 }
