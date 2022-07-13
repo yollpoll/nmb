@@ -34,6 +34,7 @@ import com.yollpoll.base.*
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.dispatch.OnBackListener
 import com.yollpoll.framework.dispatch.StartType
+import com.yollpoll.framework.extensions.saveBean
 import com.yollpoll.framework.extensions.saveList
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.fast.FastViewModel
@@ -189,7 +190,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         mDataBinding.fabAction.onClick = {
             "onCLick".logI()
             lifecycleScope.launch {
-                gotoNewThreadActivity(context,vm.curForumDetail.id)
+                gotoNewThreadActivity(context, vm.curForumDetail.id)
             }
             true
         }
@@ -206,9 +207,6 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     }
 
     private fun initDrawer() {
-        mDataBinding.layoutDrawer.llCookie.setOnClickListener {
-
-        }
     }
 
     //数据处理
@@ -365,7 +363,13 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
                     if (pos > 1) {
                         return arrayListOf()
                     }
-                    return repository.getForumList()
+                    val list = repository.getForumList()
+                    val cache = ArrayList(list).flatMap {
+                        it.forums
+                    }
+                    //保存板块列表
+                    saveList(KEY_FORUM_LIST, cache)
+                    return list
                 }
             }
         }.flow.flatMapConcat {

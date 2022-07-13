@@ -33,6 +33,8 @@
             android:orientation="vertical"
             app:layout_constraintTop_toBottomOf="@+id/layout_title">
 
+
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/input_title"
                 android:layout_width="match_parent"
@@ -95,7 +97,27 @@
                         android:text="@={viewModel.email}" />
 
                 </com.google.android.material.textfield.TextInputLayout>
+                <RelativeLayout
+                    android:id="@+id/rl_choose_tag"
+                    android:layout_marginLeft="10dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/input_title"
+                    style="@style/NewThreadTagStyle"
+                    android:transitionName="tag_group">
 
+
+                        <TextView
+                            android:id="@+id/tv_tag"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:onClick="@{()->view.chooseTag()}"
+                            android:padding="10dp"
+                            android:text="综合板1"
+                            android:textColor="?attr/colorSecondary"
+                            android:transitionName="tag" />
+
+                </RelativeLayout>
 
             </LinearLayout>
 

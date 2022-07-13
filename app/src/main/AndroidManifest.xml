@@ -49,6 +49,9 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+        <activity android:name=".view.widgets.tag.ChooseTagActivity"
+            android:theme="@style/TransparentStyle"
+            />
     </application>
 
 </manifest>

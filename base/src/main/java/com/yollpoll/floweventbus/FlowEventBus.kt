@@ -1,10 +1,7 @@
-package com.aispeech.framework.floweventbus
+package com.yollpoll.floweventbus
 
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.flowWithLifecycle
 import androidx.lifecycle.repeatOnLifecycle
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.*
 
 /**

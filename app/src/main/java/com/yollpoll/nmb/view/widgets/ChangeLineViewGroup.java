@@ -1,4 +1,4 @@
-package com.example.xlm.mydrawerdemo.view;
+package com.yollpoll.nmb.view.widgets;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.RelativeLayout;
 
-import com.example.xlm.mydrawerdemo.R;
+import com.yollpoll.nmb.R;
 
 
 /**

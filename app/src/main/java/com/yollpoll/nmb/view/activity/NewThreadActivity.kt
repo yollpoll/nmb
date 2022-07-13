@@ -15,6 +15,7 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.activity.viewModels
+import androidx.core.util.Pair
 import androidx.databinding.Bindable
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.*
@@ -22,9 +23,12 @@ import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.Extra
 import com.yollpoll.base.NMBActivity
 import com.yollpoll.base.logI
+import com.yollpoll.floweventbus.FlowEventBus
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.fast.FastViewModel
+import com.yollpoll.nmb.ACTION_TAG_ID
+import com.yollpoll.nmb.ACTION_TAG_NAME
 import com.yollpoll.nmb.BR
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.databinding.ActivityNewthreadBinding
@@ -36,6 +40,7 @@ import com.yollpoll.nmb.view.widgets.REQ_CROP_PHOTO
 import com.yollpoll.nmb.view.widgets.REQ_PHOTO
 import com.yollpoll.nmb.view.widgets.emoji.ChooseEmojiDialogFragment
 import com.yollpoll.nmb.view.widgets.showChoosePicDialog
+import com.yollpoll.nmb.view.widgets.tag.gotoChooseTag
 import com.yollpoll.utils.compressBitmap
 import com.yollpoll.utils.getPathByUri
 import com.yollpoll.utils.saveBitmapToSd
@@ -131,13 +136,21 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
 
     private fun initData() {
         vm.action = action
-        when(action){
-            ACTION_NEW->{
+        when (action) {
+            ACTION_NEW -> {
                 vm.fid = forumId
+                mDataBinding.tvTag.transitionName=forumId
             }
-            ACTION_REPLAY->{
+            ACTION_REPLAY -> {
                 vm.replyTo = replyTo
             }
+        }
+        FlowEventBus.getFlow<String>(ACTION_TAG_NAME).asLiveData().observe(this) {
+            mDataBinding.tvTag.text = it
+        }
+        FlowEventBus.getFlow<String>(ACTION_TAG_ID).asLiveData().observe(this) {
+            vm.fid=it
+            forumId=it
         }
     }
 
@@ -186,8 +199,17 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
             this.cameraUri = it
         }
     }
+    //选择板块标签
+    fun chooseTag() {
+        lifecycleScope.launch {
+            val pair1: Pair<View, String> = Pair(mDataBinding.tvTag, forumId)
+            val pair2: Pair<View, String> = Pair(mDataBinding.rlChooseTag,"tag_group")
+            gotoChooseTag(this@NewThreadActivity, forumId, pair1,pair2)
+        }
+    }
+
     //显示更多输入项目
-    fun showOrHideTitle(){
+    fun showOrHideTitle() {
         if (mDataBinding.llMoreTitle.visibility == View.VISIBLE) {
             dismissMoreTitle()
         } else {
@@ -220,6 +242,7 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
         val mAnimationListener: Animation.AnimationListener = object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation) {
             }
+
             override fun onAnimationEnd(animation: Animation) {
                 mDataBinding.llMoreTitle.visibility = View.GONE
 

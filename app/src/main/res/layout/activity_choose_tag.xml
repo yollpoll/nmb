@@ -1,32 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/transparent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.widget.CardView
-        android:layout_width="300dp"
-        android:layout_height="300dp"
-        android:layout_centerInParent="true"
-        android:elevation="10dp"
-        android:transitionName="tag_group">
+    <data>
+        <variable
+            name="view"
+            type="com.yollpoll.nmb.view.widgets.tag.ChooseTagActivity" />
+        <variable
+            name="viewModel"
+            type="com.yollpoll.nmb.view.widgets.tag.ChooseTagVm" />
+    </data>
 
-        <RelativeLayout
-            android:id="@+id/rl_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/common_mask"
+        >
 
-            <ScrollView
+        <androidx.cardview.widget.CardView
+            android:layout_width="300dp"
+            android:layout_height="400dp"
+            android:layout_centerInParent="true"
+            android:elevation="10dp"
+            app:cardCornerRadius="@dimen/commonRadius"
+            android:transitionName="tag_group">
+
+            <RelativeLayout
+                android:id="@+id/rl_content"
+                android:background="?attr/colorSurface"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scrollbars="none"
-                >
-                <com.example.xlm.mydrawerdemo.view.ChangeLineViewGroup
-                    android:id="@+id/clg_tags"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </ScrollView>
-        </RelativeLayout>
-    </android.support.v7.widget.CardView>
+                android:layout_height="match_parent">
 
-</RelativeLayout>
+                <ScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="none">
+
+                    <com.yollpoll.nmb.view.widgets.ChangeLineViewGroup
+                        android:id="@+id/clg_tags"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                </ScrollView>
+            </RelativeLayout>
+        </androidx.cardview.widget.CardView>
+
+    </RelativeLayout>
+</layout>

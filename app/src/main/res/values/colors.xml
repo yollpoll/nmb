@@ -61,4 +61,6 @@
     <color name="md_theme_dark_surfaceTintColor">#EBBBBB</color>
     <color name="color_red">#93000A</color>
     <color name="color_yellow_green">#abc265</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="common_mask">#a0000000</color>
 </resources>

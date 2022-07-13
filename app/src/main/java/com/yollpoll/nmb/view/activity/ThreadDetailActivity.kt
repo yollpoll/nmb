@@ -93,7 +93,9 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
                 return true
             }
             R.id.action_reply -> {
-
+                lifecycleScope.launch {
+                    gotoRelyThreadActivity(context, id)
+                }
             }
             else -> {
 
@@ -260,9 +262,9 @@ class ThreadDetailVM @Inject constructor(
         notifyPropertyChanged(BR.title)
         head.master = "1"
         cache[head.id] = head
-        allPage = if(head.ReplyCount==null){
+        allPage = if (head.ReplyCount == null) {
             1
-        }else{
+        } else {
             (head.ReplyCount!!.toInt() / PAGE_SIZE) + 1
         }
 

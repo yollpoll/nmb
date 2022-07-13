@@ -34,4 +34,14 @@
         <!-- Optional, but recommended for full edge-to-edge rendering -->
 <!--        <item name="android:statusBarColor">@android:color/transparent</item>-->
     </style>
+    <style name="NewThreadTagStyle">
+        <item name="android:background">@drawable/shape_new_thread_tag</item>
+    </style>
+    <style name="TransparentStyle" parent="NmbTheme.Overlay">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:background">@color/transparent</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@android:style/Theme.Translucent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
 </resources>
