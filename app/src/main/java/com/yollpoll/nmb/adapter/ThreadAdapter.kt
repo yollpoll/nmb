@@ -11,6 +11,7 @@ import com.yollpoll.base.NmbPagingDataAdapter
 import com.yollpoll.base.getAttrColor
 import com.yollpoll.base.logE
 import com.yollpoll.framework.extensions.shortToast
+import com.yollpoll.framework.extensions.toJson
 import com.yollpoll.nmb.BR
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.databinding.ItemForumBinding
@@ -25,9 +26,10 @@ import org.xml.sax.XMLReader
 
 class ThreadAdapter(
     home: Boolean = true,
+    onItemLongClick: ((ArticleItem) -> Boolean)? = null,
     onUrlClick: ((String) -> Unit)? = null,
-    onImageClick:((ArticleItem,Int)->Unit)?=null,
-    onItemClick: (((ArticleItem) -> Unit))? = null
+    onImageClick: ((ArticleItem, Int) -> Unit)? = null,
+    onItemClick: (((ArticleItem) -> Unit))? = null,
 ) :
     NmbPagingDataAdapter<ArticleItem>(
         R.layout.item_thread,
@@ -55,7 +57,7 @@ class ThreadAdapter(
                     if (this.isNotEmpty()) {
                         item.ReplyCount = "0"
                     }
-                }?: run {
+                } ?: run {
                     item.ReplyCount = "0"
                 }
                 binding.llRoot.setOnClickListener {
@@ -101,8 +103,21 @@ class ThreadAdapter(
                     binding.tvReplyCount.visibility = View.VISIBLE
                     binding.tvContent.maxLines = 10
                 }
-                binding.ivContent.setOnClickListener{
-                    onImageClick?.invoke(item,pos)
+                binding.ivContent.setOnClickListener {
+                    onImageClick?.invoke(item, pos)
+                }
+                if (item.title.isEmpty()) {
+                    binding.tvTitle.text = "无标题"
+                } else {
+                    binding.tvTitle.text = item.title
+                }
+                if (item.ReplyCount?.isEmpty() == true) {
+                    binding.tvReplyCount.text = "回复:0"
+                } else {
+                    binding.tvReplyCount.text = "回复:${item.ReplyCount}"
+                }
+                binding.llRoot.setOnLongClickListener {
+                    return@setOnLongClickListener onItemLongClick?.invoke(item) ?: false
                 }
             }
         })

@@ -1,11 +1,9 @@
 package com.yollpoll.nmb.net
 
-import com.yollpoll.nmb.model.bean.Announcement
-import com.yollpoll.nmb.model.bean.Article
-import com.yollpoll.nmb.model.bean.ArticleItem
-import com.yollpoll.nmb.model.bean.ForumList
+import com.yollpoll.nmb.model.bean.*
 import okhttp3.Call
 import okhttp3.RequestBody
+import okhttp3.Response
 import okhttp3.ResponseBody
 import retrofit2.http.*
 
@@ -82,4 +80,18 @@ interface HttpService {
         @Part("image\"; filename=\"a.jpg\"") file: RequestBody?
     )
 
+    @GET("$COLLECTION/page/{page}/uuid/{uuid}")
+    suspend fun getCollection(
+        @Path("page") page: Int,
+        @Path("uuid") uuid: String?
+    ): List<ArticleItem>
+
+    @GET("$ADD_COLLECTION/uuid/{uuid}/tid/{tid}")
+    suspend fun addCollection(@Path("uuid") uuid: String?, @Path("tid") tid: String?): String
+
+    @GET("$DEL_COLLECTION/uuid/{uuid}/tid/{tid}")
+    suspend fun delCollection(@Path("uuid") uuid: String?, @Path("tid") tid: String?): String
+
+    @GET(SPEAKING_HISTORY)
+    suspend fun getSpeakingHistory():ResponseBody
 }

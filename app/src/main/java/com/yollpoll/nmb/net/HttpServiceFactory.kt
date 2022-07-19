@@ -34,9 +34,6 @@ val launcherRetrofitFactory by lazy {
 val commonRetrofitFactory by lazy {
     RetrofitFactory(object : RetrofitIntercept {
         override fun baseUrl(): String {
-            //如果是空的会报错
-//            LogUtils.d(com.yollpoll.base.TAG,"阿娇和丹江口市打飞机卡数据开放哈时间快点回家卡是贷记卡说得很健康")
-//            return requireNotNull(realUrl)
             return BASE_URL
         }
 
@@ -44,6 +41,7 @@ val commonRetrofitFactory by lazy {
         }
 
         override fun okHttpClientBuilder(builder: OkHttpClient.Builder) {
+            builder.addInterceptor(LoggerInterceptor())
             builder.addInterceptor(CoverImgInterceptor())
             builder.addInterceptor(NMBInterceptor())
             builder.cookieJar(LocalCookieJar())

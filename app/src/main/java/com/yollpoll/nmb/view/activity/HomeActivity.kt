@@ -203,10 +203,6 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         mDataBinding.refresh.init(this) {
             refreshThread()
         }
-        initDrawer()
-    }
-
-    private fun initDrawer() {
     }
 
     //数据处理
@@ -281,6 +277,17 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         }
     }
 
+    fun gotoCollecion() {
+        lifecycleScope.launch { gotoCollectionActivity(context) }
+    }
+
+    fun gotoMySpeech() {
+        lifecycleScope.launch { gotoMySpeechActivity(context) }
+    }
+    fun gotoSetting(){
+
+    }
+
     //封面图片刷新
     @OnMessage
     fun onRefreshCover() {
@@ -320,6 +327,8 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
             return true
         } else if (item.itemId == R.id.action_announcement) {
             showAnnouncement()
+        } else if (item.itemId == R.id.action_search) {
+            "功能未开放".shortToast()
         }
         // navigation icon的点击交给actionbardrawertoggle来处理
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {

@@ -51,4 +51,5 @@ dependencies{
     implementation myDependencies.roomKtx
     kapt myDependencies.roomCompiler
 
+    implementation 'com.github.chrisbanes:PhotoView:2.3.0'
 }

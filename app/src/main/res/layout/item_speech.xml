@@ -4,12 +4,12 @@
     <data>
         <variable
             name="bean"
-            type="com.yollpoll.nmb.model.bean.ArticleItem" />
+            type="com.yollpoll.nmb.model.bean.MySpeechBean" />
     </data>
 
     <LinearLayout
-        android:id="@+id/ll_root"
         android:background="?attr/selectableItemBackground"
+        android:id="@+id/ll_root"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:layout_height="wrap_content">
@@ -27,6 +27,7 @@
                 android:id="@+id/tv_title"
                 android:maxLines="1"
                 android:ellipsize="end"
+                android:text="@{bean.title}"
                 android:gravity="left"
                 />
             <TextView
@@ -51,18 +52,13 @@
             android:layout_width="match_parent"
             android:paddingRight="20dp"
             android:layout_height="wrap_content">
-            <ImageView
-                android:id="@+id/iv_content"
-                android:layout_width="100dp"
-                android:layout_marginLeft="10dp"
-                android:transitionName="img"
-                android:layout_height="100dp"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:id="@+id/tv_content"
                 android:layout_marginLeft="10dp"
                 android:ellipsize="end"
+                android:text="@{bean.content}"
                 android:maxLines="10"
                 />
         </LinearLayout>
@@ -73,7 +69,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/tv_reply_count"
+                android:id="@+id/tv_reply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"

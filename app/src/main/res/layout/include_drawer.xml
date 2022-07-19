@@ -43,6 +43,7 @@
         <LinearLayout
             android:background="?attr/selectableItemBackground"
             android:id="@+id/ll_collect"
+            android:onClick="@{()->view.gotoCollecion()}"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_cookie"
@@ -72,11 +73,29 @@
                 android:layout_height="@dimen/item_height"
                 android:gravity="center"
                 android:text="@string/setting"
+                android:onClick="@{()->view.gotoSetting()}"
+                android:textColor="?attr/colorTertiary" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:background="?attr/selectableItemBackground"
+            android:id="@+id/ll_history"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->view.gotoMySpeech()}"
+            android:layout_below="@+id/ll_setting"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_history"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center"
+                android:text="@string/my_speech"
                 android:textColor="?attr/colorTertiary" />
 
 
         </LinearLayout>
-
         <LinearLayout
             android:id="@+id/ll_author"
             android:layout_width="match_parent"

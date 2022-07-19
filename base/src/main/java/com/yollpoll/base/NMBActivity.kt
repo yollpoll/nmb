@@ -1,5 +1,6 @@
 package com.yollpoll.base
 
+import android.os.Bundle
 import android.util.TypedValue
 import android.view.Menu
 import android.view.View
@@ -59,4 +60,5 @@ abstract class NMBActivity<BIND : ViewDataBinding, VM : FastViewModel> : FastAct
     open fun getMenuLayout(): Int? {
         return null
     }
+
 }

@@ -12,7 +12,7 @@
             type="com.yollpoll.nmb.view.activity.ImageFragmentVM" />
     </data>
 
-    <ImageView
+    <com.github.chrisbanes.photoview.PhotoView
         android:id="@+id/iv_content"
         android:transitionName="img"
         android:layout_width="match_parent"

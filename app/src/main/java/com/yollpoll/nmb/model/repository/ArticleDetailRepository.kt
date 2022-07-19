@@ -56,7 +56,7 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
     //回复
     suspend fun reply(
         reply: String,
-        name:String,
+        name: String,
         title: String,
         email: String,
         content: String,
@@ -74,35 +74,17 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
             getRequestBody(file)
         )
     }
-//    //获取回复
-//    fun getReplyPagerSource(id: String): NMBBasePagingSource<ArticleItem> {
-//        return object : NMBBasePagingSource<ArticleItem>() {
-//            override suspend fun load(pos: Int): List<ArticleItem> {
-//                val data = service.getArticleDetail(id, pos)
-//                val res = arrayListOf<ArticleItem>()
-//                try {
-//                    if (pos == 0) {
-//                        val head = data.copy()
-//                        head.master = "1"
-//                        res.add(head)
-//                    }
-//                } catch (e: Exception) {
-//                    e.message?.logI()
-//                }
-//
-//                data.Replies?.let {
-//                    it.forEach { reply ->
-//                        if (reply.user_hash == data.user_hash) {
-//                            reply.master = "1"
-//                        } else {
-//                            reply.master = "0"
-//                        }
-//                    }
-//                    res.addAll(it)
-//                }
-//                return res
-//            }
-//        }
-//    }
+
+    suspend fun collect(uuid: String, tid: String): String {
+        return service.addCollection(uuid, tid)
+    }
+
+    suspend fun delCollection(uuid: String, tid: String): String {
+        return service.delCollection(uuid, tid)
+    }
+
+    suspend fun getCollection(page: Int, uuid: String) :List<ArticleItem>{
+        return service.getCollection(page,uuid)
+    }
 
 }

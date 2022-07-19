@@ -162,6 +162,8 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
             }
             ACTION_REPLAY -> {
                 vm.title = "回复: >>NO.$replyTo"
+                mDataBinding.imgShowMoreTitle.visibility=View.GONE
+                mDataBinding.inputTitle.visibility=View.GONE
             }
         }
         vm.currentImgLD.observe(this) {

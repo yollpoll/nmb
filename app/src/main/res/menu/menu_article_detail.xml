@@ -9,4 +9,12 @@
         android:id="@+id/action_reply"
         android:title="@string/reply_article"
         app:showAsAction="always" />
+    <item
+        android:id="@+id/action_collect"
+        android:title="@string/collect"
+        />
+    <item
+        android:id="@+id/action_report"
+        android:title="@string/report"
+        />
 </menu>

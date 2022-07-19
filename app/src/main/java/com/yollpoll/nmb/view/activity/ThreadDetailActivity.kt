@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.yollpoll.annotation.annotation.OnMessage
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.Extra
+import com.yollpoll.arch.util.AppUtils
 import com.yollpoll.base.*
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.extensions.shortToast
@@ -25,6 +26,7 @@ import com.yollpoll.framework.extensions.toJsonBean
 import com.yollpoll.framework.fast.FastActivity
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.framework.paging.getCommonPager
+import com.yollpoll.nmb.App
 import com.yollpoll.nmb.BR
 import com.yollpoll.nmb.MR
 import com.yollpoll.nmb.R
@@ -42,8 +44,10 @@ import com.yollpoll.nmb.view.widgets.SelectPageDialog
 import com.yollpoll.nmb.view.widgets.init
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -96,6 +100,12 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
                 lifecycleScope.launch {
                     gotoRelyThreadActivity(context, id)
                 }
+            }
+            R.id.action_collect -> {
+                vm.collect()
+            }
+            R.id.action_report -> {
+
             }
             else -> {
 
@@ -309,4 +319,17 @@ class ThreadDetailVM @Inject constructor(
         sendEmptyMessage(MR.ThreadDetailActivity_refresh)
     }
 
+    fun collect() {
+//        if(App.INSTANCE.cookie==null){
+//            "当前未绑定饼干，收藏将和设备绑定".shortToast()
+//        }
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val res = repository.collect(App.INSTANCE.androidId, id)
+                withContext(Dispatchers.Main) {
+                    res.shortToast()
+                }
+            }
+        }
+    }
 }

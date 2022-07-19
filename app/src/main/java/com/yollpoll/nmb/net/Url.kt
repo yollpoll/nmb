@@ -40,3 +40,6 @@ var realUrl: String? = null//重定向以后获取到的根url
 var imagHead = "https://image.nmb.best"//应该动态获取
 var imgUrl = imagHead + IMG_URL
 var imgThumbUrl = imagHead + IMG_THUMB_URL
+
+//发言历史
+const val SPEAKING_HISTORY = "/Api/getLastPost"

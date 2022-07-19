@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="view"
+            type="com.yollpoll.nmb.view.activity.MySpeechActivity" />
+
+        <variable
+            name="viewModel"
+            type="com.yollpoll.nmb.view.activity.MySpeechVm" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            bind:title='@{@string/my_speech}'
+            android:id="@+id/layout_title"
+            layout="@layout/include_title" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_speech"
+            app:adapter="@{view.adapter}"
+            app:layoutManager="@{view.rvManager}"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_title"
+            android:background="?attr/colorSecondaryContainer" />
+    </RelativeLayout>
+</layout>
