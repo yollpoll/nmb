@@ -26,6 +26,8 @@ import com.yollpoll.base.logI
 import com.yollpoll.floweventbus.FlowEventBus
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.extensions.shortToast
+import com.yollpoll.framework.extensions.toListBean
+import com.yollpoll.framework.extensions.toListJson
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.nmb.ACTION_TAG_ID
 import com.yollpoll.nmb.ACTION_TAG_NAME
@@ -50,10 +52,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.net.URLEncoder
 import javax.inject.Inject
 
 const val ACTION_NEW = "new"
 const val ACTION_REPLAY = "replay"
+const val ACTION_LINK = "link"
+const val ACTION_REPORT = "report"
 
 suspend fun gotoNewThreadActivity(context: Context, forumId: String) {
     val req = DispatchRequest.RequestBuilder().host("nmb").module("new_thread").params(
@@ -70,6 +75,27 @@ suspend fun gotoRelyThreadActivity(context: Context, replyTo: String) {
         hashMapOf(
             "action" to ACTION_REPLAY,
             "replyTo" to replyTo
+        )
+    ).build()
+    DispatchClient.manager?.dispatch(context, req)
+}
+
+suspend fun gotoLinkActivity(context: Context, threadId: String, linkIds: List<String>) {
+    val req = DispatchRequest.RequestBuilder().host("nmb").module("new_thread").params(
+        hashMapOf(
+            "action" to ACTION_LINK,
+            "replyTo" to threadId,
+            "linkIds" to URLEncoder.encode(linkIds.toListJson(), "UTF-8")
+        )
+    ).build()
+    DispatchClient.manager?.dispatch(context, req)
+}
+
+suspend fun gotoReportActivity(context: Context, linkIds: List<String>) {
+    val req = DispatchRequest.RequestBuilder().host("nmb").module("new_thread").params(
+        hashMapOf(
+            "action" to ACTION_REPORT,
+            "linkIds" to URLEncoder.encode(linkIds.toListJson(), "UTF-8")
         )
     ).build()
     DispatchClient.manager?.dispatch(context, req)
@@ -125,6 +151,9 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
 
     @Extra
     var replyTo: String = ""
+
+    @Extra
+    var linkIds: String = ""
     private val vm: NewThreadVm by viewModels()
     override fun getLayoutId() = R.layout.activity_newthread
     override fun initViewModel() = vm
@@ -139,18 +168,32 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
         when (action) {
             ACTION_NEW -> {
                 vm.fid = forumId
-                mDataBinding.tvTag.transitionName=forumId
+                mDataBinding.tvTag.transitionName = forumId
             }
             ACTION_REPLAY -> {
                 vm.replyTo = replyTo
+            }
+            ACTION_LINK -> {
+                vm.replyTo = replyTo
+                linkIds.toListBean<String>()?.let {
+                    vm.addLinkIds(it)
+                    mDataBinding.edtContent.setSelection(mDataBinding.edtContent.text.toString().length)
+                }
+            }
+            ACTION_REPORT -> {
+                vm.title = "举报"
+                linkIds.toListBean<String>()?.let {
+                    vm.addLinkIds(it)
+                    mDataBinding.edtContent.setSelection(mDataBinding.edtContent.text.toString().length)
+                }
             }
         }
         FlowEventBus.getFlow<String>(ACTION_TAG_NAME).asLiveData().observe(this) {
             mDataBinding.tvTag.text = it
         }
         FlowEventBus.getFlow<String>(ACTION_TAG_ID).asLiveData().observe(this) {
-            vm.fid=it
-            forumId=it
+            vm.fid = it
+            forumId = it
         }
     }
 
@@ -162,8 +205,8 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
             }
             ACTION_REPLAY -> {
                 vm.title = "回复: >>NO.$replyTo"
-                mDataBinding.imgShowMoreTitle.visibility=View.GONE
-                mDataBinding.inputTitle.visibility=View.GONE
+                mDataBinding.imgShowMoreTitle.visibility = View.GONE
+                mDataBinding.inputTitle.visibility = View.GONE
             }
         }
         vm.currentImgLD.observe(this) {
@@ -174,6 +217,7 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
                 mDataBinding.rlImg.visibility = View.GONE
             }
         }
+        mDataBinding.edtContent.requestFocus()
     }
 
     //选择表情
@@ -201,12 +245,13 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
             this.cameraUri = it
         }
     }
+
     //选择板块标签
     fun chooseTag() {
         lifecycleScope.launch {
             val pair1: Pair<View, String> = Pair(mDataBinding.tvTag, forumId)
-            val pair2: Pair<View, String> = Pair(mDataBinding.rlChooseTag,"tag_group")
-            gotoChooseTag(this@NewThreadActivity, forumId, pair1,pair2)
+            val pair2: Pair<View, String> = Pair(mDataBinding.rlChooseTag, "tag_group")
+            gotoChooseTag(this@NewThreadActivity, forumId, pair1, pair2)
         }
     }
 
@@ -342,6 +387,12 @@ class NewThreadVm @Inject constructor(
             ACTION_REPLAY -> {
                 reply()
             }
+            ACTION_LINK -> {
+                reply()
+            }
+            ACTION_REPORT -> {
+                report()
+            }
         }
     }
 
@@ -416,6 +467,28 @@ class NewThreadVm @Inject constructor(
 
     //举报
     fun report() {
+        viewModelScope.launch(Dispatchers.IO) {
+            showLoading()
+            repository.newThread(
+                "18",
+                name,
+                threadTitle,
+                name,
+                threadContent,
+                "0",
+                null
+            )
+            hideLoading()
+            finish()
+        }
+    }
 
+    //添加引用链接
+    fun addLinkIds(linkIds: List<String>) {
+        var content = ""
+        linkIds.forEach {
+            content += ">>.No${it}\n"
+        }
+        threadContent = content
     }
 }

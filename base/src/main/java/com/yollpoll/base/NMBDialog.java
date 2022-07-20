@@ -3,7 +3,9 @@ package com.yollpoll.base;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.os.Build;
 import android.view.LayoutInflater;
+import android.view.Window;
 
 import androidx.databinding.DataBindingUtil;
 import androidx.viewbinding.ViewBinding;
@@ -37,7 +39,8 @@ public abstract class NMBDialog<BIND extends ViewBinding, T extends Dialog> impl
             //新建dialog
             mDialog = createDialog(mContext);
             //设置动画
-//            Window window = mDialog.getWindow();
+            Window window = mDialog.getWindow();
+            window.setBackgroundDrawable(mContext.getDrawable(R.drawable.shape_dialog));
 //            window.setWindowAnimations(R.style.DialogWindowAnim);
             //设置回调
             mDialog.setOnDismissListener(dialog -> onDialogDismiss(mDialog));

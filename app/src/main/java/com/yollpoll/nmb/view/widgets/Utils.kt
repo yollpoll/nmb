@@ -150,6 +150,7 @@ fun showChoosePicDialog(
     builder.setView(view)
     val alertDialog: AlertDialog = builder.create()
     alertDialog.show()
+    alertDialog.window?.setBackgroundDrawable(activity.getDrawable(com.yollpoll.base.R.drawable.shape_dialog))
     val rlPhoto = view.findViewById<View>(R.id.rl_photo) as RelativeLayout
     val rlCamera = view.findViewById<View>(R.id.rl_camera) as RelativeLayout
     rlCamera.setOnClickListener {

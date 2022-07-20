@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorTertiaryContainer"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:id="@+id/ll_reply"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center"
+                android:text="@string/link" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line"
+                android:background="?attr/colorOutline" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:id="@+id/ll_copy"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="@string/copy" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line"
+                android:background="?attr/colorOutline" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/ll_report"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center"
+                android:background="?attr/selectableItemBackground"
+                android:text="@string/report" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>

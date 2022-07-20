@@ -23,6 +23,7 @@
         <entry key="app/src/main/res/layout/alert_choose_photo.xml" value="0.31197916666666664" />
         <entry key="app/src/main/res/layout/dialog_choose_emoji.xml" value="0.3765625" />
         <entry key="app/src/main/res/layout/dialog_select_page.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/dialog_thread_menu.xml" value="0.25" />
         <entry key="app/src/main/res/layout/fragment_image.xml" value="0.290625" />
         <entry key="app/src/main/res/layout/include_drawer.xml" value="0.3729166666666667" />
         <entry key="app/src/main/res/layout/include_header.xml" value="0.36614583333333334" />
@@ -43,6 +44,7 @@
         <entry key="app/src/main/res/menu/menu_img.xml" value="0.33177083333333335" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.223" />
         <entry key="app/src/main/res/xml/provider_paths.xml" value="0.31979166666666664" />
+        <entry key="base/src/main/res/drawable/shape_dialog.xml" value="0.216" />
         <entry key="base/src/main/res/layout/dialog_common.xml" value="0.3875" />
         <entry key="business/src/main/res/layout/activity_home.xml" value="0.4036458333333333" />
         <entry key="qrlib/src/main/res/layout/activity_qr_code.xml" value="0.34479166666666666" />

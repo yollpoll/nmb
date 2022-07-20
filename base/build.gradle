@@ -10,15 +10,15 @@ android {
     compileSdkVersion androidConfig.compileSdkVersion
     buildToolsVersion androidConfig.buildToolsVersion
 
-//    defaultConfig {
-//        minSdkVersion 21
-//        targetSdkVersion 33
-//        versionCode 1
-//        versionName "1.0"
-//
-//        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-//        consumerProguardFiles "consumer-rules.pro"
-//    }
+    defaultConfig {
+        minSdkVersion androidConfig.minSdkVersion
+        targetSdkVersion androidConfig.targetSdkVersion
+        versionCode androidConfig.versionCode
+        versionName androidConfig.versionName
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
 
     buildTypes {
         release {

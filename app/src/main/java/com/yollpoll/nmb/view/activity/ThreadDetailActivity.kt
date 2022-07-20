@@ -39,9 +39,8 @@ import com.yollpoll.nmb.model.repository.HomeRepository
 import com.yollpoll.nmb.net.imgThumbUrl
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_THREAD_DETAIL
-import com.yollpoll.nmb.view.widgets.LinkArticleDialog
-import com.yollpoll.nmb.view.widgets.SelectPageDialog
-import com.yollpoll.nmb.view.widgets.init
+import com.yollpoll.nmb.view.widgets.*
+import com.yollpoll.utils.copyStr
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -73,7 +72,21 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
     override fun getLayoutId() = R.layout.activity_thread_detail
     override fun initViewModel() = vm
     private val mManager = LinearLayoutManager(this)
-    private val mAdapter = ThreadAdapter(false, onUrlClick = {
+    private val mAdapter = ThreadAdapter(false, onItemLongClick = { article ->
+        ThreadMenuDialog(MenuAction.MENU_ACTION_REPLY, context, reply = {
+            lifecycleScope.launchWhenResumed {
+                gotoLinkActivity(context, vm.id, arrayListOf(article.id))
+            }
+        }, copy = {
+            copyStr(context, article.content)
+            "复制到剪切板".shortToast()
+        }, report = {
+            lifecycleScope.launchWhenResumed {
+                gotoReportActivity(context, arrayListOf(article.id))
+            }
+        }).show()
+        true
+    }, onUrlClick = {
         vm.onUrlClick(it)
     }, onImageClick = { item, _ ->
         lifecycleScope.launch {

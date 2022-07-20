@@ -21,6 +21,7 @@ import androidx.customview.widget.ViewDragHelper
 import androidx.databinding.Bindable
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import androidx.paging.*
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -34,17 +35,14 @@ import com.yollpoll.base.*
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.dispatch.OnBackListener
 import com.yollpoll.framework.dispatch.StartType
-import com.yollpoll.framework.extensions.saveBean
-import com.yollpoll.framework.extensions.saveList
-import com.yollpoll.framework.extensions.shortToast
+import com.yollpoll.framework.extensions.*
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.framework.paging.BasePagingDataAdapter
 import com.yollpoll.framework.paging.BasePagingSource
 import com.yollpoll.framework.paging.getCommonPager
 import com.yollpoll.framework.widgets.BaseDialog
+import com.yollpoll.nmb.*
 import com.yollpoll.nmb.BR
-import com.yollpoll.nmb.KEY_FORUM_LIST
-import com.yollpoll.nmb.MR
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.adapter.ThreadAdapter
 import com.yollpoll.nmb.databinding.ActivityHomeBinding
@@ -57,18 +55,17 @@ import com.yollpoll.nmb.net.imgThumbUrl
 import com.yollpoll.nmb.net.realCover
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_HOME
-import com.yollpoll.nmb.view.widgets.getCommonGlideOptions
-import com.yollpoll.nmb.view.widgets.init
-import com.yollpoll.nmb.view.widgets.initLeftDrawerLayout
-import com.yollpoll.nmb.view.widgets.initRightDrawerLayout
+import com.yollpoll.nmb.view.widgets.*
+import com.yollpoll.utils.copyStr
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.lang.reflect.Field
-import java.util.HashMap
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 import kotlin.math.max
 
 @Route(url = ROUTE_HOME)
@@ -106,7 +103,17 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
     //串列表
     private val threadManager = LinearLayoutManager(this)
-    private val adapterThread = ThreadAdapter(onUrlClick = {
+    private val adapterThread = ThreadAdapter(onItemLongClick = { article ->
+        ThreadMenuDialog(MenuAction.MENU_ACTION_HOME, context, copy = {
+            copyStr(context, article.content)
+            "复制到剪切板".shortToast()
+        }, report = {
+            lifecycleScope.launchWhenResumed {
+                gotoReportActivity(context, arrayListOf(article.id))
+            }
+        }).show()
+        true
+    }, onUrlClick = {
         vm.onThreadUrlClick(it)
     }, onImageClick = { item, pos ->
         lifecycleScope.launch {
@@ -284,7 +291,8 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     fun gotoMySpeech() {
         lifecycleScope.launch { gotoMySpeechActivity(context) }
     }
-    fun gotoSetting(){
+
+    fun gotoSetting() {
 
     }
 
@@ -463,7 +471,10 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
         viewModelScope.launch {
             val res = repository.getAnnouncement()
             _announcement.value = res
-            if (res.enable) {
+            val lastShow = getLongByDataStore(KEY_SHOW_ANNOUNCEMENT, -1)
+            val now = Date().time
+            if (res.enable && ((lastShow == -1L) || (now - lastShow >= 24 * 60 * 60 * 1000))) {
+                saveLongToDataStore(KEY_SHOW_ANNOUNCEMENT, now)
                 sendEmptyMessage(MR.HomeActivity_showAnnouncement)
             }
         }

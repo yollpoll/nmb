@@ -1,27 +1,19 @@
 package com.yollpoll.utils
 
 import android.app.Activity
-import android.content.ContentUris
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.database.Cursor
-import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.target.Target
-import com.yollpoll.framework.extensions.startActivity
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import androidx.core.content.ContextCompat.getSystemService
 import java.io.File
 import java.io.FileNotFoundException
-import java.io.FileOutputStream
-import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
+
 
 /**
  * 分享MediaStore文件
@@ -36,60 +28,6 @@ fun share(title: String, path: String, context: Activity) {
     context.startActivity(Intent.createChooser(intent, title))
 }
 
-///**
-// * 保存图片到mediastore
-// */
-//suspend fun saveImageToMediaStore(url: String, name: String, context: Context): String =
-//    withContext(Dispatchers.IO) {
-//        val bitmap = Glide.with(context).asBitmap().load(url)
-//            .submit(Target.SIZE_ORIGINAL, Target.SIZE_ORIGINAL).get()
-//        return@withContext MediaStore.Images.Media.insertImage(
-//            context.contentResolver, bitmap, name,
-//            getCurrentDate()
-//        )
-//    }
-//
-///**
-// * 保存图片到SD卡目录
-// * 这个方法应当写在子线程
-// *
-// * @param bitmap
-// * @param path   地址，应该用constant里面的常量
-// */
-////context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)?.absolutePath
-//fun saveImageToSd(bitmap: Bitmap?, imageName: String, path: String): String? {
-//    if (null == bitmap) return ""
-//    //替换/
-//    val cacheDir = File(path)
-//    if (!cacheDir.exists()) {
-//        try {
-//            cacheDir.mkdirs()
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//        }
-//    }
-//    val file = File(cacheDir.absolutePath, imageName)
-//
-//    var fos: FileOutputStream? = null
-//    try {
-//        fos = FileOutputStream(file)
-//        bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos)
-//        fos.flush()
-//    } catch (e: FileNotFoundException) {
-//        e.printStackTrace()
-//    } catch (e: IOException) {
-//        e.printStackTrace()
-//    } finally {
-//        if (fos != null) {
-//            try {
-//                fos.close()
-//            } catch (e: IOException) {
-//                e.printStackTrace()
-//            }
-//        }
-//    }
-//    return file.absolutePath
-//}
 fun getPathByUri(uri: Uri, context: Context): String? {
     return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
         getPhotoPathFromContentUri(context, uri)
@@ -275,4 +213,24 @@ fun updatePhoto(context: Context, path: String?, fileName: String?) {
 fun getCurrentDate(): String {
     val sdf = SimpleDateFormat("yyyy-MM-dd")
     return sdf.format(Date().time)
+}
+
+/**
+ * 复制内容到剪切板
+ *
+ * @param copyStr
+ * @return
+ */
+fun copyStr(context: Context,copyStr: String): Boolean {
+    return try {
+        //获取剪贴板管理器
+        val cm: ClipboardManager? = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+        // 创建普通字符型ClipData
+        val mClipData: ClipData = ClipData.newPlainText("Label", copyStr)
+        // 将ClipData内容放到系统剪贴板里。
+        cm?.setPrimaryClip(mClipData)
+        true
+    } catch (e: Exception) {
+        false
+    }
 }

@@ -36,7 +36,8 @@ import javax.inject.Inject
 @Route(url = ROUTE_LAUNCHER)
 @AndroidEntryPoint
 @ViewModel(LauncherVM::class)
-class LauncherActivity : NMBActivity<ActivityMainBinding, LauncherVM>() {
+class
+LauncherActivity : NMBActivity<ActivityMainBinding, LauncherVM>() {
     val vm: LauncherVM by viewModels()
     override fun initViewModel()=vm
     override fun getLayoutId() = R.layout.activity_main

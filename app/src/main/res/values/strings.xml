@@ -27,6 +27,8 @@
     <string name="email">邮件</string>
     <string name="report">举报</string>
     <string name="my_speech">我的发言</string>
+    <string name="link">引用</string>
+    <string name="copy">复制内容</string>
     <item name="tag_first" type="id"/>
     <item name="tag_second" type="id"/>
 </resources>
