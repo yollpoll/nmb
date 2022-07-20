@@ -13,6 +13,7 @@
         <entry key="app/src/main/res/layout/activity_choose_tag.xml" value="0.29375" />
         <entry key="app/src/main/res/layout/activity_collection.xml" value="0.2942708333333333" />
         <entry key="app/src/main/res/layout/activity_cookie.xml" value="0.33" />
+        <entry key="app/src/main/res/layout/activity_drawing.xml" value="0.36051899907321594" />
         <entry key="app/src/main/res/layout/activity_home.xml" value="0.5198522622345337" />
         <entry key="app/src/main/res/layout/activity_image.xml" value="0.290625" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.18703703703703703" />
@@ -21,6 +22,8 @@
         <entry key="app/src/main/res/layout/activity_qr.xml" value="0.28541666666666665" />
         <entry key="app/src/main/res/layout/activity_thread_detail.xml" value="0.3328125" />
         <entry key="app/src/main/res/layout/alert_choose_photo.xml" value="0.31197916666666664" />
+        <entry key="app/src/main/res/layout/dialog_brush_width.xml" value="0.3609375" />
+        <entry key="app/src/main/res/layout/dialog_choose_color.xml" value="0.346875" />
         <entry key="app/src/main/res/layout/dialog_choose_emoji.xml" value="0.3765625" />
         <entry key="app/src/main/res/layout/dialog_select_page.xml" value="0.375" />
         <entry key="app/src/main/res/layout/dialog_thread_menu.xml" value="0.25" />
@@ -40,6 +43,7 @@
         <entry key="app/src/main/res/layout/tese.xml" value="0.40260416666666665" />
         <entry key="app/src/main/res/menu/main.xml" value="0.3229166666666667" />
         <entry key="app/src/main/res/menu/menu_article_detail.xml" value="0.375" />
+        <entry key="app/src/main/res/menu/menu_drawer.xml" value="0.29739583333333336" />
         <entry key="app/src/main/res/menu/menu_home.xml" value="0.371875" />
         <entry key="app/src/main/res/menu/menu_img.xml" value="0.33177083333333335" />
         <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.223" />

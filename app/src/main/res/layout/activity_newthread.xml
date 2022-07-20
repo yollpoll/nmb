@@ -259,6 +259,7 @@
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="10dp"
                 android:layout_toRightOf="@+id/img_pic"
+                android:onClick="@{()->view.gotoDraw()}"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:padding="5dp"
                 android:src="@mipmap/ic_drawer" />

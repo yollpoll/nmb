@@ -31,4 +31,15 @@
     <string name="copy">复制内容</string>
     <item name="tag_first" type="id"/>
     <item name="tag_second" type="id"/>
+    <string name="sure_exit">确认退出？</string>
+    <string name="sure_submit">确认提交？</string>
+    <string name="sure_clear">确定要清空吗？？</string>
+    <item name="img_color" type="id" />
+    <item name="img_width" type="id" />
+    <item name="img_cleaner" type="id" />
+    <item name="img_clear" type="id" />
+    <string name="draw">涂鸦</string>
+    <string name="save">保存</string>
+    <string name="finish">完成</string>
+    <string name="background">背景</string>
 </resources>

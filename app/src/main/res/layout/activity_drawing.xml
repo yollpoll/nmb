@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/tools"
+    xmlns:fab="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="view"
+            type="com.yollpoll.nmb.view.activity.DrawingActivity" />
+
+        <variable
+            name="viewModel"
+            type="com.yollpoll.nmb.view.activity.DrawingVm" />
+    </data>
+
+    <RelativeLayout
+        android:id="@+id/rl_root"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/header_title"
+            layout="@layout/include_title"
+            bind:title='@{@string/draw}' />
+
+        <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/cl_root"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/header_title">
+
+            <com.yollpoll.nmb.view.widgets.DrawView
+                android:id="@+id/draw_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+
+            <!--            <com.google.android.material.floatingactionbutton.FloatingActionButton-->
+            <!--                android:id="@+id/fb_menu"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_margin="16dp"-->
+            <!--                android:src="@mipmap/icon_draw_menu"-->
+            <!--                app:fabSize="normal"-->
+            <!--                app:layout_anchor="@+id/draw_view"-->
+            <!--                app:layout_anchorGravity="bottom|right"-->
+            <!--                app:rippleColor="@color/white" />-->
+            <com.getbase.floatingactionbutton.FloatingActionsMenu
+                android:id="@+id/fab_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_gravity="bottom|right"
+                android:layout_marginEnd="16dp"
+                android:layout_marginRight="16dp"
+                android:layout_marginBottom="16dp"
+                fab:fab_addButtonColorNormal="?attr/colorPrimary"
+                app:fab_addButtonColorPressed="?attr/colorPrimaryDark"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                >
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/action_full_screen"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_icon="@mipmap/ic_full_screen"
+                    app:fab_colorNormal="?attr/colorBackgroundFloating"
+                    app:fab_addButtonColorPressed="?attr/colorBackgroundFloating"
+                    android:onClick="@{()->view.fullScreen()}"
+                    />
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/action_1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="20dp"
+                    app:fab_icon="@mipmap/icon_draw_color"
+                    android:onClick="@{()->view.changeColor()}"
+                    app:fab_addButtonColorPressed="?attr/colorBackgroundFloating"
+                    app:fab_colorNormal="?attr/colorBackgroundFloating" />
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/action_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_colorNormal="?attr/colorBackgroundFloating"
+                    app:fab_addButtonColorPressed="?attr/colorBackgroundFloating"
+                    app:fab_icon="@mipmap/icon_draw_width"
+                    android:onClick="@{()->view.changeWidth()}"
+                    />
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/action_cleaner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_icon="@mipmap/icon_cleaner"
+                    app:fab_colorNormal="?attr/colorBackgroundFloating"
+                    app:fab_addButtonColorPressed="?attr/colorBackgroundFloating"
+                    android:onClick="@{()->view.clean()}"
+                    />
+
+                <com.getbase.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/action_4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:fab_icon="@mipmap/icon_clear"
+                    app:fab_colorNormal="?attr/colorBackgroundFloating"
+                    app:fab_addButtonColorPressed="?attr/colorBackgroundFloating"
+                    android:onClick="@{()->view.clear()}"
+                    />
+
+            </com.getbase.floatingactionbutton.FloatingActionsMenu>
+
+        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+        <ImageView
+            android:id="@+id/img_cache"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_alignParentRight="true" />
+    </RelativeLayout>
+</layout>

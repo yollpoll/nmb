@@ -57,6 +57,8 @@
             android:theme="@style/TransparentStyle" />
         <activity android:name=".view.activity.CollectionActivity" />
         <activity android:name=".view.activity.MySpeechActivity" />
+        <activity android:name=".view.activity.DrawingActivity"/>
+        <activity android:name=".view.activity.DrawingActivity2"/>
     </application>
 
 </manifest>

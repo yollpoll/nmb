@@ -52,4 +52,8 @@ dependencies{
     kapt myDependencies.roomCompiler
 
     implementation 'com.github.chrisbanes:PhotoView:2.3.0'
+
+    implementation 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
+    implementation 'com.getbase:floatingactionbutton:1.10.1'
+//    implementation 'com.tiancaicc.springfloatingactionmenu:library:0.0.2'
 }

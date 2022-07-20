@@ -140,6 +140,13 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
                 }
                 vm.selectPhoto(cameraUri!!)
             }
+            REQUEST_DRAWING->{
+                if(resultCode== RESULT_OK){
+                    val path=data?.getStringExtra("path")
+                    val uri=Uri.parse(path)
+                    vm.selectPhoto(uri, height = 4096)
+                }
+            }
         }
     }
 
@@ -318,6 +325,12 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
 //        mDataBinding.edtContent.startAnimation(animation)
 //        mDataBinding.rlImg.startAnimation(animation)
     }
+    //绘图
+    fun gotoDraw(){
+        lifecycleScope.launch{
+            gotoDrawing(context)
+        }
+    }
 
 }
 
@@ -397,11 +410,11 @@ class NewThreadVm @Inject constructor(
     }
 
     //选择照片
-    fun selectPhoto(uri: Uri) {
+    fun selectPhoto(uri: Uri,width:Int=2048,height:Int=2048) {
         viewModelScope.launch(Dispatchers.IO) {
             "img uri:${uri.path}".logI()
             val path = getPathByUri(uri, app)
-            val bitmap = compressBitmap(path, 2048, 2048)
+            val bitmap = compressBitmap(path, width,height)
             selectImg(bitmap)
         }
     }
