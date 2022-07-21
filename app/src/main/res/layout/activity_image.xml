@@ -14,7 +14,7 @@
     </data>
 
     <RelativeLayout
-
+        android:background="?attr/colorPrimaryContainer"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -26,10 +26,10 @@
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"
-            android:layout_below="@+id/layout_head"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/black" />
+            android:layout_below="@+id/layout_head"
+            />
 
     </RelativeLayout>
 </layout>

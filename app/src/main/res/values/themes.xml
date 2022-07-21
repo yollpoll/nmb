@@ -38,7 +38,6 @@
         <item name="android:background">@drawable/shape_new_thread_tag</item>
     </style>
     <style name="TransparentStyle" parent="NmbTheme.Overlay">
-        <item name="android:windowFullscreen">true</item>
         <item name="android:background">@color/transparent</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowAnimationStyle">@android:style/Theme.Translucent</item>

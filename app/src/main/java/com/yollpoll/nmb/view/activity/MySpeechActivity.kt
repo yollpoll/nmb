@@ -2,9 +2,12 @@ package com.yollpoll.nmb.view.activity
 
 import android.app.Application
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.text.HtmlCompat
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
@@ -26,6 +29,7 @@ import com.yollpoll.nmb.model.bean.MySpeechBean
 import com.yollpoll.nmb.model.repository.UserRepository
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_MY_SPEECH
+import com.yollpoll.utils.TransFormContent
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -67,6 +71,24 @@ class MySpeechActivity : NMBActivity<ActivityMySpeechBinding, MySpeechVm>() {
                     }
                 }
             }
+            val htmlContent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(item?.content,
+                    HtmlCompat.FROM_HTML_MODE_COMPACT,
+                    {
+//                            "image: ${it}".logE()
+                        null
+                    }
+                ) { opening, tag, output, xmlReader ->
+//                        "tag: ${tag} outPut ${output}".logE()
+                }
+            } else {
+                Html.fromHtml(item?.content)
+            }
+            //文本修改为自定义编辑的模式
+            TransFormContent.trans(
+                htmlContent,
+                binding.tvContent,
+            )
         },
         contentSame = { item1, item2 ->
             return@BaseAdapter item1.id == item2.id

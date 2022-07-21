@@ -58,7 +58,8 @@
         <activity android:name=".view.activity.CollectionActivity" />
         <activity android:name=".view.activity.MySpeechActivity" />
         <activity android:name=".view.activity.DrawingActivity"/>
-        <activity android:name=".view.activity.DrawingActivity2"/>
+        <activity android:name=".view.activity.AuthorActivity"/>
+        <activity android:name=".view.activity.WebActivity"/>
     </application>
 
 </manifest>

@@ -181,23 +181,23 @@ class ImageVm @Inject constructor(val app: Application) : FastViewModel(app) {
 
     suspend fun downloadImg(): String = withContext(Dispatchers.IO) {
         val path = saveImageToMediaStore(
-            imgUrl + imageList[cur - 1],
+            getImgUrl(imageList[cur - 1]),
             nameList[cur - 1],
             app
         )
-        localUri[imgUrl + imageList[cur - 1]] = path
+        localUri[getImgUrl(imageList[cur - 1])] = path
         return@withContext path
     }
 
 
     fun share(context: Activity) {
         viewModelScope.launch(Dispatchers.IO) {
-            localUri[imgUrl + imageList[cur - 1]]?.let {
+            localUri[getImgUrl(imageList[cur - 1])]?.let {
                 //这张图片已经保存在本地了
                 share("匿名版", it, context)
             } ?: run {
                 val path = downloadImg()
-                localUri[imgUrl + imageList[cur - 1]] = path
+                localUri[getImgUrl(imageList[cur - 1])] = path
                 share("匿名版", path, context)
             }
         }
@@ -223,11 +223,19 @@ class ImageFragment : FastFragment<FragmentImageBinding, ImageFragmentVM>() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Glide.with(requireContext()).asBitmap().load(imgUrl + url)
+        Glide.with(requireContext()).asBitmap().load(getImgUrl(url))
             .into(mDataBinding.ivContent)
     }
 }
 
 class ImageFragmentVM(app: Application) : FastViewModel(app) {
 
+}
+
+fun getImgUrl(url: String): String {
+    return if (url.startsWith("http")) {
+        url
+    } else {
+        imgUrl + url
+    }
 }

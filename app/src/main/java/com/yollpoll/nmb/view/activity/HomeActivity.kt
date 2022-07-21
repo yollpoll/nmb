@@ -50,7 +50,6 @@ import com.yollpoll.nmb.databinding.ItemForumBinding
 import com.yollpoll.nmb.databinding.ItemThreadBinding
 import com.yollpoll.nmb.model.bean.*
 import com.yollpoll.nmb.model.repository.HomeRepository
-import com.yollpoll.nmb.net.MY_GIT
 import com.yollpoll.nmb.net.imgThumbUrl
 import com.yollpoll.nmb.net.realCover
 import com.yollpoll.nmb.router.DispatchClient
@@ -267,16 +266,6 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
     }
 
-    /**
-     * 跳转git
-     */
-    fun checkAuthor(view: View) {
-        lifecycleScope.launch {
-            DispatchClient.manager?.dispatch(
-                context, DispatchRequest.UrlBuilder(MY_GIT).build()
-            )
-        }
-    }
 
     fun gotoCookie() {
         lifecycleScope.launch {
@@ -294,6 +283,18 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
     fun gotoSetting() {
 
+    }
+
+    fun gotoAuthor() {
+        lifecycleScope.launch {
+            gotoAuthor(context)
+        }
+    }
+
+    fun showCover() {
+        lifecycleScope.launch {
+            ImageActivity.gotoImageActivity(context, 0, arrayListOf("封面"), arrayListOf(realCover))
+        }
     }
 
     //封面图片刷新

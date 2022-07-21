@@ -240,8 +240,6 @@ class DrawingActivity : NMBActivity<ActivityDrawingBinding, DrawingVm>() {
     }
 
     private fun submit() {
-        "提交".shortToast()
-
         val fileName = "draw_" + System.currentTimeMillis() + ".jpg"
         PermissionX.init(this@DrawingActivity).permissions(
             Manifest.permission.WRITE_EXTERNAL_STORAGE,

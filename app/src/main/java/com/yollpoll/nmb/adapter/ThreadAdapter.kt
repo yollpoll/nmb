@@ -53,12 +53,8 @@ class ThreadAdapter(
                     }
                 }
                 //回复数量
-                item.ReplyCount?.apply {
-                    if (this.isNotEmpty()) {
-                        item.ReplyCount = "0"
-                    }
-                } ?: run {
-                    item.ReplyCount = "0"
+                if(item.ReplyCount==null){
+                    item.ReplyCount="0"
                 }
                 binding.llRoot.setOnClickListener {
                     onItemClick?.invoke(item)

@@ -104,7 +104,7 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_page -> {
-                SelectPageDialog(vm.curPage, vm.allPage, context) {
+                SelectPageDialog(vm.refreshPage, vm.allPage, context) {
                     vm.selectPage(it)
                 }.show()
                 return true
@@ -159,7 +159,7 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
 
     private fun initData() {
         vm.id = id
-        vm.curPage = 1
+        vm.refreshPage = 1
         lifecycleScope.launch {
             launch {
                 vm.getPager().collectLatest { data ->
@@ -197,10 +197,10 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
         }.show()
     }
 
+    //刷新到指定页面
     @OnMessage
     fun refresh() {
         mAdapter.refresh()
-//        mDataBinding.rvContent.smoothScrollToPosition(0)
         mManager.smoothScrollToPosition(mDataBinding.rvContent, RecyclerView.State(), 0)
     }
 }
@@ -215,7 +215,8 @@ class ThreadDetailVM @Inject constructor(
 
     var id: String = ""
 
-    var curPage: Int = 1
+    var refreshPage: Int = 1//这个是表示当前刷新操作刷新到哪一页
+    var curPage: Int = 1//这是正常load页面时加载的页面，代表最新加载的页面
 
     var allPage: Int = 1
 
@@ -246,9 +247,10 @@ class ThreadDetailVM @Inject constructor(
         return getCommonPager {
             object : NMBBasePagingSource<ArticleItem>(selectedPage = {
                 //pagingData跳页是调用refresh的时候根据initKey来加载，这里返回当前page作为初始化页面
-                curPage
+                refreshPage
             }) {
                 override suspend fun load(pos: Int): List<ArticleItem> {
+                    curPage = pos
                     val data = repository.getArticleDetail(id, pos)
                     val res = arrayListOf<ArticleItem>()
                     try {
@@ -262,7 +264,9 @@ class ThreadDetailVM @Inject constructor(
                     }
 
                     data.Replies?.let {
-                        it.forEach { reply ->
+                        it.filter {
+                            return@filter it.id != "99999999"
+                        }.forEach { reply ->
                             if (reply.user_hash == data.user_hash) {
                                 reply.master = "1"
                             } else {
@@ -312,22 +316,22 @@ class ThreadDetailVM @Inject constructor(
 
     //翻页
     fun selectPage(page: Int) {
-        curPage = page
+        refreshPage = page
         sendEmptyMessage(MR.ThreadDetailActivity_refresh)
     }
 
     //刷新数据
-    fun refresh() {
-        curPage = 1
+    fun refreshCur() {
+        refreshPage = curPage
         sendEmptyMessage(MR.ThreadDetailActivity_refresh)
     }
 
     //向前加载一页
     fun loadPre() {
-        if (curPage > 1) {
-            curPage--
+        if (refreshPage > 1) {
+            refreshPage--
         } else {
-            refresh()
+            refreshPage = 1
         }
         sendEmptyMessage(MR.ThreadDetailActivity_refresh)
     }

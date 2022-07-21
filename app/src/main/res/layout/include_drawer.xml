@@ -20,6 +20,7 @@
             android:layout_height="250dp"
             android:layout_alignParentTop="true"
             android:scaleType="fitXY"
+            android:onClick="@{()->view.showCover()}"
             android:src="@mipmap/bg_cover" />
 
         <LinearLayout
@@ -65,6 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ll_collect"
+            android:onClick="@{()->view.gotoSetting()}"
             android:orientation="vertical">
 
             <TextView
@@ -73,7 +75,6 @@
                 android:layout_height="@dimen/item_height"
                 android:gravity="center"
                 android:text="@string/setting"
-                android:onClick="@{()->view.gotoSetting()}"
                 android:textColor="?attr/colorTertiary" />
 
         </LinearLayout>
@@ -96,6 +97,7 @@
 
 
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/ll_author"
             android:layout_width="match_parent"
@@ -104,7 +106,7 @@
             android:layout_marginBottom="16dp"
             android:background="?attr/selectableItemBackground"
             android:gravity="center"
-            android:onClick="checkAuthor"
+            android:onClick="@{()->view.gotoAuthor()}"
             android:paddingTop="5dp"
             android:paddingBottom="5dp">
 
@@ -117,7 +119,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:text="@string/author" />
+                android:text="@string/about" />
         </LinearLayout>
 
     </RelativeLayout>

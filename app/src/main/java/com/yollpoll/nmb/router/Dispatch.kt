@@ -9,6 +9,7 @@ import com.yollpoll.framework.dispatch.DispatcherManager
 import com.yollpoll.framework.extensions.toMapJson
 import com.yollpoll.nmb.App
 import com.yollpoll.nmb.BuildConfig
+import com.yollpoll.nmb.view.activity.gotoWeb
 
 /**
  * Created by spq on 2022/1/10
@@ -52,17 +53,24 @@ object WebDispatchInterceptor : DispatchInterceptor {
         val request = chain.getRequest()
         val url = request.url
         if (url.startsWith("http") || url.startsWith("https")) {
-            val uri: Uri = Uri.parse(url)
-            val intent = Intent(Intent.ACTION_VIEW, uri)
-            if (intent.resolveActivity(chain.getContext().packageManager) != null) {
-                chain.getContext().startActivity(intent)
-            } else {
-                val resBuilder = DispatchResponse.Builder()
-                resBuilder.result = false
-                resBuilder.request = request
-                resBuilder.params = hashMapOf("网址错误" to "result")
-                return resBuilder.build()
+            val title: String? = chain.getRequest().params["title"]?.let {
+                return@let "浏览器"
             }
+            gotoWeb(chain.getContext(), url, title)
+            return DispatchResponse.Builder()
+                .params(chain.getRequest().params as HashMap<String, String>?)
+                .request(chain.getRequest()).result(true).build()
+//            val uri: Uri = Uri.parse(url)
+//            val intent = Intent(Intent.ACTION_VIEW, uri)
+//            if (intent.resolveActivity(chain.getContext().packageManager) != null) {
+//                chain.getContext().startActivity(intent)
+//            } else {
+//                val resBuilder = DispatchResponse.Builder()
+//                resBuilder.result = false
+//                resBuilder.request = request
+//                resBuilder.params = hashMapOf("网址错误" to "result")
+//                return resBuilder.build()
+//            }
         }
         return chain.proceed(request)
     }

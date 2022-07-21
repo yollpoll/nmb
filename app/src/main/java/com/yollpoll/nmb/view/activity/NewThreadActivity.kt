@@ -29,9 +29,7 @@ import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.extensions.toListBean
 import com.yollpoll.framework.extensions.toListJson
 import com.yollpoll.framework.fast.FastViewModel
-import com.yollpoll.nmb.ACTION_TAG_ID
-import com.yollpoll.nmb.ACTION_TAG_NAME
-import com.yollpoll.nmb.BR
+import com.yollpoll.nmb.*
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.databinding.ActivityNewthreadBinding
 import com.yollpoll.nmb.model.repository.ArticleDetailRepository
@@ -475,6 +473,7 @@ class NewThreadVm @Inject constructor(
             )
             finish()
             hideLoading()
+            sendEmptyMessage(MR.ThreadDetailActivity_refresh)
         }
     }
 

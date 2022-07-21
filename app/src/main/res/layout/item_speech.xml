@@ -58,7 +58,6 @@
                 android:id="@+id/tv_content"
                 android:layout_marginLeft="10dp"
                 android:ellipsize="end"
-                android:text="@{bean.content}"
                 android:maxLines="10"
                 />
         </LinearLayout>

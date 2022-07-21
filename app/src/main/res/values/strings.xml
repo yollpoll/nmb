@@ -42,4 +42,8 @@
     <string name="save">保存</string>
     <string name="finish">完成</string>
     <string name="background">背景</string>
+    <string name="git">git</string>
+    <string name="about">关于</string>
+    <string name="browser">浏览器</string>
+    <string name="copy_url">复制链接</string>
 </resources>

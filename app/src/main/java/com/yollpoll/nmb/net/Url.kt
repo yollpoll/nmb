@@ -4,7 +4,6 @@ package com.yollpoll.nmb.net
 const val DOMAIN = "google.com"
 const val BASE_URL = "https://www.nmbxd1.com/"
 const val DIRECT_BASE_URL = "https://adnmb3.com/"//重定向以后的url，应该动态获取
-const val MY_GIT = "https://github.com/yollpoll/nmb"
 
 const val ROOT_URL = "Api/backupUrl"//重定向获取根url
 
