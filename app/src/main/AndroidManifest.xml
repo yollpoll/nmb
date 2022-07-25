@@ -60,6 +60,7 @@
         <activity android:name=".view.activity.DrawingActivity"/>
         <activity android:name=".view.activity.AuthorActivity"/>
         <activity android:name=".view.activity.WebActivity"/>
+        <activity android:name=".view.activity.SettingActivity"/>
     </application>
 
 </manifest>

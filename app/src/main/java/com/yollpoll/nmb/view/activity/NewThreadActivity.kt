@@ -499,7 +499,7 @@ class NewThreadVm @Inject constructor(
     fun addLinkIds(linkIds: List<String>) {
         var content = ""
         linkIds.forEach {
-            content += ">>.No${it}\n"
+            content += ">>No.${it}\n"
         }
         threadContent = content
     }

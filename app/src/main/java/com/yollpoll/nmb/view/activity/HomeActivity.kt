@@ -282,7 +282,9 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     }
 
     fun gotoSetting() {
-
+        lifecycleScope.launch {
+            gotoSetting(context)
+        }
     }
 
     fun gotoAuthor() {

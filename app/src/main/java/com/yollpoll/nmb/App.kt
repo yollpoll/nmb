@@ -13,13 +13,15 @@ import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.model.bean.CookieBean
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.*
+import javax.inject.Inject
 
 @HiltAndroidApp
 class App : NMBApplication() {
     companion object {
         lateinit var INSTANCE: App
     }
-
+    @Inject
+    lateinit var crashHandler: MyCrashHandler
     var cookie: CookieBean? = null
     lateinit var androidId: String
     override fun onCreate() {
@@ -38,6 +40,8 @@ class App : NMBApplication() {
             cookie = MainDB.getInstance().getCookieDao().queryUsed()
             androidId = Settings.System.getString(contentResolver, Settings.Secure.ANDROID_ID)
         }
+        //全局异常捕获
+//        Thread.setDefaultUncaughtExceptionHandler(crashHandler)
     }
 
 

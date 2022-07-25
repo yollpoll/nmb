@@ -21,4 +21,5 @@ interface BaseDao<T> {
 
     @Update
     fun update(element: T)
+
 }
