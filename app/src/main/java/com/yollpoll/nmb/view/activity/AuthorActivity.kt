@@ -10,10 +10,7 @@ import com.yollpoll.base.NMBActivity
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.fast.FastActivity
 import com.yollpoll.framework.fast.FastViewModel
-import com.yollpoll.nmb.AUTHOR
-import com.yollpoll.nmb.EMAIL
-import com.yollpoll.nmb.GIT
-import com.yollpoll.nmb.R
+import com.yollpoll.nmb.*
 import com.yollpoll.nmb.databinding.ActivityAuthorBinding
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_AUTHOR
@@ -42,6 +39,11 @@ class AuthorActivity : NMBActivity<ActivityAuthorBinding, AuthorVm>() {
             DispatchClient.manager?.dispatch(context,DispatchRequest.UrlBuilder(GIT).build())
         }
     }
+    fun gotoUpgrade(){
+        lifecycleScope.launchWhenResumed {
+            DispatchClient.manager?.dispatch(context,DispatchRequest.UrlBuilder(FIR).build())
+        }
+    }
 }
 
 @HiltViewModel
@@ -49,4 +51,5 @@ class AuthorVm @Inject constructor(val app: Application) : FastViewModel(app) {
     val author = AUTHOR
     val git = GIT
     val email= EMAIL
+    val currentVersion=BuildConfig.VERSION_NAME
 }

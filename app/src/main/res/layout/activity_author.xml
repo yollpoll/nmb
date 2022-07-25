@@ -96,5 +96,30 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/line"
             android:background="?attr/colorOutline" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height"
+            android:background="?attr/selectableItemBackground"
+            android:gravity="center_vertical"
+            android:orientation="vertical"
+            android:onClick="@{()->view.gotoUpgrade()}"
+            android:paddingLeft="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/upgrade" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text='@{@string/cur_version+" : "+viewModel.currentVersion}'
+                />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line"
+            android:background="?attr/colorOutline" />
     </LinearLayout>
 </layout>

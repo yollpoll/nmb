@@ -47,4 +47,6 @@
     <string name="browser">浏览器</string>
     <string name="copy_url">复制链接</string>
     <string name="log_collect">日志收集</string>
+    <string name="cur_version">当前版本</string>
+    <string name="upgrade">检测新版本</string>
 </resources>
