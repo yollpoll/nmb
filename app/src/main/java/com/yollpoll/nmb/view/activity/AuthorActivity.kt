@@ -41,7 +41,9 @@ class AuthorActivity : NMBActivity<ActivityAuthorBinding, AuthorVm>() {
     }
     fun gotoUpgrade(){
         lifecycleScope.launchWhenResumed {
-            DispatchClient.manager?.dispatch(context,DispatchRequest.UrlBuilder(FIR).build())
+            DispatchClient.manager?.dispatch(context,DispatchRequest.UrlBuilder(FIR).params(
+                hashMapOf("inner" to "false")
+            ).build())
         }
     }
 }

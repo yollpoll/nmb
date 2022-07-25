@@ -56,21 +56,32 @@ object WebDispatchInterceptor : DispatchInterceptor {
             val title: String? = chain.getRequest().params["title"]?.let {
                 return@let "浏览器"
             }
-            gotoWeb(chain.getContext(), url, title)
-            return DispatchResponse.Builder()
-                .params(chain.getRequest().params as HashMap<String, String>?)
-                .request(chain.getRequest()).result(true).build()
-//            val uri: Uri = Uri.parse(url)
-//            val intent = Intent(Intent.ACTION_VIEW, uri)
-//            if (intent.resolveActivity(chain.getContext().packageManager) != null) {
-//                chain.getContext().startActivity(intent)
-//            } else {
-//                val resBuilder = DispatchResponse.Builder()
-//                resBuilder.result = false
-//                resBuilder.request = request
-//                resBuilder.params = hashMapOf("网址错误" to "result")
-//                return resBuilder.build()
-//            }
+            val inner = chain.getRequest().params["inner"]?.toBoolean() ?: true
+            if (inner) {
+                gotoWeb(chain.getContext(), url, title)
+                return DispatchResponse.Builder()
+                    .params(chain.getRequest().params as HashMap<String, String>?)
+                    .request(chain.getRequest()).result(true).build()
+            } else {
+                val uri: Uri = Uri.parse(url)
+                val intent = Intent(Intent.ACTION_VIEW, uri)
+                chain.getContext().startActivity(intent)
+                val resBuilder = DispatchResponse.Builder()
+                resBuilder.result = false
+                resBuilder.request = request
+                resBuilder.params = hashMapOf("网址错误" to "result")
+                return resBuilder.build()
+
+//                if (intent.resolveActivity(chain.getContext().packageManager) != null) {
+//                    chain.getContext().startActivity(intent)
+//                } else {
+//                    val resBuilder = DispatchResponse.Builder()
+//                    resBuilder.result = false
+//                    resBuilder.request = request
+//                    resBuilder.params = hashMapOf("网址错误" to "result")
+//                    return resBuilder.build()
+//                }
+            }
         }
         return chain.proceed(request)
     }
