@@ -78,7 +78,7 @@ interface HttpService {
         @Part("email") email: RequestBody?,
         @Part("water") water: RequestBody?,
         @Part("image\"; filename=\"a.jpg\"") file: RequestBody?
-    )
+    ):ResponseBody
 
     @GET("$COLLECTION/page/{page}/uuid/{uuid}")
     suspend fun getCollection(

@@ -62,7 +62,7 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
         content: String,
         water: String,
         file: File?
-    ) {
+    ):ResponseBody {
         "newThread".logI()
         return service.replyThread(
             getRequestBody(reply),

@@ -21,6 +21,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.*
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.Extra
+import com.yollpoll.arch.log.LogUtils
 import com.yollpoll.base.NMBActivity
 import com.yollpoll.base.logI
 import com.yollpoll.floweventbus.FlowEventBus
@@ -408,7 +409,7 @@ class NewThreadVm @Inject constructor(
     }
 
     //选择照片
-    fun selectPhoto(uri: Uri,width:Int=2048,height:Int=2048) {
+    fun selectPhoto(uri: Uri,width:Int=1024,height:Int=1024) {
         viewModelScope.launch(Dispatchers.IO) {
             "img uri:${uri.path}".logI()
             val path = getPathByUri(uri, app)
@@ -462,7 +463,7 @@ class NewThreadVm @Inject constructor(
                 saveBitmapToSd(bitmap, "img.jpg", app.filesDir.absolutePath)
             else null
             val file = if (null != path) File(path) else null
-            repository.reply(
+            val res=repository.reply(
                 replyTo,
                 name,
                 threadTitle,
@@ -471,6 +472,7 @@ class NewThreadVm @Inject constructor(
                 if (waterMask) "1" else "0",
                 file
             )
+            LogUtils.e("res: ${res.string()}")
             finish()
             hideLoading()
             sendEmptyMessage(MR.ThreadDetailActivity_refresh)
