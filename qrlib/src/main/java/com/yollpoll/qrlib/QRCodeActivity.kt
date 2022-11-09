@@ -1,5 +1,6 @@
 package com.yollpoll.qrlib
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Application
 import android.content.Intent
@@ -7,12 +8,17 @@ import android.graphics.Rect
 import android.graphics.RectF
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.camera.core.ImageCapture
 import androidx.camera.view.LifecycleCameraController
+import com.permissionx.guolindev.PermissionX
 import com.yollpoll.annotation.annotation.Route
+import com.yollpoll.arch.log.LogUtils
 import com.yollpoll.base.NMBActivity
 import com.yollpoll.base.logE
 import com.yollpoll.base.logI
@@ -123,6 +129,51 @@ class QRCodeActivity : NMBActivity<ActivityQrCodeBinding, QrVm>() {
     override fun getLayoutId() = R.layout.activity_qr_code
 
     override fun initViewModel() = vm
+
+    private val betweenActivityResultLauncher =
+        registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result: ActivityResult ->
+            //相册
+            if (result.resultCode != RESULT_OK) {
+                return@registerForActivityResult
+            }
+            val uri = result.data?.data
+            if (null == uri) {
+                "获取图片失败".shortToast()
+                return@registerForActivityResult
+            }
+            analysisQr(uri, context, onResult = { list ->
+                val sb = StringBuilder()
+                list.forEach {
+                    sb.append(it)
+                    sb.append("\n")
+                }
+                intentToResult(sb.toString())
+            }, onErr = {
+                "err:${it.message}".shortToast()
+            }, null)
+        }
+
+    //选择图片识别
+    fun selectQrFromPhoto(view: View) {
+        PermissionX.init(this).permissions(Manifest.permission.READ_EXTERNAL_STORAGE)
+            .onExplainRequestReason { scope, deniedList ->
+                val message = "相册需要您同意以下权限才能正常使用"
+                scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
+            }.request { allGranted, grantedList, deniedList ->
+                if (allGranted) {
+                    val intent = Intent()
+                    intent.type = "image/*"
+                    intent.action = Intent.ACTION_GET_CONTENT
+                    betweenActivityResultLauncher.launch(intent)
+//                    this.startActivityForResult(
+//                        intent,
+//                        REQ_PHOTO_QR
+//                    )
+                } else {
+                    "您拒绝了如下权限：$deniedList".shortToast()
+                }
+            }
+    }
 }
 
 @HiltViewModel

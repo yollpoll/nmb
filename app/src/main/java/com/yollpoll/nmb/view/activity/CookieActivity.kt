@@ -46,6 +46,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Cookie
 import okio.ByteString.Companion.encode
+import java.lang.Exception
 import java.util.*
 import javax.inject.Inject
 
@@ -196,8 +197,8 @@ class CookieVM @Inject constructor(val app: Application, val repository: CookieR
     FastViewModel(app) {
 
     suspend fun loadCookieList(): List<CookieBean> {
-        val list=repository.queryCookies()
-        list.forEach{
+        val list = repository.queryCookies()
+        list.forEach {
             it.toJson().logE()
         }
         return repository.queryCookies()
@@ -206,13 +207,18 @@ class CookieVM @Inject constructor(val app: Application, val repository: CookieR
     //添加饼干
     fun addCookie(cookieJson: String) {
         viewModelScope.launch {
-            val cookie = cookieJson.toJsonBean<CookieBean>()
-            if (null == cookie) {
+            try {
+                val cookie = cookieJson.toJsonBean<CookieBean>()
+                if (null == cookie) {
+                    "cookie解析出错".shortToast()
+                    return@launch
+                }
+                useCookie(cookie)
+                sendEmptyMessage(MR.CookieActivity_refreshCookieList)
+            } catch (e: Exception) {
                 "cookie解析出错".shortToast()
-                return@launch
             }
-            useCookie(cookie)
-            sendEmptyMessage(MR.CookieActivity_refreshCookieList)
+
         }
     }
 

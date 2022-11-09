@@ -49,4 +49,6 @@
     <string name="log_collect">日志收集</string>
     <string name="cur_version">当前版本</string>
     <string name="upgrade">检测新版本</string>
+    <string name="_import">导入</string>
+    <string name="No.">>>No.</string>
 </resources>

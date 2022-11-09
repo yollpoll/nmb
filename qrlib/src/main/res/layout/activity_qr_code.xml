@@ -19,5 +19,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@android:color/transparent" />
+        <ImageView
+            android:onClick="selectQrFromPhoto"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_photo"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginBottom="20dp"
+            />
     </FrameLayout>
 </layout>

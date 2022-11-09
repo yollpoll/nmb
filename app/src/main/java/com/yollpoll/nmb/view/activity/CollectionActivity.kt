@@ -4,6 +4,8 @@ import android.app.AlertDialog
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
@@ -29,6 +31,7 @@ import com.yollpoll.nmb.model.bean.ForumDetail
 import com.yollpoll.nmb.model.repository.ArticleDetailRepository
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_COLLECTION
+import com.yollpoll.nmb.view.widgets.ImportCollectionDialog
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -46,9 +49,23 @@ suspend fun gotoCollectionActivity(context: Context) {
 class CollectionActivity : NMBActivity<ActivityCollectionBinding, CollectionVm>() {
     val vm: CollectionVm by viewModels()
     override fun getLayoutId() = R.layout.activity_collection
-
+    override fun getMenuLayout() = R.menu.menu_collection
     override fun initViewModel() = vm
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_import -> {
+                ImportCollectionDialog(this){
+                    it?.run {
+                        vm.importCollection(it)
+                    }
+                }.show()
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
+
+    }
     val rvManager = LinearLayoutManager(context)
 
     val adapter = ThreadAdapter(onUrlClick = {
@@ -97,6 +114,7 @@ class CollectionActivity : NMBActivity<ActivityCollectionBinding, CollectionVm>(
     @OnMessage
     fun refresh(){
         adapter.refresh()
+        rvManager.scrollToPosition(0)
     }
 }
 
@@ -137,5 +155,16 @@ class CollectionVm @Inject constructor(
             sendEmptyMessage(MR.CollectionActivity_refresh)
         }
 
+    }
+    fun importCollection(tid:String){
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) {
+                val res = repository.collect(App.INSTANCE.androidId, tid)
+                withContext(Dispatchers.Main) {
+                    sendEmptyMessage(MR.CollectionActivity_refresh)
+                    res.shortToast()
+                }
+            }
+        }
     }
 }
