@@ -20,106 +20,130 @@
         android:orientation="vertical">
 
         <include
-            bind:title='@{@string/about}'
             android:id="@+id/header_title"
-            layout="@layout/include_title" />
+            layout="@layout/include_title"
+            bind:title='@{@string/about}' />
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="@dimen/item_height"
-            android:background="?attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingLeft="10dp">
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/author" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.author}" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_height"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp">
 
-        </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/author" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line"
-            android:background="?attr/colorOutline" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/item_height"
-            android:background="?attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingLeft="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.author}" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/email" />
+                </LinearLayout>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.email}" />
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/line"
+                    android:background="?attr/colorOutline" />
 
-        </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_height"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line"
-            android:background="?attr/colorOutline" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/item_height"
-            android:background="?attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:onClick="@{()->view.gotoGit()}"
-            android:paddingLeft="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/email" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/git" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.email}" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@{viewModel.git}" />
-        </LinearLayout>
+                </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line"
-            android:background="?attr/colorOutline" />
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/item_height"
-            android:background="?attr/selectableItemBackground"
-            android:gravity="center_vertical"
-            android:orientation="vertical"
-            android:onClick="@{()->view.gotoUpgrade()}"
-            android:paddingLeft="10dp">
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/line"
+                    android:background="?attr/colorOutline" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/upgrade" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_height"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:onClick="@{()->view.gotoGit()}"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text='@{@string/cur_version+" : "+viewModel.currentVersion}'
-                />
-        </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/git" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/line"
-            android:background="?attr/colorOutline" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.git}" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/line"
+                    android:background="?attr/colorOutline" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/item_height"
+                    android:background="?attr/selectableItemBackground"
+                    android:gravity="center_vertical"
+                    android:onClick="@{()->view.gotoUpgrade()}"
+                    android:orientation="vertical"
+                    android:paddingLeft="10dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/upgrade" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text='@{@string/cur_version+" : "+viewModel.currentVersion}' />
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/line"
+                    android:background="?attr/colorOutline" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginRight="10dp"
+                    android:text="@{viewModel.about}" />
+            </LinearLayout>
+        </ScrollView>
     </LinearLayout>
+
 </layout>

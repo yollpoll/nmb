@@ -54,4 +54,5 @@ class AuthorVm @Inject constructor(val app: Application) : FastViewModel(app) {
     val git = GIT
     val email= EMAIL
     val currentVersion=BuildConfig.VERSION_NAME
+    val about= aboutProject
 }
