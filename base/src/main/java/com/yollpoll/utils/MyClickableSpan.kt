@@ -1,11 +1,14 @@
 package com.yollpoll.utils
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.text.TextPaint
+import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
 import android.view.View
+import com.yollpoll.base.R
 import com.yollpoll.base.logE
 import com.yollpoll.framework.extensions.shortToast
 
@@ -25,4 +28,8 @@ class MyClickableSpan(
         ds.isUnderlineText = true
         ds.color = Color.parseColor("#7cb342")
     }
+}
+
+class MyHideSpan(context:Context):BackgroundColorSpan(context.resources.getColor(R.color.color_hint)){
+
 }

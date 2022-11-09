@@ -1,9 +1,13 @@
 package com.yollpoll.nmb.adapter
 
-import android.graphics.drawable.Drawable
+import android.graphics.Color
 import android.os.Build
-import android.text.Editable
 import android.text.Html
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.style.BackgroundColorSpan
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.View
 import androidx.core.text.HtmlCompat
 import com.bumptech.glide.Glide
@@ -11,18 +15,14 @@ import com.yollpoll.base.NmbPagingDataAdapter
 import com.yollpoll.base.getAttrColor
 import com.yollpoll.base.logE
 import com.yollpoll.framework.extensions.shortToast
-import com.yollpoll.framework.extensions.toJson
 import com.yollpoll.nmb.BR
 import com.yollpoll.nmb.R
-import com.yollpoll.nmb.databinding.ItemForumBinding
 import com.yollpoll.nmb.databinding.ItemThreadBinding
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.net.imgThumbUrl
-import com.yollpoll.nmb.view.activity.ThreadDetailActivity
 import com.yollpoll.nmb.view.widgets.getCommonGlideOptions
+import com.yollpoll.utils.MyClickableSpan
 import com.yollpoll.utils.TransFormContent
-import kotlinx.coroutines.launch
-import org.xml.sax.XMLReader
 
 class ThreadAdapter(
     home: Boolean = true,
@@ -53,8 +53,8 @@ class ThreadAdapter(
                     }
                 }
                 //回复数量
-                if(item.ReplyCount==null){
-                    item.ReplyCount="0"
+                if (item.ReplyCount == null) {
+                    item.ReplyCount = "0"
                 }
                 binding.llRoot.setOnClickListener {
                     onItemClick?.invoke(item)
@@ -80,7 +80,55 @@ class ThreadAdapter(
                             null
                         }
                     ) { opening, tag, output, xmlReader ->
-//                        "tag: ${tag} outPut ${output}".logE()
+//                        if (tag == "h") {
+//                            output.setSpan(
+//                                BackgroundColorSpan(context.getAttrColor(R.attr.colorPrimary)),
+//                                0,
+//                                output.length,
+//                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+//                            )
+//                            output.setSpan(
+//                                ForegroundColorSpan(context.getAttrColor(R.attr.colorPrimary)),
+//                                0,
+//                                output.length,
+//                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+//                            )
+//                            output.setSpan(
+//                                object : ClickableSpan() {
+//                                    override fun updateDrawState(ds: TextPaint) {
+//                                    }
+//                                    override fun onClick(widget: View) {
+//                                        "clock".shortToast()
+//                                        //背景颜色
+//                                        output.setSpan(
+//                                            BackgroundColorSpan(context.getColor(R.color.transparent)),
+//                                            0,
+//                                            output.length,
+//                                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+//                                        )
+//                                        //文字颜色
+//                                        val color=context.getAttrColor(android.R.attr.textColor)
+//                                        val colorHex="#FF"+Integer.toHexString(color).let {
+//                                            var color=it
+//                                            while (color.length<6){
+//                                                color= "0$color"
+//                                            }
+//                                            return@let color
+//                                        }
+//                                        val realColor=Color.parseColor(colorHex)
+//                                        output.setSpan(
+//                                            ForegroundColorSpan(realColor),
+//                                            0,
+//                                            output.length,
+//                                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+//                                        )
+//                                    }
+//                                },
+//                                0,
+//                                output.length,
+//                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+//                            )
+//                        }
                     }
                 } else {
                     Html.fromHtml(item.content)
