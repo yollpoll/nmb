@@ -3,6 +3,7 @@ package com.yollpoll.nmb.view.activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
@@ -20,9 +21,7 @@ import com.yollpoll.arch.annotation.Extra
 import com.yollpoll.arch.util.AppUtils
 import com.yollpoll.base.*
 import com.yollpoll.framework.dispatch.DispatchRequest
-import com.yollpoll.framework.extensions.shortToast
-import com.yollpoll.framework.extensions.toJson
-import com.yollpoll.framework.extensions.toJsonBean
+import com.yollpoll.framework.extensions.*
 import com.yollpoll.framework.fast.FastActivity
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.framework.paging.getCommonPager
@@ -43,10 +42,8 @@ import com.yollpoll.nmb.view.widgets.*
 import com.yollpoll.utils.copyStr
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -158,9 +155,13 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
     }
 
     private fun initData() {
-        vm.id = id
-        vm.refreshPage = 1
         lifecycleScope.launch {
+            val lastPage = getInt("${id}_page", 1)
+            val lastIndex = getInt("${id}_index", default = 0)
+            vm.id = id
+            "last page: ${lastPage} last index: ${lastIndex}".logD()
+            vm.refreshPage = lastPage
+            vm.curPage = lastPage
             launch {
                 vm.getPager().collectLatest { data ->
                     mAdapter.submitData(data)
@@ -203,6 +204,11 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
         mAdapter.refresh()
 //        mManager.smoothScrollToPosition(mDataBinding.rvContent, RecyclerView.State(), 0)
     }
+
+    override fun onDestroy() {
+        vm.savePageIndex(mManager.findFirstCompletelyVisibleItemPosition())
+        super.onDestroy()
+    }
 }
 
 @HiltViewModel
@@ -244,28 +250,31 @@ class ThreadDetailVM @Inject constructor(
 
 
     fun getPager(): Flow<PagingData<ArticleItem>> {
+        "refreshPage: $refreshPage | curPage: $curPage".logD()
         return getCommonPager {
-            object : NMBBasePagingSource<ArticleItem>(selectedPage = {
+            object : NMBBasePagingSource<ArticleItem>(startIndex = refreshPage, selectedPage = {
                 //pagingData跳页是调用refresh的时候根据initKey来加载，这里返回当前page作为初始化页面
                 refreshPage
             }) {
                 override suspend fun load(pos: Int): List<ArticleItem> {
                     curPage = pos
+                    "load index: $pos |init index $refreshPage | cur index $curPage".logD()
+
                     val data = repository.getArticleDetail(id, pos)
+
                     val res = arrayListOf<ArticleItem>()
                     try {
+                        val head = data.copy()
+                        initData(head)
                         if (pos == 1) {
-                            val head = data.copy()
-                            initData(head)
                             res.add(head)
                         }
                     } catch (e: Exception) {
                         e.message?.logI()
                     }
-
                     data.Replies?.let {
                         it.filter {
-                            return@filter it.id != "9999999"||it.user_hash.lowercase()!="tips"
+                            return@filter it.id != "9999999"
                         }.forEach { reply ->
                             if (reply.user_hash == data.user_hash) {
                                 reply.master = "1"
@@ -347,6 +356,19 @@ class ThreadDetailVM @Inject constructor(
                     res.shortToast()
                 }
             }
+        }
+    }
+
+    //记录书签
+    fun savePageIndex(index: Int) {
+        GlobalScope.launch {
+            //当前页面数
+            val pageNo = index / PAGE_SIZE
+            "save page: ${pageNo + refreshPage} index ${index - pageNo * PAGE_SIZE}".logD()
+            //当前第几页
+            saveIntToDataStore("${id}_page", pageNo + refreshPage)
+            //当前第一条
+            saveIntToDataStore("${id}_index", index - pageNo * PAGE_SIZE)
         }
     }
 }
