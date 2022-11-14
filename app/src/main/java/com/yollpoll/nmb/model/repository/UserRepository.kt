@@ -10,6 +10,7 @@ import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.db.MySpeechDao
 import com.yollpoll.nmb.di.CommonRetrofitFactory
 import com.yollpoll.nmb.model.bean.ArticleItem
+import com.yollpoll.nmb.model.bean.HistoryBean
 import com.yollpoll.nmb.model.bean.MySpeechBean
 import com.yollpoll.nmb.net.HttpService
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +44,7 @@ class UserRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
     suspend fun saveSpeechToLocal(bean: List<MySpeechBean>) {
         MainDB.getInstance().getSpeechDao().insertAll(bean)
     }
+
     //从数据库加载
     suspend fun loadSpeechFromLocal(): List<MySpeechBean> {
         return if (App.INSTANCE.cookie?.cookie != null) {
@@ -51,8 +53,9 @@ class UserRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
             arrayListOf()
         }
     }
+
     //清空数据
-    suspend fun clearLocalSpeech(){
+    suspend fun clearLocalSpeech() {
         MainDB.getInstance().getSpeechDao().clearAll()
     }
 
@@ -66,6 +69,19 @@ class UserRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
 
     suspend fun getCollection(page: Int, uuid: String): List<ArticleItem> {
         return service.getCollection(page, uuid)
+    }
+
+    suspend fun getHistory(): List<HistoryBean> {
+        return MainDB.getInstance().getHistoryDao().query()
+    }
+    suspend fun delHistory(bean:HistoryBean){
+        MainDB.getInstance().getHistoryDao().delete(bean)
+    }
+    suspend fun clearHistory(){
+        MainDB.getInstance().getHistoryDao().clearAll()
+    }
+    suspend fun addHistory(vararg list:HistoryBean){
+        MainDB.getInstance().getHistoryDao().insertAll(list.asList())
     }
 
 }

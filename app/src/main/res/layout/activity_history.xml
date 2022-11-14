@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="view"
+            type="com.yollpoll.nmb.view.activity.HistoryActivity" />
+
+        <variable
+            name="viewModel"
+            type="com.yollpoll.nmb.view.activity.HistoryVm" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSecondaryContainer">
+
+        <include
+            android:id="@+id/layout_title"
+            layout="@layout/include_title"
+            bind:layout_constraintTop_toTopOf="parent"
+            bind:title="@{viewModel.title}" />
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/swipe_refresh"
+            bind:layout_constraintTop_toBottomOf="@+id/layout_title">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rv_history"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                bind:adapter="@{view.adapter}"
+                bind:layoutManager="@{view.mManager}" />
+
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

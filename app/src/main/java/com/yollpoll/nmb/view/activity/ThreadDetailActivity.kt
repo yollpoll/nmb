@@ -33,8 +33,10 @@ import com.yollpoll.nmb.adapter.ExampleLoadStateAdapter
 import com.yollpoll.nmb.adapter.ThreadAdapter
 import com.yollpoll.nmb.databinding.ActivityThreadDetailBinding
 import com.yollpoll.nmb.model.bean.ArticleItem
+import com.yollpoll.nmb.model.bean.HistoryBean
 import com.yollpoll.nmb.model.repository.ArticleDetailRepository
 import com.yollpoll.nmb.model.repository.HomeRepository
+import com.yollpoll.nmb.model.repository.UserRepository
 import com.yollpoll.nmb.net.imgThumbUrl
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_THREAD_DETAIL
@@ -214,7 +216,8 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
 @HiltViewModel
 class ThreadDetailVM @Inject constructor(
     val app: Application,
-    val repository: ArticleDetailRepository
+    val repository: ArticleDetailRepository,
+    val userRepository: UserRepository
 ) : FastViewModel(app) {
     @Bindable
     var title: String = "无标题"
@@ -303,7 +306,10 @@ class ThreadDetailVM @Inject constructor(
         } else {
             (head.ReplyCount!!.toInt() / PAGE_SIZE) + 1
         }
-
+        if(!hasAddHistory){
+            saveHistory(head)
+            hasAddHistory=true
+        }
     }
 
     //点击了文本中的连接
@@ -369,6 +375,27 @@ class ThreadDetailVM @Inject constructor(
             saveIntToDataStore("${id}_page", pageNo + refreshPage)
             //当前第一条
             saveIntToDataStore("${id}_index", index - pageNo * PAGE_SIZE)
+        }
+    }
+
+    var hasAddHistory:Boolean=false
+    //添加历史记录
+    fun saveHistory(bean: ArticleItem) {
+        viewModelScope.launch {
+            val history = HistoryBean(
+                bean.admin,
+                bean.content,
+                bean.email,
+                bean.id.toInt(),
+                bean.name,
+                bean.now,
+                null,
+                null,
+                bean.title,
+                bean.user_hash,
+                updateTime = System.currentTimeMillis()
+            )
+            userRepository.addHistory(history)
         }
     }
 }

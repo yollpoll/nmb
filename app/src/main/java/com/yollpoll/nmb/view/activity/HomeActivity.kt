@@ -298,6 +298,11 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
             ImageActivity.gotoImageActivity(context, 0, arrayListOf("封面"), arrayListOf(realCover))
         }
     }
+    fun gotoVisitHistory(){
+        lifecycleScope.launch{
+            gotoHistory(context)
+        }
+    }
 
     //封面图片刷新
     @OnMessage
