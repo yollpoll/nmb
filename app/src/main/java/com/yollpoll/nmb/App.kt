@@ -60,5 +60,11 @@ class App : NMBApplication() {
     fun getAttrColor(id: Int): Int {
         return this.getAttrColor(id)
     }
+    var theme="common"
 
+    suspend fun initTheme(){
+        GlobalScope.launch {
+            theme=getString("theme","common")
+        }
+    }
 }

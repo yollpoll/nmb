@@ -3,6 +3,7 @@ package com.yollpoll.base
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
+import android.text.Html
 import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
 import com.yollpoll.base.databinding.DialogCommonBinding
@@ -18,7 +19,7 @@ class AnnouncementDialog(val content: String?, val context: Context) :
     }
 
     override fun onInit(dialog: AlertDialog, binding: DialogCommonBinding) {
-        binding.content = content
+        binding.tvDialog.text=Html.fromHtml(content)
     }
 
     override fun onDialogDismiss(dialog: AlertDialog) {
