@@ -13,6 +13,8 @@
         <LinearLayout
             android:id="@+id/ll_root"
             android:layout_width="match_parent"
+            app:skin_enable="true"
+            app:skin_tag="item"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
@@ -105,6 +107,8 @@
                 android:layout_height="@dimen/line"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
+                app:skin_enable="true"
+                app:skin_tag="item_line"
                 android:background="?attr/colorOutline" />
         </LinearLayout>
 </layout>

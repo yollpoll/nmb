@@ -13,6 +13,7 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import com.yollpoll.framework.paging.BasePagingDataAdapter
 import com.yollpoll.framework.paging.BaseViewHolder
+import com.yollpoll.skin.SkinInflaterFactory
 
 /**
  * 相比基础库里，回调新增T
@@ -57,8 +58,11 @@ open class NmbPagingDataAdapter<T : Any>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> {
         context = parent.context
+        val inflater=LayoutInflater.from(context).cloneInContext(context)
+        inflater.factory2 = SkinInflaterFactory
+
         val binding = DataBindingUtil.inflate<ViewDataBinding>(
-            LayoutInflater.from(context),
+            inflater,
             layoutId,
             parent,
             false

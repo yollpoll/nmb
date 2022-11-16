@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.provider.Settings
 import androidx.annotation.ChecksSdkIntAtLeast
+import androidx.datastore.core.DataStore
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.yollpoll.base.NMBApplication
@@ -11,6 +12,8 @@ import com.yollpoll.base.R
 import com.yollpoll.framework.extensions.getString
 import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.model.bean.CookieBean
+import com.yollpoll.skin.SkinTheme
+import com.yollpoll.skin.skinTheme
 import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.*
 import javax.inject.Inject
@@ -20,6 +23,7 @@ class App : NMBApplication() {
     companion object {
         lateinit var INSTANCE: App
     }
+
     @Inject
     lateinit var crashHandler: MyCrashHandler
     var cookie: CookieBean? = null
@@ -42,6 +46,7 @@ class App : NMBApplication() {
         }
         //全局异常捕获
 //        Thread.setDefaultUncaughtExceptionHandler(crashHandler)
+        initTheme()
     }
 
 
@@ -60,11 +65,11 @@ class App : NMBApplication() {
     fun getAttrColor(id: Int): Int {
         return this.getAttrColor(id)
     }
-    var theme="common"
 
-    suspend fun initTheme(){
+    fun initTheme() {
         GlobalScope.launch {
-            theme=getString("theme","common")
+            val theme = getString("theme", SkinTheme.MATERIAL.name)
+            skinTheme = SkinTheme.valueOf(theme)
         }
     }
 }
