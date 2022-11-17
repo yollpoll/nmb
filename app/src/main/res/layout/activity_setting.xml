@@ -16,7 +16,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/colorSurface"
+        android:background="?attr/colorSecondaryContainer"
         android:orientation="vertical">
 
         <include
@@ -26,9 +26,9 @@
 
 
         <RelativeLayout
-            android:visibility="gone"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/item_height">
+            android:layout_height="@dimen/item_height"
+            android:visibility="gone">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -41,8 +41,35 @@
                 android:id="@+id/switch_log"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:checked="@{viewModel.openLog}"
                 android:layout_alignParentRight="true"
+                android:layout_marginRight="10dp"
+                android:checked="@{viewModel.openLog}" />
+        </RelativeLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line"
+            android:background="?attr/colorOutline"
+            android:visibility="gone" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/item_height"
+            android:background="?attr/selectableItemBackground">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="10dp"
+                android:text="@string/ui_theme" />
+
+            <Spinner
+                android:id="@+id/spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
                 android:layout_marginRight="10dp" />
         </RelativeLayout>
 

@@ -30,7 +30,7 @@ object SkinInflaterFactory : LayoutInflater.Factory2 {
             attrs.getAttributeValue(NAMESPACE, SKIN_TAG) ?: return null
 
         val view: View? = createView(context, name, attrs).let {
-            it?.setSkin(name, skinTag, attrs)
+            it?.setSkin(parent,name, skinTag, attrs)
         }
 //        view?.setBackgroundColor(context.resources.getColor(R.color.black))
 //        parseSkinAttr(context, attrs, view)

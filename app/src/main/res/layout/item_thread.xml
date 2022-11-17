@@ -10,11 +10,22 @@
     </data>
 
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:id="@+id/ll_root"
+        android:layout_height="wrap_content">
+
+
         <LinearLayout
-            android:id="@+id/ll_root"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
             app:skin_enable="true"
             app:skin_tag="item"
+
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
             android:orientation="vertical"
@@ -101,14 +112,17 @@
                     android:textSize="@dimen/sec_content_sp" />
             </RelativeLayout>
 
-            <View
-                android:id="@+id/line_bottom"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/line"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                app:skin_enable="true"
-                app:skin_tag="item_line"
-                android:background="?attr/colorOutline" />
+
         </LinearLayout>
+
+        <View
+            android:id="@+id/line_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/line"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            app:skin_enable="true"
+            app:skin_tag="item_line"
+            android:background="?attr/colorOutline" />
+    </LinearLayout>
 </layout>

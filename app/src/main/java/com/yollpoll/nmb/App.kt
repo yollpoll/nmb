@@ -7,9 +7,13 @@ import androidx.annotation.ChecksSdkIntAtLeast
 import androidx.datastore.core.DataStore
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
+import com.yollpoll.arch.message.MessageManager
 import com.yollpoll.base.NMBApplication
 import com.yollpoll.base.R
+import com.yollpoll.floweventbus.FlowEventBus
 import com.yollpoll.framework.extensions.getString
+import com.yollpoll.framework.extensions.putString
+import com.yollpoll.framework.extensions.saveBean
 import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.model.bean.CookieBean
 import com.yollpoll.skin.SkinTheme
@@ -59,17 +63,21 @@ class App : NMBApplication() {
         return true
     }
 
-    /**
-     * 获取attr中的颜色
-     */
-    fun getAttrColor(id: Int): Int {
-        return this.getAttrColor(id)
-    }
+    var appSkinTheme: SkinTheme = SkinTheme.NULL
+        set(value) {
+            field = value
+            skinTheme=value
+            GlobalScope.launch {
+                putString("theme", value.name)
+            }
+        }
 
-    fun initTheme() {
+    private fun initTheme() {
         GlobalScope.launch {
-            val theme = getString("theme", SkinTheme.MATERIAL.name)
-            skinTheme = SkinTheme.valueOf(theme)
+            appSkinTheme = SkinTheme.valueOf(getString("theme", SkinTheme.NULL.name))
+            skinTheme=appSkinTheme
         }
     }
+
+
 }

@@ -1,8 +1,8 @@
 package com.yollpoll.nmb.model.repository
 
 import android.util.Log
-import com.yollpoll.base.TAG
 import com.yollpoll.framework.net.http.RetrofitFactory
+import com.yollpoll.nmb.TAG
 import com.yollpoll.nmb.di.LauncherRetrofitFactory
 import com.yollpoll.nmb.net.DIRECT_BASE_URL
 import com.yollpoll.nmb.net.HttpService

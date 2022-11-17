@@ -6,6 +6,7 @@ import android.content.res.AssetManager
 import android.content.res.Resources
 import android.util.AttributeSet
 import android.view.View
+import android.view.ViewGroup
 
 /**
  * Created by spq on 2022/11/15
@@ -19,7 +20,7 @@ enum class SkinTheme(name: String) {
     NULL("NULL"), MATERIAL("MATERIAL"), OLD_SCHOOL("OLD_SCHOOL"), OTHER("OTHER")
 }
 //函数别名
-typealias SkinHandler = (name: String, view: View, attrs: AttributeSet) -> View
+typealias SkinHandler = (parent: View?, name: String, view: View, attrs: AttributeSet) -> View
 
 val materialHandlers = hashMapOf(MaterialItemLine, MaterialItem)
 val oldSchoolHandlers = hashMapOf<String, SkinHandler>()
@@ -51,12 +52,12 @@ fun getSkinResource(context: Context, path: String): Resources {
  * @param tag String
  * @param attrs AttributeSet
  */
-fun View.setSkin(name: String, tag: String, attrs: AttributeSet):View {
+fun View.setSkin(parent: View?, name: String, tag: String, attrs: AttributeSet): View {
     if (skinTheme == SkinTheme.NULL)
         return this
     return handlerPool[skinTheme]?.let {
-        it[tag]?.invoke(name, this, attrs)
-    }?:let {
+        it[tag]?.invoke(parent, name, this, attrs)
+    } ?: let {
         it
     }
 }

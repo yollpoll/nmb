@@ -8,7 +8,10 @@ import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
-import androidx.core.content.ContextCompat.getSystemService
+import android.util.AttributeSet
+import android.view.View
+import android.view.ViewGroup
+import com.yollpoll.framework.extensions.dp2px
 import java.io.File
 import java.io.FileNotFoundException
 import java.text.SimpleDateFormat
@@ -221,10 +224,11 @@ fun getCurrentDate(): String {
  * @param copyStr
  * @return
  */
-fun copyStr(context: Context,copyStr: String): Boolean {
+fun copyStr(context: Context, copyStr: String): Boolean {
     return try {
         //获取剪贴板管理器
-        val cm: ClipboardManager? = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
+        val cm: ClipboardManager? =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager?
         // 创建普通字符型ClipData
         val mClipData: ClipData = ClipData.newPlainText("Label", copyStr)
         // 将ClipData内容放到系统剪贴板里。
@@ -233,4 +237,60 @@ fun copyStr(context: Context,copyStr: String): Boolean {
     } catch (e: Exception) {
         false
     }
+}
+
+/**
+ * 设置某个View的margin
+ *
+ * @param view   需要设置的view
+ * @param isDp   需要设置的数值是否为DP
+ * @param left   左边距
+ * @param right  右边距
+ * @param top    上边距
+ * @param bottom 下边距
+ * @return
+ */
+fun View.setViewMargin(
+    left: Float? = null,
+    right: Float? = null,
+    top: Float? = null,
+    bottom: Float? = null,
+    attr:AttributeSet?=null
+): ViewGroup.LayoutParams {
+    val context = this.context
+    val params: ViewGroup.LayoutParams? = this.layoutParams
+    var marginParams: ViewGroup.MarginLayoutParams? = null
+    //获取view的margin设置参数
+    marginParams = params?.let {
+        return@let if (params is ViewGroup.MarginLayoutParams) {
+            params
+        } else {
+            //不存在时创建一个新的参数
+            ViewGroup.MarginLayoutParams(params)
+        }
+    } ?: let {
+        ViewGroup.MarginLayoutParams(context,attr)
+    }
+
+    var leftMargin = marginParams.leftMargin
+    var rightMargin = marginParams.rightMargin
+    var topMargin = marginParams.topMargin
+    var bottomMargin = marginParams.bottomMargin
+
+    left?.let {
+        leftMargin = context.dp2px(it).toInt()
+    }
+    right?.let {
+        rightMargin = context.dp2px(it).toInt()
+    }
+    top?.let {
+        topMargin = context.dp2px(it).toInt()
+    }
+    bottom?.let {
+        bottomMargin = context.dp2px(it).toInt()
+    }
+    //设置margin
+    marginParams.setMargins(leftMargin, topMargin, rightMargin, bottomMargin)
+    this.layoutParams = marginParams
+    return marginParams
 }

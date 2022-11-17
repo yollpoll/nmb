@@ -31,6 +31,9 @@ import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.PermissionAuto
 import com.yollpoll.arch.annotation.ViewModel
 import com.yollpoll.arch.log.LogUtils
+import com.yollpoll.arch.message.MessageManager
+import com.yollpoll.arch.message.liveeventbus.LiveEventBus
+import com.yollpoll.arch.message.liveeventbus.ObserverWrapper
 import com.yollpoll.base.*
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.dispatch.OnBackListener
@@ -55,6 +58,7 @@ import com.yollpoll.nmb.net.realCover
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_HOME
 import com.yollpoll.nmb.view.widgets.*
+import com.yollpoll.skin.SkinTheme
 import com.yollpoll.utils.copyStr
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -258,6 +262,14 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
             }
         }
     }
+    //切换主题刷新界面
+    override fun onThemeChanged(theme: SkinTheme) {
+        super.onThemeChanged(theme)
+        mDataBinding.refresh.isRefreshing=true
+        mDataBinding.rvContent.adapter=adapterThread
+        refreshThread()
+    }
+
 
     /**
      * 新建串
@@ -298,8 +310,9 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
             ImageActivity.gotoImageActivity(context, 0, arrayListOf("封面"), arrayListOf(realCover))
         }
     }
-    fun gotoVisitHistory(){
-        lifecycleScope.launch{
+
+    fun gotoVisitHistory() {
+        lifecycleScope.launch {
             gotoHistory(context)
         }
     }

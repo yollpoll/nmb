@@ -58,11 +58,10 @@ open class NmbPagingDataAdapter<T : Any>(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BaseViewHolder<T> {
         context = parent.context
-        val inflater=LayoutInflater.from(context).cloneInContext(context)
-        inflater.factory2 = SkinInflaterFactory
-
+//        val inflater=LayoutInflater.from(context).cloneInContext(context)
+//        inflater.factory2 = SkinInflaterFactory
         val binding = DataBindingUtil.inflate<ViewDataBinding>(
-            inflater,
+            LayoutInflater.from(context),
             layoutId,
             parent,
             false

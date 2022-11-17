@@ -6,9 +6,18 @@ import android.view.Menu
 import android.view.View
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.LayoutInflaterCompat
 import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.observe
+import com.yollpoll.arch.message.liveeventbus.LiveEventBus
+import com.yollpoll.arch.message.liveeventbus.ObserverWrapper
+import com.yollpoll.floweventbus.FlowEventBus
 import com.yollpoll.framework.fast.FastActivity
 import com.yollpoll.framework.fast.FastViewModel
+import com.yollpoll.nmb.ACTION_SELECT_THEME
+import com.yollpoll.skin.SkinInflaterFactory
+import com.yollpoll.skin.SkinTheme
 
 /**
  * Created by spq on 2022/6/22
@@ -20,6 +29,23 @@ abstract class NMBActivity<BIND : ViewDataBinding, VM : FastViewModel> : FastAct
     override fun getViewModel(): VM {
         mViewModel = initViewModel()
         return mViewModel
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        LayoutInflaterCompat.setFactory2(layoutInflater,SkinInflaterFactory)
+        super.onCreate(savedInstanceState)
+        LiveEventBus.use(ACTION_SELECT_THEME, SkinTheme::class.java)
+            .observe(this, object : ObserverWrapper<SkinTheme>() {
+                override fun isSticky() = true
+                override fun onChanged(value: SkinTheme?) {
+                    value?.let {
+                        onThemeChanged(value)
+                    }
+                }
+
+                override fun mainThread() = true
+
+            })
     }
 
     abstract fun initViewModel(): VM
@@ -59,6 +85,10 @@ abstract class NMBActivity<BIND : ViewDataBinding, VM : FastViewModel> : FastAct
 
     open fun getMenuLayout(): Int? {
         return null
+    }
+
+    open fun onThemeChanged(theme: SkinTheme) {
+
     }
 
 }
