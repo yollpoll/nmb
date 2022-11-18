@@ -6,6 +6,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.core.app.ActivityCompat
 import androidx.core.content.PermissionChecker
@@ -92,12 +94,22 @@ class CookieActivity : NMBActivity<ActivityCookieBinding, CookieVM>() {
         })
     private val vm: CookieVM by viewModels()
     override fun getLayoutId() = R.layout.activity_cookie
+    override fun getMenuLayout()=R.menu.menu_cookie
     override fun initViewModel() = vm
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
         initData()
     }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if(item.itemId==R.id.action_add_cookie){
+            addCookie()
+            true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)

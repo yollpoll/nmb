@@ -8,6 +8,8 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.databinding.Bindable
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.message.MessageManager
@@ -22,6 +24,7 @@ import com.yollpoll.nmb.router.ROUTE_SETTING
 import com.yollpoll.skin.SkinTheme
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,6 +36,7 @@ suspend fun gotoSetting(context: Context) {
 @Route(url = ROUTE_SETTING)
 class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
     val vm: SettingVm by viewModels()
+    var first = true
     override fun getLayoutId() = R.layout.activity_setting
     override fun initViewModel() = vm
 
@@ -68,8 +72,25 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
                 position: Int,
                 id: Long
             ) {
-                MessageManager.getInstance().sendMessage(ACTION_SELECT_THEME,SkinTheme.values()[position])
-                App.INSTANCE.appSkinTheme = SkinTheme.values()[position]
+                if (!first) {
+                    MessageManager.getInstance()
+                        .sendMessage(ACTION_SELECT_THEME, SkinTheme.values()[position])
+                    App.INSTANCE.appSkinTheme = SkinTheme.values()[position]
+
+                    mDataBinding=DataBindingUtil.setContentView<ActivitySettingBinding>(
+                        this@SettingActivity,
+                        R.layout.activity_setting
+                    )
+                    first=true
+                    initView()
+//                    this@SettingActivity.finish()
+//                    GlobalScope.launch {
+//                        gotoSetting(context)
+//                    }
+                } else {
+                    first = false
+                }
+
             }
 
             override fun onNothingSelected(parent: AdapterView<*>?) {
@@ -82,6 +103,7 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
     fun selectTheme(view: View) {
 
     }
+
 }
 
 @HiltViewModel

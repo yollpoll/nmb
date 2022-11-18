@@ -27,6 +27,6 @@
             android:layout_below="@+id/iv_content"
             android:gravity="center"
             android:padding="10dp"
-            android:textSize="20sp" />
+            android:textSize="16sp" />
     </RelativeLayout>
 </layout>

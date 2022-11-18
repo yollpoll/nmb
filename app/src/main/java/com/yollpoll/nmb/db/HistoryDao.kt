@@ -17,7 +17,7 @@ interface HistoryDao {
     @Query("DELETE FROM historybean")
     suspend fun clearAll()
 
-    @Query("SELECT * FROM historybean ORDER BY update_time")
+    @Query("SELECT * FROM historybean ORDER BY update_time DESC")
     suspend fun query(): List<HistoryBean>
 
     @Delete

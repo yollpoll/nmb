@@ -262,11 +262,12 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
             }
         }
     }
+
     //切换主题刷新界面
     override fun onThemeChanged(theme: SkinTheme) {
         super.onThemeChanged(theme)
-        mDataBinding.refresh.isRefreshing=true
-        mDataBinding.rvContent.adapter=adapterThread
+        mDataBinding.refresh.isRefreshing = true
+        mDataBinding.rvContent.adapter = adapterThread
         refreshThread()
     }
 
@@ -326,7 +327,15 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
     @OnMessage
     fun showAnnouncement() {
-        AnnouncementDialog(vm.announcement.value?.content, context).show()
+        AnnouncementDialog(vm.announcement.value?.content, context) { url ->
+            if(url.startsWith(">>")){
+                try {
+                    gotoThreadDetail(url.split(".")[1])
+                }catch (e:Exception){
+                    "找不到串".shortToast()
+                }
+            }
+        }.show()
     }
 
     @OnMessage

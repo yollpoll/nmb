@@ -3,17 +3,20 @@ package com.yollpoll.nmb.view.activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import android.text.Html
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.base.NMBActivity
 import com.yollpoll.framework.dispatch.DispatchRequest
+import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.fast.FastActivity
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.nmb.*
 import com.yollpoll.nmb.databinding.ActivityAuthorBinding
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_AUTHOR
+import com.yollpoll.utils.TransFormContent
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -34,16 +37,20 @@ class AuthorActivity : NMBActivity<ActivityAuthorBinding, AuthorVm>() {
         super.onCreate(savedInstanceState)
         initTitle(mDataBinding.headerTitle.toolbar, showBackBtn = true)
     }
-    fun gotoGit(){
+
+    fun gotoGit() {
         lifecycleScope.launchWhenResumed {
-            DispatchClient.manager?.dispatch(context,DispatchRequest.UrlBuilder(GIT).build())
+            DispatchClient.manager?.dispatch(context, DispatchRequest.UrlBuilder(GIT).build())
         }
     }
-    fun gotoUpgrade(){
+
+    fun gotoUpgrade() {
         lifecycleScope.launchWhenResumed {
-            DispatchClient.manager?.dispatch(context,DispatchRequest.UrlBuilder(FIR).params(
-                hashMapOf("inner" to "false")
-            ).build())
+            DispatchClient.manager?.dispatch(
+                context, DispatchRequest.UrlBuilder(FIR).params(
+                    hashMapOf("inner" to "false")
+                ).build()
+            )
         }
     }
 }
@@ -52,7 +59,7 @@ class AuthorActivity : NMBActivity<ActivityAuthorBinding, AuthorVm>() {
 class AuthorVm @Inject constructor(val app: Application) : FastViewModel(app) {
     val author = AUTHOR
     val git = GIT
-    val email= EMAIL
-    val currentVersion=BuildConfig.VERSION_NAME
-    val about= aboutProject
+    val email = EMAIL
+    val currentVersion = BuildConfig.VERSION_NAME
+    val about = aboutProject
 }

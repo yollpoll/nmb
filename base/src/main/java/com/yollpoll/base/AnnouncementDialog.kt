@@ -8,8 +8,13 @@ import androidx.databinding.ViewDataBinding
 import androidx.viewbinding.ViewBinding
 import com.yollpoll.base.databinding.DialogCommonBinding
 import com.yollpoll.framework.widgets.BaseDialog
+import com.yollpoll.utils.TransFormContent
 
-class AnnouncementDialog(val content: String?, val context: Context) :
+class AnnouncementDialog(
+    val content: String?,
+    val context: Context,
+    private val onUrlClick: ((String) -> Unit)? = null
+) :
     NMBDialog<DialogCommonBinding, AlertDialog>(context) {
     override fun getLayoutId() = R.layout.dialog_common
 
@@ -19,7 +24,13 @@ class AnnouncementDialog(val content: String?, val context: Context) :
     }
 
     override fun onInit(dialog: AlertDialog, binding: DialogCommonBinding) {
-        binding.tvDialog.text=Html.fromHtml(content)
+        //文本修改为自定义编辑的模式
+        TransFormContent.trans(
+            Html.fromHtml(content),
+            binding.tvDialog,
+        ) { url ->
+            onUrlClick?.invoke(url)
+        }
     }
 
     override fun onDialogDismiss(dialog: AlertDialog) {

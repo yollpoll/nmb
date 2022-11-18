@@ -22,7 +22,7 @@ enum class SkinTheme(name: String) {
 //函数别名
 typealias SkinHandler = (parent: View?, name: String, view: View, attrs: AttributeSet) -> View
 
-val materialHandlers = hashMapOf(MaterialItemLine, MaterialItem)
+val materialHandlers = hashMapOf(MaterialItemLine, MaterialItem,MaterialSettingItem)
 val oldSchoolHandlers = hashMapOf<String, SkinHandler>()
 val otherHandlers = hashMapOf<String, SkinHandler>()
 

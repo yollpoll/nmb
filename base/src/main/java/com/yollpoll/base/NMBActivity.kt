@@ -32,7 +32,7 @@ abstract class NMBActivity<BIND : ViewDataBinding, VM : FastViewModel> : FastAct
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        LayoutInflaterCompat.setFactory2(layoutInflater,SkinInflaterFactory)
+        LayoutInflaterCompat.setFactory2(layoutInflater, SkinInflaterFactory)
         super.onCreate(savedInstanceState)
         LiveEventBus.use(ACTION_SELECT_THEME, SkinTheme::class.java)
             .observe(this, object : ObserverWrapper<SkinTheme>() {

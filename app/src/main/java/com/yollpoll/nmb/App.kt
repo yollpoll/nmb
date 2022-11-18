@@ -50,7 +50,6 @@ class App : NMBApplication() {
         }
         //全局异常捕获
 //        Thread.setDefaultUncaughtExceptionHandler(crashHandler)
-        initTheme()
     }
 
 
@@ -63,21 +62,21 @@ class App : NMBApplication() {
         return true
     }
 
-    var appSkinTheme: SkinTheme = SkinTheme.NULL
-        set(value) {
-            field = value
-            skinTheme=value
-            GlobalScope.launch {
-                putString("theme", value.name)
-            }
-        }
-
-    private fun initTheme() {
-        GlobalScope.launch {
-            appSkinTheme = SkinTheme.valueOf(getString("theme", SkinTheme.NULL.name))
-            skinTheme=appSkinTheme
-        }
-    }
+//    var appSkinTheme: SkinTheme = SkinTheme.NULL
+//        set(value) {
+//            field = value
+//            skinTheme=value
+//            GlobalScope.launch {
+//                putString("theme", value.name)
+//            }
+//        }
+//
+//    private fun initTheme() {
+//        GlobalScope.launch {
+//            appSkinTheme = SkinTheme.valueOf(getString("theme", SkinTheme.NULL.name))
+//            skinTheme=appSkinTheme
+//        }
+//    }
 
 
 }
