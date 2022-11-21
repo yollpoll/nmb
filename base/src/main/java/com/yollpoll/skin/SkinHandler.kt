@@ -34,10 +34,6 @@ val MaterialSettingItem = Pair<String, SkinHandler>(SETTING_ITEM) { parent, name
     val animator: StateListAnimator =
         AnimatorInflater.loadStateListAnimator(view.context, R.animator.material_item_animator)
     view.stateListAnimator = animator
-//    for (i in 0 until attrs.attributeCount) {
-//        "spq attr name: ${attrs.getAttributeName(i)} attr value: ${attrs.getAttributeValue(i)}".logI()
-//    }
-
     view.setPadding(
         context.dp2px(10f).toInt(),
         context.dp2px(5f).toInt(),
@@ -46,4 +42,7 @@ val MaterialSettingItem = Pair<String, SkinHandler>(SETTING_ITEM) { parent, name
     )
     view
 }
-
+val MaterialDialogBg = Pair<String, SkinHandler>(DIALOG_BG) { parent, name, view, attrs ->
+    view.setBackgroundColor(view.context.resources.getColor(android.R.color.transparent))
+    view
+}

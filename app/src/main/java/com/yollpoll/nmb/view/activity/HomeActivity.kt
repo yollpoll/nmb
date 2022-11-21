@@ -466,7 +466,7 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
             repository.refreshCover()
             sendEmptyMessage(MR.HomeActivity_onRefreshCover)
         } catch (e: Exception) {
-            "封面加载失败".shortToast()
+            "封面加载失败".logI()
         }
     }
 

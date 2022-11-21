@@ -277,7 +277,7 @@ class ThreadDetailVM @Inject constructor(
                     }
                     data.Replies?.let {
                         it.filter {
-                            return@filter it.id != "9999999"
+                            return@filter data.user_hash!="Tips"
                         }.forEach { reply ->
                             if (reply.user_hash == data.user_hash) {
                                 reply.master = "1"

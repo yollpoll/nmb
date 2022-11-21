@@ -5,6 +5,8 @@ import android.util.TypedValue
 import android.view.Menu
 import android.view.View
 import androidx.appcompat.app.ActionBar
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.LayoutInflaterCompat
 import androidx.databinding.ViewDataBinding

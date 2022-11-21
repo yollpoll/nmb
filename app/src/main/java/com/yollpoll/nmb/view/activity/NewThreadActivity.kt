@@ -9,11 +9,13 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.LayoutInflater
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
+import android.widget.PopupMenu
 import androidx.activity.viewModels
 import androidx.core.util.Pair
 import androidx.databinding.Bindable
@@ -33,7 +35,9 @@ import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.nmb.*
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.databinding.ActivityNewthreadBinding
+import com.yollpoll.nmb.model.bean.CookieBean
 import com.yollpoll.nmb.model.repository.ArticleDetailRepository
+import com.yollpoll.nmb.model.repository.CookieRepository
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_NEW_THREAD
 import com.yollpoll.nmb.view.widgets.REQ_CAMERA
@@ -139,10 +143,10 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
                 }
                 vm.selectPhoto(cameraUri!!)
             }
-            REQUEST_DRAWING->{
-                if(resultCode== RESULT_OK){
-                    val path=data?.getStringExtra("path")
-                    val uri=Uri.parse(path)
+            REQUEST_DRAWING -> {
+                if (resultCode == RESULT_OK) {
+                    val path = data?.getStringExtra("path")
+                    val uri = Uri.parse(path)
                     vm.selectPhoto(uri, height = 4096)
                 }
             }
@@ -324,9 +328,36 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
 //        mDataBinding.edtContent.startAnimation(animation)
 //        mDataBinding.rlImg.startAnimation(animation)
     }
+
+    lateinit var popupMenu: PopupMenu
+
+    fun showCookies(view: View) {
+        lifecycleScope.launch {
+            val popupMenu = PopupMenu(context, view)
+
+            vm.cookies.forEachIndexed() { pos, item ->
+                val use = if (item.used == 1)
+                    "(使用中)"
+                else
+                    ""
+                popupMenu.menu.add("${item.name}$use")
+            }
+            popupMenu.setOnMenuItemClickListener {
+                val selected = vm.cookies.filter { cookie ->
+                    cookie.name == it.title
+                }
+                if (selected.isNotEmpty()) {
+                    vm.selectCookie(selected[0])
+                }
+                true
+            }
+            popupMenu.show()
+        }
+    }
+
     //绘图
-    fun gotoDraw(){
-        lifecycleScope.launch{
+    fun gotoDraw() {
+        lifecycleScope.launch {
             gotoDrawing(context)
         }
     }
@@ -336,11 +367,34 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
 @HiltViewModel
 class NewThreadVm @Inject constructor(
     val app: Application,
-    val repository: ArticleDetailRepository
+    val repository: ArticleDetailRepository,
+    val cookieRepository: CookieRepository
 ) : FastViewModel(app) {
+    init {
+        viewModelScope.launch {
+            cookies = cookieRepository.queryCookies()
+            cookies.forEach {
+                if (it.used == 1) {
+                    "use cookie: ${it.name}".logI()
+                    curCookie = it
+                }
+
+            }
+        }
+    }
+
+    lateinit var cookies: List<CookieBean>
+
     //当前选择图片
     private val currentImg = MutableLiveData<Bitmap?>(null)
     val currentImgLD: LiveData<Bitmap?> = currentImg
+
+    @Bindable
+    var curCookie: CookieBean? = null
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.curCookie)
+        }
 
     @Bindable
     var title: String = ""
@@ -409,11 +463,11 @@ class NewThreadVm @Inject constructor(
     }
 
     //选择照片
-    fun selectPhoto(uri: Uri,width:Int=1024,height:Int=1024) {
+    fun selectPhoto(uri: Uri, width: Int = 1024, height: Int = 1024) {
         viewModelScope.launch(Dispatchers.IO) {
             "img uri:${uri.path}".logI()
             val path = getPathByUri(uri, app)
-            val bitmap = compressBitmap(path, width,height)
+            val bitmap = compressBitmap(path, width, height)
             selectImg(bitmap)
         }
     }
@@ -463,7 +517,7 @@ class NewThreadVm @Inject constructor(
                 saveBitmapToSd(bitmap, "img.jpg", app.filesDir.absolutePath)
             else null
             val file = if (null != path) File(path) else null
-            val res=repository.reply(
+            val res = repository.reply(
                 replyTo,
                 name,
                 threadTitle,
@@ -504,5 +558,19 @@ class NewThreadVm @Inject constructor(
             content += ">>No.${it}\n"
         }
         threadContent = content
+    }
+
+
+    fun selectCookie(cookie: CookieBean) {
+        viewModelScope.launch {
+            curCookie?.let {
+                it.used = 0
+                cookieRepository.updateCookie(it)
+            }
+            cookie.used = 1
+            App.INSTANCE.cookie = cookie
+            curCookie = cookie
+            cookieRepository.insertCookie(cookie)
+        }
     }
 }

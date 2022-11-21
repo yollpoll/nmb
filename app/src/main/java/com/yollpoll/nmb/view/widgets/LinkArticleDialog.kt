@@ -13,7 +13,6 @@ import com.yollpoll.nmb.R
 import com.yollpoll.nmb.databinding.ItemThreadBinding
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.net.imgThumbUrl
-import com.yollpoll.nmb.net.imgUrl
 import com.yollpoll.utils.TransFormContent
 
 class LinkArticleDialog(
@@ -27,11 +26,12 @@ class LinkArticleDialog(
 
     override fun createDialog(context: Context): Dialog = Dialog(context)
 
-    override fun onInit(dialog: Dialog?, binding: ItemThreadBinding?) {
+    override fun onInit(dialog: Dialog, binding: ItemThreadBinding?) {
         binding?.bean = item
         binding?.executePendingBindings()
         binding as ItemThreadBinding
         val context = binding.root.context
+
         //图片加载
         binding.ivContent.apply {
             if (item.img.isEmpty()) {
@@ -89,6 +89,7 @@ class LinkArticleDialog(
         }
         binding.tvReplyCount.visibility = View.GONE
         binding.lineBottom.visibility = View.GONE
+
     }
 
     override fun onDialogDismiss(dialog: Dialog?) {

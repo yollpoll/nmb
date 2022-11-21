@@ -25,9 +25,8 @@
             android:layout_width="match_parent"
             app:skin_enable="true"
             app:skin_tag="item"
-
             android:layout_height="wrap_content"
-            android:background="?attr/selectableItemBackground"
+            android:background="@drawable/ripple_item"
             android:orientation="vertical"
             android:transitionName="thread">
 

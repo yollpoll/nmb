@@ -53,4 +53,13 @@
     <string name="_import">导入</string>
     <string name="No.">>>No.</string>
     <string name="ui_theme">UI风格</string>
+    <string name="no_cookie">无</string>
+    <string name="dark_mod">黑暗模式</string>
+    <string name="auto_dark">自动黑暗</string>
+    <string name="auto">自动</string>
+    <string-array name="dark_mod_item">
+        <item>黑暗</item>
+        <item>光明</item>
+        <item>自动</item>
+    </string-array>
 </resources>
