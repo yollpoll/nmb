@@ -21,6 +21,7 @@ import com.yollpoll.framework.extensions.*
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.nmb.*
 import com.yollpoll.nmb.databinding.ActivitySettingBinding
+import com.yollpoll.nmb.model.bean.DarkMod
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_SETTING
 import com.yollpoll.skin.SkinTheme
@@ -203,6 +204,3 @@ class SettingVm @Inject constructor(val app: Application, val crashHandler: MyCr
     }
 }
 
-enum class DarkMod(name: String) {
-    DARK("黑暗"), LIGHT("光明"), AUTO("自动")
-}

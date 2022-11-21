@@ -276,8 +276,8 @@ class ThreadDetailVM @Inject constructor(
                         e.message?.logI()
                     }
                     data.Replies?.let {
-                        it.filter {
-                            return@filter data.user_hash!="Tips"
+                        it.filter {reply ->
+                            return@filter reply.id != "9999999"
                         }.forEach { reply ->
                             if (reply.user_hash == data.user_hash) {
                                 reply.master = "1"
@@ -286,9 +286,10 @@ class ThreadDetailVM @Inject constructor(
                             }
                             //缓存
                             cache[reply.id] = reply
+                            res.add(reply)
                         }
-                        res.addAll(it)
                     }
+
                     return res
                 }
             }
@@ -306,9 +307,9 @@ class ThreadDetailVM @Inject constructor(
         } else {
             (head.ReplyCount!!.toInt() / PAGE_SIZE) + 1
         }
-        if(!hasAddHistory){
+        if (!hasAddHistory) {
             saveHistory(head)
-            hasAddHistory=true
+            hasAddHistory = true
         }
     }
 
@@ -378,7 +379,8 @@ class ThreadDetailVM @Inject constructor(
         }
     }
 
-    var hasAddHistory:Boolean=false
+    var hasAddHistory: Boolean = false
+
     //添加历史记录
     fun saveHistory(bean: ArticleItem) {
         viewModelScope.launch {

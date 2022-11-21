@@ -32,6 +32,7 @@ class App : NMBApplication() {
     lateinit var crashHandler: MyCrashHandler
     var cookie: CookieBean? = null
     lateinit var androidId: String
+
     override fun onCreate() {
         super.onCreate()
         INSTANCE = this
