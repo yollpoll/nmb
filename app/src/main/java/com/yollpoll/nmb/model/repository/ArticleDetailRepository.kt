@@ -8,6 +8,8 @@
 
 package com.yollpoll.nmb.model.repository
 
+import androidx.paging.ExperimentalPagingApi
+import androidx.paging.RemoteMediator
 import com.yollpoll.base.NMBBasePagingSource
 import com.yollpoll.base.logI
 import com.yollpoll.framework.extensions.toJson
@@ -15,6 +17,7 @@ import com.yollpoll.framework.extensions.toListJson
 import com.yollpoll.framework.net.http.RetrofitFactory
 import com.yollpoll.framework.paging.BasePagingSource
 import com.yollpoll.framework.paging.START_INDEX
+import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.di.CommonRetrofitFactory
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.net.HttpService
@@ -88,3 +91,19 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
     }
 
 }
+
+//@ExperimentalPagingApi
+//class ArticleRemoteMediator(
+//    private val query: String,
+//    private val database: MainDB,
+//    private val networkService: HttpService
+//) : RemoteMediator<Int, ArticleItem>() {
+////    val userDao = database.userDao()
+////
+////    override suspend fun load(
+////        loadType: LoadType,
+////        state: PagingState<Int, User>
+////    ): MediatorResult {
+////        // ...
+////    }
+//}

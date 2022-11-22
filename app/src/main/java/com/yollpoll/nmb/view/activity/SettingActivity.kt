@@ -14,6 +14,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.viewModelScope
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.message.MessageManager
+import com.yollpoll.base.CommonDialog
 import com.yollpoll.base.NMBActivity
 import com.yollpoll.extensions.isDarkMod
 import com.yollpoll.framework.dispatch.DispatchRequest
@@ -22,9 +23,12 @@ import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.nmb.*
 import com.yollpoll.nmb.databinding.ActivitySettingBinding
 import com.yollpoll.nmb.model.bean.DarkMod
+import com.yollpoll.nmb.model.repository.UserRepository
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_SETTING
+import com.yollpoll.nmb.view.widgets.InputDialog
 import com.yollpoll.skin.SkinTheme
+import com.yollpoll.utils.copyStr
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -54,6 +58,7 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
         }
         initUITheme()
         initDarkMod()
+        initCollection()
     }
 
     /**
@@ -161,7 +166,31 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
         }
     }
 
-    /**
+
+    fun changeCollectionId(view: View) {
+        CommonDialog(
+            "警告",
+            "不建议修改订阅id,错误的订阅id会导致使用他人订阅的情况,请使在订阅页面使用导入功能。仍要修改请点击确定，旧的订阅号会保存到剪切板。",
+            context
+        ) {
+            InputDialog(context, "修改订阅ID", "订阅ID", vm.collectionId) {
+                it?.let {
+                    vm.saveCollectionId(it)
+                    copyStr(context, mDataBinding.tvCollectionId.text.toString())
+                }
+            }.show()
+        }.show()
+    }
+
+    private fun initCollection() {
+        mDataBinding.rlCollection.setOnLongClickListener {
+            copyStr(context, mDataBinding.tvCollectionId.text.toString())
+            "复制到剪切板".shortToast()
+            true
+        }
+    }
+
+    /*
      * 刷新ui
      */
     fun refreshUI() {
@@ -176,8 +205,19 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
 }
 
 @HiltViewModel
-class SettingVm @Inject constructor(val app: Application, val crashHandler: MyCrashHandler) :
+class SettingVm @Inject constructor(
+    val app: Application,
+    val userRepository: UserRepository,
+    val crashHandler: MyCrashHandler
+) :
     FastViewModel(app) {
+
+    @Bindable
+    var collectionId: String? = null
+    set(value) {
+        field=value
+        notifyPropertyChanged(BR.collectionId)
+    }
 
     @Bindable
     var curDarkMode: DarkMod = DarkMod.AUTO
@@ -186,7 +226,17 @@ class SettingVm @Inject constructor(val app: Application, val crashHandler: MyCr
     var openLog: Boolean = false
 
     init {
-        initLog()
+        viewModelScope.launch {
+            initLog()
+            collectionId = userRepository.getCollectionId()
+        }
+
+    }
+
+    //保存新的collectionId
+    fun saveCollectionId(id: String) {
+        collectionId = id
+        userRepository.updateCollectionId(id)
     }
 
     private fun initLog() {

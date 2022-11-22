@@ -276,7 +276,7 @@ class ThreadDetailVM @Inject constructor(
                         e.message?.logI()
                     }
                     data.Replies?.let {
-                        it.filter {reply ->
+                        it.filter { reply ->
                             return@filter reply.id != "9999999"
                         }.forEach { reply ->
                             if (reply.user_hash == data.user_hash) {
@@ -358,7 +358,7 @@ class ThreadDetailVM @Inject constructor(
 //        }
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val res = repository.collect(App.INSTANCE.androidId, id)
+                val res = repository.collect(userRepository.getCollectionId(), id)
                 withContext(Dispatchers.Main) {
                     res.shortToast()
                 }

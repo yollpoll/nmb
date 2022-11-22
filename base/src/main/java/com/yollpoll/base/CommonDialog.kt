@@ -36,7 +36,7 @@ class CommonDialog(
 
         lp.copyFrom(dialog.window?.attributes)
 
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT
+        lp.width = mContext.dp2px(320F).toInt()
 
         lp.height = mContext.dp2px(200F).toInt()
 

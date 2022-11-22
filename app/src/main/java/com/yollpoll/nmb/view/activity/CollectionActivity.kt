@@ -13,10 +13,7 @@ import androidx.paging.cachedIn
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.yollpoll.annotation.annotation.OnMessage
 import com.yollpoll.annotation.annotation.Route
-import com.yollpoll.base.NMBActivity
-import com.yollpoll.base.NMBBasePagingSource
-import com.yollpoll.base.NmbPagingDataAdapter
-import com.yollpoll.base.getNMBCommonPager
+import com.yollpoll.base.*
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.fast.FastViewModel
@@ -29,9 +26,12 @@ import com.yollpoll.nmb.databinding.ActivityCollectionBinding
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.model.bean.ForumDetail
 import com.yollpoll.nmb.model.repository.ArticleDetailRepository
+import com.yollpoll.nmb.model.repository.UserRepository
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_COLLECTION
 import com.yollpoll.nmb.view.widgets.ImportCollectionDialog
+import com.yollpoll.nmb.view.widgets.InputDialog
+import com.yollpoll.utils.copyStr
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -54,30 +54,34 @@ class CollectionActivity : NMBActivity<ActivityCollectionBinding, CollectionVm>(
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_import -> {
-                ImportCollectionDialog(this){
+            R.id.action_add -> {
+                ImportCollectionDialog(this) {
                     it?.run {
-                        vm.importCollection(it)
+                        vm.addCollection(it)
                     }
                 }.show()
                 return true
+            }
+            R.id.action_import -> {
+                InputDialog(context, "导入订阅", "订阅号", null) {
+                    it?.let {
+                        vm.importCollection(it)
+                    }
+                }.show()
             }
         }
         return super.onOptionsItemSelected(item)
 
     }
+
     val rvManager = LinearLayoutManager(context)
 
     val adapter = ThreadAdapter(onUrlClick = {
         vm.onThreadUrlClick(it)
     }, onItemLongClick = {
-        val builder = AlertDialog.Builder(context)
-        builder.setMessage("是否取消订阅").setPositiveButton("确定") { _, _ ->
+        CommonDialog("取消订阅", "是否取消订阅", context) {
             vm.delCollection(it.id)
-        }.setNegativeButton("取消") { dialog, _ ->
-            dialog.dismiss()
-        }
-        builder.show()
+        }.show()
         true
     }, onImageClick = { item, pos ->
         lifecycleScope.launch {
@@ -111,8 +115,9 @@ class CollectionActivity : NMBActivity<ActivityCollectionBinding, CollectionVm>(
     private fun initView() {
         initTitle(mDataBinding.layoutTitle.toolbar, true)
     }
+
     @OnMessage
-    fun refresh(){
+    fun refresh() {
         adapter.refresh()
         rvManager.scrollToPosition(0)
     }
@@ -121,13 +126,14 @@ class CollectionActivity : NMBActivity<ActivityCollectionBinding, CollectionVm>(
 @HiltViewModel
 class CollectionVm @Inject constructor(
     val app: Application,
-    val repository: ArticleDetailRepository
+    val repository: ArticleDetailRepository,
+    val userRepository: UserRepository
 ) :
     FastViewModel(app) {
     val collectionPager = getNMBCommonPager {
         object : NMBBasePagingSource<ArticleItem>() {
             override suspend fun load(pos: Int): List<ArticleItem> {
-                return repository.getCollection(pos, App.INSTANCE.androidId)
+                return repository.getCollection(pos, userRepository.getCollectionId())
             }
         }
     }.flow.cachedIn(viewModelScope)
@@ -148,23 +154,47 @@ class CollectionVm @Inject constructor(
         viewModelScope.launch {
             showLoading()
             val res = withContext(Dispatchers.IO) {
-                return@withContext repository.delCollection(App.INSTANCE.androidId, id)
+                return@withContext repository.delCollection(userRepository.getCollectionId(), id)
             }
             hideLoading()
             res.shortToast()
             sendEmptyMessage(MR.CollectionActivity_refresh)
         }
-
     }
-    fun importCollection(tid:String){
+
+    //添加订阅串
+    fun addCollection(tid: String) {
         viewModelScope.launch {
             withContext(Dispatchers.IO) {
-                val res = repository.collect(App.INSTANCE.androidId, tid)
+                val res = repository.collect(userRepository.getCollectionId(), tid)
                 withContext(Dispatchers.Main) {
                     sendEmptyMessage(MR.CollectionActivity_refresh)
                     res.shortToast()
                 }
             }
+        }
+    }
+
+    fun importCollection(id: String) {
+        //导入订阅
+        viewModelScope.launch {
+            showLoading()
+            val collectionList = arrayListOf<ArticleItem>()
+            var page = 1
+            while (true) {
+                val data = userRepository.getCollection(page, id)
+                collectionList.addAll(data)
+                if (data.isEmpty()) {
+                    //没有数据
+                    break
+                }
+                page++
+            }
+            collectionList.forEach {
+                userRepository.collect(userRepository.getCollectionId(), it.id)
+            }
+            hideLoading()
+            sendEmptyMessage(MR.CollectionActivity_refresh)
         }
     }
 }

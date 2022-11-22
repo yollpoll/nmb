@@ -7,22 +7,25 @@ import com.yollpoll.base.NMBDialog
 import com.yollpoll.framework.extensions.dp2px
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.databinding.DialogImportCollectionBinding
+import com.yollpoll.nmb.databinding.DialogInputBinding
 
 /**
- * Created by spq on 2022/11/8
+ * Created by spq on 2022/11/22
  */
-class ImportCollectionDialog(
-    private val mContext: Context?,
+class InputDialog(
+    private val mContext: Context,
+    val title: String,
+    val hint: String,
+    var content: String? = null,
     private val onOk: ((String?) -> Unit)? = null
-) :
-    NMBDialog<DialogImportCollectionBinding, Dialog>(mContext) {
-    public var no: String? = null
 
-    override fun getLayoutId() = R.layout.dialog_import_collection
+) : NMBDialog<DialogInputBinding, Dialog>(mContext) {
+
+    override fun getLayoutId() = R.layout.dialog_input
 
     override fun createDialog(context: Context?) = Dialog(mContext)
 
-    override fun onInit(dialog: Dialog?, binding: DialogImportCollectionBinding?) {
+    override fun onInit(dialog: Dialog?, binding: DialogInputBinding?) {
         super.onInit(dialog, binding)
         binding?.dialog = this
     }
@@ -43,12 +46,11 @@ class ImportCollectionDialog(
     }
 
     fun onOkClick() {
-        onOk?.invoke(no)
+        onOk?.invoke(content)
         this.dismiss()
     }
 
     fun onCancelClick() {
         this.dismiss()
     }
-
 }

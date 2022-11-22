@@ -88,8 +88,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/item_height"
-                android:background="?attr/selectableItemBackground"
-                >
+                android:background="?attr/selectableItemBackground">
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -116,6 +115,37 @@
                 android:background="?attr/colorOutline"
                 app:skin_tag="item_line" />
 
+            <RelativeLayout
+                android:id="@+id/rl_collection"
+                android:onClick="changeCollectionId"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:background="?attr/selectableItemBackground">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:text="@string/collection_id" />
+
+                <TextView
+                    android:id="@+id/tv_collection_id"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="10dp"
+                    android:backgroundTint="@color/transparent"
+                    android:text="@{viewModel.collectionId}" />
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line"
+                android:background="?attr/colorOutline"
+                app:skin_tag="item_line" />
         </LinearLayout>
 
     </LinearLayout>

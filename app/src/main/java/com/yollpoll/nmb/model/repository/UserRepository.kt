@@ -1,11 +1,16 @@
 package com.yollpoll.nmb.model.repository
 
+import android.provider.Settings
 import androidx.paging.*
 import androidx.room.withTransaction
 import com.yollpoll.base.logI
+import com.yollpoll.framework.extensions.getString
 import com.yollpoll.framework.extensions.toJsonBean
 import com.yollpoll.framework.net.http.RetrofitFactory
+import com.yollpoll.framework.utils.getString
+import com.yollpoll.framework.utils.putString
 import com.yollpoll.nmb.App
+import com.yollpoll.nmb.KEY_COLLECTION_ID
 import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.db.MySpeechDao
 import com.yollpoll.nmb.di.CommonRetrofitFactory
@@ -74,14 +79,30 @@ class UserRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
     suspend fun getHistory(): List<HistoryBean> {
         return MainDB.getInstance().getHistoryDao().query()
     }
-    suspend fun delHistory(bean:HistoryBean){
+
+    suspend fun delHistory(bean: HistoryBean) {
         MainDB.getInstance().getHistoryDao().delete(bean)
     }
-    suspend fun clearHistory(){
+
+    suspend fun clearHistory() {
         MainDB.getInstance().getHistoryDao().clearAll()
     }
-    suspend fun addHistory(vararg list:HistoryBean){
+
+    suspend fun addHistory(vararg list: HistoryBean) {
         MainDB.getInstance().getHistoryDao().insertAll(list.asList())
+    }
+
+    //更新订阅ID
+    fun updateCollectionId(id: String) {
+        putString(KEY_COLLECTION_ID, id)
+    }
+
+    //获取订阅ID
+    fun getCollectionId(): String {
+        return getString(
+            KEY_COLLECTION_ID,
+            Settings.System.getString(App.INSTANCE.contentResolver, Settings.Secure.ANDROID_ID)
+        )!!
     }
 
 }

@@ -62,4 +62,6 @@
         <item>光明</item>
         <item>自动</item>
     </string-array>
+    <string name="collection_id">订阅ID</string>
+    <string name="add">添加</string>
 </resources>

@@ -31,7 +31,7 @@ class App : NMBApplication() {
     @Inject
     lateinit var crashHandler: MyCrashHandler
     var cookie: CookieBean? = null
-    lateinit var androidId: String
+    lateinit var androidId: String//订阅id
 
     override fun onCreate() {
         super.onCreate()
@@ -62,6 +62,7 @@ class App : NMBApplication() {
         }
         return true
     }
+
 
 //    var appSkinTheme: SkinTheme = SkinTheme.NULL
 //        set(value) {
