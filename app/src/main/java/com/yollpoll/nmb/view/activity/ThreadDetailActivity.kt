@@ -251,8 +251,12 @@ class ThreadDetailVM @Inject constructor(
         return index
     }
 
-
+    @OptIn(ExperimentalPagingApi::class)
     fun getPager(): Flow<PagingData<ArticleItem>> {
+        return repository.getArticlePager(id).flow
+    }
+
+    fun getPager2(): Flow<PagingData<ArticleItem>> {
         "refreshPage: $refreshPage | curPage: $curPage".logD()
         return getCommonPager {
             object : NMBBasePagingSource<ArticleItem>(startIndex = refreshPage, selectedPage = {

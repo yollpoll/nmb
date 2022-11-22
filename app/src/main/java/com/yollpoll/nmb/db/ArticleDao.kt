@@ -12,10 +12,11 @@ interface ArticleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(users: List<ArticleItem>)
 
-    @Query("SELECT * FROM articleitem WHERE page LIKE :page")
-    fun pagingSource(page: Int): PagingSource<Int, ArticleItem>
+    @Query("SELECT * FROM ArticleItem WHERE replyTo LIKE :replyTo")
+    fun pagingSource(replyTo: String): PagingSource<Int, ArticleItem>
 
-    @Query("DELETE FROM articleitem")
+    @Query("DELETE FROM ArticleItem")
     suspend fun clearAll()
+
 
 }

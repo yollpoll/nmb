@@ -13,15 +13,15 @@ import com.yollpoll.nmb.model.bean.HistoryBean
 import com.yollpoll.nmb.model.bean.MySpeechBean
 
 @Database(
-    entities = [CookieBean::class, MySpeechBean::class, HistoryBean::class],
-    version = 3,
+    entities = [CookieBean::class, MySpeechBean::class, HistoryBean::class,ArticleItem::class],
+    version = 4,
     exportSchema = false,
 )
 abstract class MainDB : RoomDatabase() {
     abstract fun getCookieDao(): CookieDao
     abstract fun getSpeechDao(): MySpeechDao
     abstract fun getHistoryDao(): HistoryDao
-
+    abstract fun getArticleDao(): ArticleDao
 
     companion object {
         @Volatile

@@ -75,6 +75,9 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
                     SkinTheme.OLD_SCHOOL -> "复古怀旧"
                     SkinTheme.OTHER -> "其他"
                 }
+            }.filterIndexed { index: Int, s: String ->
+                //暂时过滤复古怀旧和其他
+                return@filterIndexed index <= 1
             }
         )
         mDataBinding.spinner.adapter = mThemeAdapter
@@ -214,10 +217,10 @@ class SettingVm @Inject constructor(
 
     @Bindable
     var collectionId: String? = null
-    set(value) {
-        field=value
-        notifyPropertyChanged(BR.collectionId)
-    }
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.collectionId)
+        }
 
     @Bindable
     var curDarkMode: DarkMod = DarkMod.AUTO

@@ -8,8 +8,8 @@
 
 package com.yollpoll.nmb.model.repository
 
-import androidx.paging.ExperimentalPagingApi
-import androidx.paging.RemoteMediator
+import androidx.paging.*
+import androidx.room.withTransaction
 import com.yollpoll.base.NMBBasePagingSource
 import com.yollpoll.base.logI
 import com.yollpoll.framework.extensions.toJson
@@ -17,6 +17,7 @@ import com.yollpoll.framework.extensions.toListJson
 import com.yollpoll.framework.net.http.RetrofitFactory
 import com.yollpoll.framework.paging.BasePagingSource
 import com.yollpoll.framework.paging.START_INDEX
+import com.yollpoll.framework.paging.getCommonPager
 import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.di.CommonRetrofitFactory
 import com.yollpoll.nmb.model.bean.ArticleItem
@@ -24,6 +25,8 @@ import com.yollpoll.nmb.net.HttpService
 import com.yollpoll.nmb.net.getRequestBody
 import kotlinx.coroutines.flow.flow
 import okhttp3.ResponseBody
+import okio.IOException
+import retrofit2.HttpException
 import java.io.File
 import javax.inject.Inject
 
@@ -65,7 +68,7 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
         content: String,
         water: String,
         file: File?
-    ):ResponseBody {
+    ): ResponseBody {
         "newThread".logI()
         return service.replyThread(
             getRequestBody(reply),
@@ -86,24 +89,93 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
         return service.delCollection(uuid, tid)
     }
 
-    suspend fun getCollection(page: Int, uuid: String) :List<ArticleItem>{
-        return service.getCollection(page,uuid)
+    suspend fun getCollection(page: Int, uuid: String): List<ArticleItem> {
+        return service.getCollection(page, uuid)
+    }
+
+    @ExperimentalPagingApi
+    fun getArticlePager(id: String): Pager<Int, ArticleItem> {
+        return Pager(
+            config = PagingConfig(50),
+            remoteMediator = ArticleRemoteMediator(id, MainDB.getInstance(), service)
+        ) {
+            MainDB.getInstance().getArticleDao().pagingSource(id)
+        }
     }
 
 }
 
-//@ExperimentalPagingApi
-//class ArticleRemoteMediator(
-//    private val query: String,
-//    private val database: MainDB,
-//    private val networkService: HttpService
-//) : RemoteMediator<Int, ArticleItem>() {
-////    val userDao = database.userDao()
-////
-////    override suspend fun load(
-////        loadType: LoadType,
-////        state: PagingState<Int, User>
-////    ): MediatorResult {
-////        // ...
-////    }
-//}
+@ExperimentalPagingApi
+class ArticleRemoteMediator(
+    private val id: String,
+    private val database: MainDB,
+    private val networkService: HttpService
+) : RemoteMediator<Int, ArticleItem>() {
+    private val dao = database.getArticleDao()
+    override suspend fun load(
+        loadType: LoadType,
+        state: PagingState<Int, ArticleItem>
+    ): MediatorResult {
+        return try {
+            // The network load method takes an optional after=<user.id>
+            // parameter. For every page after the first, pass the last user
+            // ID to let it continue from where it left off. For REFRESH,
+            // pass null to load the first page.
+            val page = when (loadType) {
+                LoadType.REFRESH -> 1
+                // In this example, you never need to prepend, since REFRESH
+                // will always load the first page in the list. Immediately
+                // return, reporting end of pagination.
+                LoadType.PREPEND -> {
+                    val lastItem = state.lastItemOrNull()
+                        ?: return MediatorResult.Success(
+                            endOfPaginationReached = true
+                        )
+                    lastItem.page - 1
+                }
+
+
+                LoadType.APPEND -> {
+                    val lastItem = state.lastItemOrNull()
+                        ?: return MediatorResult.Success(
+                            endOfPaginationReached = true
+                        )
+
+                    // You must explicitly check if the last item is null when
+                    // appending, since passing null to networkService is only
+                    // valid for initial load. If lastItem is null it means no
+                    // items were loaded after the initial REFRESH and there are
+                    // no more items to load.
+
+                    lastItem.page + 1
+                }
+            }
+            // Suspending network load via Retrofit. This doesn't need to be
+            // wrapped in a withContext(Dispatcher.IO) { ... } block since
+            // Retrofit's Coroutine CallAdapter dispatches on a worker
+            // thread.
+            val response = networkService.getArticleDetail(id, page)
+            val reply: List<ArticleItem> = response.Replies ?: let {
+                emptyList()
+            }
+            reply.forEach {
+                it.replyTo = response.id
+                it.page = page
+            }
+            database.withTransaction {
+                // Insert new users into database, which invalidates the
+                // current PagingData, allowing Paging to present the updates
+                // in the DB.
+                dao.insertAll(reply)
+            }
+
+            MediatorResult.Success(
+                endOfPaginationReached = false
+            )
+        } catch (e: IOException) {
+            MediatorResult.Error(e)
+        } catch (e: HttpException) {
+            MediatorResult.Error(e)
+        }
+    }
+}
