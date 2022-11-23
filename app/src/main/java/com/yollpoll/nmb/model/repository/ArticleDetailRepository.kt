@@ -93,23 +93,14 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
         return service.getCollection(page, uuid)
     }
 
-    @ExperimentalPagingApi
-    fun getArticlePager(id: String): Pager<Int, ArticleItem> {
-        return Pager(
-            config = PagingConfig(50),
-            remoteMediator = ArticleRemoteMediator(id, MainDB.getInstance(), service)
-        ) {
-            MainDB.getInstance().getArticleDao().pagingSource(id)
-        }
-    }
-
 }
 
 @ExperimentalPagingApi
 class ArticleRemoteMediator(
     private val id: String,
     private val database: MainDB,
-    private val networkService: HttpService
+    private val networkService: HttpService,
+    private val refreshPage:Int
 ) : RemoteMediator<Int, ArticleItem>() {
     private val dao = database.getArticleDao()
     override suspend fun load(
@@ -122,7 +113,7 @@ class ArticleRemoteMediator(
             // ID to let it continue from where it left off. For REFRESH,
             // pass null to load the first page.
             val page = when (loadType) {
-                LoadType.REFRESH -> 1
+                LoadType.REFRESH -> refreshPage
                 // In this example, you never need to prepend, since REFRESH
                 // will always load the first page in the list. Immediately
                 // return, reporting end of pagination.
@@ -133,8 +124,6 @@ class ArticleRemoteMediator(
                         )
                     lastItem.page - 1
                 }
-
-
                 LoadType.APPEND -> {
                     val lastItem = state.lastItemOrNull()
                         ?: return MediatorResult.Success(
@@ -146,7 +135,6 @@ class ArticleRemoteMediator(
                     // valid for initial load. If lastItem is null it means no
                     // items were loaded after the initial REFRESH and there are
                     // no more items to load.
-
                     lastItem.page + 1
                 }
             }

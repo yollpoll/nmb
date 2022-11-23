@@ -251,24 +251,16 @@ class ThreadDetailVM @Inject constructor(
         return index
     }
 
-    @OptIn(ExperimentalPagingApi::class)
-    fun getPager(): Flow<PagingData<ArticleItem>> {
-        return repository.getArticlePager(id).flow
-    }
 
-    fun getPager2(): Flow<PagingData<ArticleItem>> {
-        "refreshPage: $refreshPage | curPage: $curPage".logD()
-        return getCommonPager {
+    fun getPager(): Flow<PagingData<ArticleItem>> {
+        return getNMBCommonPager {
             object : NMBBasePagingSource<ArticleItem>(startIndex = refreshPage, selectedPage = {
                 //pagingData跳页是调用refresh的时候根据initKey来加载，这里返回当前page作为初始化页面
                 refreshPage
             }) {
                 override suspend fun load(pos: Int): List<ArticleItem> {
                     curPage = pos
-                    "load index: $pos |init index $refreshPage | cur index $curPage".logD()
-
                     val data = repository.getArticleDetail(id, pos)
-
                     val res = arrayListOf<ArticleItem>()
                     try {
                         val head = data.copy()
