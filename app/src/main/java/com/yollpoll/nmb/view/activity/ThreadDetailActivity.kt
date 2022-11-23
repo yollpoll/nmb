@@ -160,20 +160,22 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
         lifecycleScope.launch {
             val lastPage = getInt("${id}_page", 1)
             val lastIndex = getInt("${id}_index", default = 0)
-            vm.id = id
-            "last page: ${lastPage} last index: ${lastIndex}".logD()
-            vm.refreshPage = lastPage
-            vm.curPage = lastPage
-            launch {
-                vm.getPager().collectLatest { data ->
-                    mAdapter.submitData(data)
-                }
-            }
+            vm.init(id, lastPage, lastPage)
         }
 //        mAdapter.withLoadStateHeaderAndFooter(
 //            header = ExampleLoadStateAdapter(mAdapter::retry),
 //            footer = ExampleLoadStateAdapter(mAdapter::retry)
 //        )
+    }
+
+    @OnMessage
+    fun onHeadLoad() {
+        //head已经加载完成
+        lifecycleScope.launch {
+            vm.getPager().collectLatest { data ->
+                mAdapter.submitData(data)
+            }
+        }
     }
 
     @OnMessage
@@ -219,12 +221,16 @@ class ThreadDetailVM @Inject constructor(
     val repository: ArticleDetailRepository,
     val userRepository: UserRepository
 ) : FastViewModel(app) {
+
     @Bindable
     var title: String = "无标题"
 
     var id: String = ""
 
+    lateinit var head: ArticleItem
+
     var refreshPage: Int = 1//这个是表示当前刷新操作刷新到哪一页
+
     var curPage: Int = 1//这是正常load页面时加载的页面，代表最新加载的页面
 
     var allPage: Int = 1
@@ -239,6 +245,39 @@ class ThreadDetailVM @Inject constructor(
                 it.value.img.isNotEmpty()
             }.map { it.value }
         }
+
+    //初始化数据
+    fun init(id: String, refreshPage: Int, curPage: Int) {
+        this.id = id
+        this.refreshPage = refreshPage
+        this.curPage = curPage
+        viewModelScope.launch {
+            try {
+                head = repository.getArticle(id)
+                initHead(head)
+                sendEmptyMessage(MR.ThreadDetailActivity_onHeadLoad)
+            } catch (e: Exception) {
+
+            }
+        }
+    }
+
+    //初始化一些信息
+    private fun initHead(head: ArticleItem) {
+        title = head.title
+        notifyPropertyChanged(BR.title)
+        head.master = "1"
+        cache[head.id] = head
+        allPage = if (head.ReplyCount == null) {
+            1
+        } else {
+            (head.ReplyCount!!.toInt() / PAGE_SIZE) + 1
+        }
+        if (!hasAddHistory) {
+            saveHistory(head)
+            hasAddHistory = true
+        }
+    }
 
     //找到图片的序列 pos表示当前item的序号
     fun findImgIndex(id: String): Int {
@@ -260,54 +299,30 @@ class ThreadDetailVM @Inject constructor(
             }) {
                 override suspend fun load(pos: Int): List<ArticleItem> {
                     curPage = pos
-                    val data = repository.getArticleDetail(id, pos)
-                    val res = arrayListOf<ArticleItem>()
-                    try {
-                        val head = data.copy()
-                        initData(head)
-                        if (pos == 1) {
-                            res.add(head)
-                        }
-                    } catch (e: Exception) {
-                        e.message?.logI()
-                    }
-                    data.Replies?.let {
-                        it.filter { reply ->
-                            return@filter reply.id != "9999999"
-                        }.forEach { reply ->
-                            if (reply.user_hash == data.user_hash) {
-                                reply.master = "1"
-                            } else {
-                                reply.master = "0"
-                            }
-                            //缓存
-                            cache[reply.id] = reply
-                            res.add(reply)
-                        }
+                    val data =
+                        ArrayList(repository.getArticleReply(head, pos) ?: return emptyList())
+                    if (pos == 1) {
+                        //当前第一页，加入head
+                        data.add(0, head)
                     }
 
-                    return res
+                    return data.filter {
+                        return@filter it.id != "9999999"
+                    }.map { reply ->
+                        if (reply.user_hash == head.user_hash) {
+                            reply.master = "1"
+                        } else {
+                            reply.master = "0"
+                        }
+                        //缓存
+                        cache[reply.id] = reply
+                        reply
+                    }
                 }
             }
         }.flow.cachedIn(viewModelScope)
     }
 
-    //初始化一些信息
-    private fun initData(head: ArticleItem) {
-        title = head.title
-        notifyPropertyChanged(BR.title)
-        head.master = "1"
-        cache[head.id] = head
-        allPage = if (head.ReplyCount == null) {
-            1
-        } else {
-            (head.ReplyCount!!.toInt() / PAGE_SIZE) + 1
-        }
-        if (!hasAddHistory) {
-            saveHistory(head)
-            hasAddHistory = true
-        }
-    }
 
     //点击了文本中的连接
     fun onUrlClick(url: String) {

@@ -240,7 +240,6 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
                     }
                 }
                 is LoadState.Error -> {
-                    "refresh Error".logI()
                     mDataBinding.refresh.isRefreshing = false
                     "刷新失败".shortToast()
                 }
@@ -332,10 +331,10 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     @OnMessage
     fun showAnnouncement() {
         AnnouncementDialog(vm.announcement.value?.content, context) { url ->
-            if(url.startsWith(">>")){
+            if (url.startsWith(">>")) {
                 try {
                     gotoThreadDetail(url.split(".")[1])
-                }catch (e:Exception){
+                } catch (e: Exception) {
                     "找不到串".shortToast()
                 }
             }
@@ -493,7 +492,9 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
                 else -> {
                     //普通串
                     _threadPager.value =
-                        getNMBCommonPager { repository.getThreadsPagingSource(forum.id) }
+                        getNMBCommonPager {
+                            repository.getThreadsPagingSource(forum.id)
+                        }
                 }
             }
         }

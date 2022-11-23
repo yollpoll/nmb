@@ -10,13 +10,20 @@ import com.yollpoll.nmb.model.bean.ArticleItem
 @Dao
 interface ArticleDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll(users: List<ArticleItem>)
+    suspend fun insertAll(article: List<ArticleItem>)
 
-    @Query("SELECT * FROM ArticleItem WHERE replyTo LIKE :replyTo")
-    fun pagingSource(replyTo: String): PagingSource<Int, ArticleItem>
+    @Query("SELECT * FROM ArticleItem WHERE replyTo LIKE :replyTo AND page LIKE :page")
+    fun pagingSource(replyTo: String, page: Int): PagingSource<Int, ArticleItem>
 
     @Query("DELETE FROM ArticleItem")
     suspend fun clearAll()
 
+    //查询回复
+    @Query("SELECT * FROM ArticleItem WHERE replyTo LIKE :replyTo AND page LIKE :page")
+    suspend fun getReplies(replyTo: String, page: Int): List<ArticleItem>
+
+    //根据id查询
+    @Query("SELECT * FROM ArticleItem WHERE id LIKE :id")
+    suspend fun getArticle(id: String): ArticleItem?
 
 }

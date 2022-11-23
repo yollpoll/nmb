@@ -1,9 +1,6 @@
 package com.yollpoll.nmb.model.bean
 
-import androidx.room.Embedded
-import androidx.room.Entity
-import androidx.room.Ignore
-import androidx.room.PrimaryKey
+import androidx.room.*
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.sql.Timestamp
@@ -30,9 +27,7 @@ data class ArticleItem(
     var sage: Int,//吃我世嘉
     var Hide: Int,
     var replyTo: String?,//当前回复的串的id
-    var timestamp: Long
 ) {
     @Ignore
     var Replies: List<ArticleItem>? = null
 }
-

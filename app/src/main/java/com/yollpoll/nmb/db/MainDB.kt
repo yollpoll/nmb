@@ -7,10 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.yollpoll.nmb.App
-import com.yollpoll.nmb.model.bean.ArticleItem
-import com.yollpoll.nmb.model.bean.CookieBean
-import com.yollpoll.nmb.model.bean.HistoryBean
-import com.yollpoll.nmb.model.bean.MySpeechBean
+import com.yollpoll.nmb.model.bean.*
 
 @Database(
     entities = [CookieBean::class, MySpeechBean::class, HistoryBean::class,ArticleItem::class],
