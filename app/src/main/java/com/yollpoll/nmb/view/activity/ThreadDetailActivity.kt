@@ -34,8 +34,10 @@ import com.yollpoll.nmb.adapter.ExampleLoadStateAdapter
 import com.yollpoll.nmb.adapter.ThreadAdapter
 import com.yollpoll.nmb.databinding.ActivityThreadDetailBinding
 import com.yollpoll.nmb.model.bean.ArticleItem
+import com.yollpoll.nmb.model.bean.CookieBean
 import com.yollpoll.nmb.model.bean.HistoryBean
 import com.yollpoll.nmb.model.repository.ArticleDetailRepository
+import com.yollpoll.nmb.model.repository.CookieRepository
 import com.yollpoll.nmb.model.repository.HomeRepository
 import com.yollpoll.nmb.model.repository.UserRepository
 import com.yollpoll.nmb.net.imgThumbUrl
@@ -47,6 +49,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import okhttp3.Cookie
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
@@ -222,10 +225,13 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
 class ThreadDetailVM @Inject constructor(
     val app: Application,
     val repository: ArticleDetailRepository,
-    val userRepository: UserRepository
+    val userRepository: UserRepository,
+    val cookieRepository: CookieRepository
 ) : FastViewModel(app) {
     //混乱饼干模式下饼干映射
     private val cookieMap = hashMapOf<String, String>()
+
+    private val myCookies = arrayListOf<CookieBean>()
 
     @Bindable
     var title: String = "无标题"
@@ -257,6 +263,7 @@ class ThreadDetailVM @Inject constructor(
         this.refreshPage = refreshPage
         this.curPage = curPage
         viewModelScope.launch {
+            myCookies.addAll(cookieRepository.queryCookies())
             try {
                 head = repository.getArticle(id)
                 initHead(head)
@@ -422,6 +429,12 @@ class ThreadDetailVM @Inject constructor(
         val randomCookie = getBoolean(KEY_NO_COOKIE, false)
         if (!randomCookie) {
             return
+        }
+        myCookies.forEach {
+            if (it.name == article.user_hash) {
+                //自己的cookie不修改
+                return
+            }
         }
         if (article.admin == "1") {
             //红名特权不许乱改
