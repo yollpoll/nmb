@@ -14,8 +14,12 @@ import com.bumptech.glide.Glide
 import com.yollpoll.base.NmbPagingDataAdapter
 import com.yollpoll.base.getAttrColor
 import com.yollpoll.base.logE
+import com.yollpoll.base.logI
+import com.yollpoll.framework.extensions.getBoolean
 import com.yollpoll.framework.extensions.shortToast
+import com.yollpoll.framework.utils.getBoolean
 import com.yollpoll.nmb.BR
+import com.yollpoll.nmb.KEY_NO_IMG
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.databinding.ItemThreadBinding
 import com.yollpoll.nmb.model.bean.ArticleItem
@@ -38,12 +42,17 @@ class ThreadAdapter(
                 binding as ItemThreadBinding
                 val context = binding.root.context
                 //图片加载
+                val noImg= getBoolean(KEY_NO_IMG,false)
                 binding.ivContent.apply {
                     if (item.img.isEmpty()) {
                         this.visibility = View.GONE
                     } else {
-
-                        this.visibility = View.VISIBLE
+                        if (noImg) {
+                            this.visibility = View.GONE
+                            return@apply
+                        } else {
+                            this.visibility = View.VISIBLE
+                        }
                         //图片加载
                         Glide.with(context)
                             .asBitmap()
@@ -63,8 +72,10 @@ class ThreadAdapter(
                     if (it == "1") {
                         binding.tvUser.setTextColor(context.resources.getColor(R.color.color_red))
                     } else if (item.master != null && item.master == "1") {
+                        "is master".logI()
                         binding.tvUser.setTextColor(context.resources.getColor(R.color.color_yellow_green))
                     } else {
+                        "is not master".logI()
                         binding.tvUser.setTextColor(
                             context.getAttrColor(
                                 R.attr.colorOnSecondaryContainer

@@ -1,13 +1,9 @@
 package com.yollpoll.nmb.model.repository
 
-import android.util.Log
 import com.yollpoll.base.*
-import com.yollpoll.framework.extensions.shortToast
-import com.yollpoll.framework.extensions.toListJson
 import com.yollpoll.framework.net.http.RetrofitFactory
-import com.yollpoll.framework.paging.BasePagingSource
 import com.yollpoll.nmb.di.CommonRetrofitFactory
-import com.yollpoll.nmb.di.HomeRepositoryAnnotation
+import com.yollpoll.nmb.model.bean.Article
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.net.HttpService
 import javax.inject.Inject
@@ -20,12 +16,26 @@ class HomeRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
     /**
      * 获取串列表
      */
-    suspend fun getThreadList(id: String, page: Int) = service.getThreadList(id, page)
+    suspend fun getThreadList(id: String, page: Int): Article {
+        try {
+            return service.getThreadList(id, page)
+        } catch (e: Exception) {
+
+        }
+        return Article()
+    }
 
     /**
      * 时间线
      */
-    suspend fun getTimeLine(page: Int, id: Int) = service.getTimeLine(page = page, id = id)
+    suspend fun getTimeLine(page: Int, id: Int): Article {
+        try {
+            return service.getTimeLine(page = page, id = id)
+        } catch (e: Exception) {
+
+        }
+        return Article()
+    }
 
 
     /**

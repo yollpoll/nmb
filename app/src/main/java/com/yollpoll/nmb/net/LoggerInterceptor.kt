@@ -2,8 +2,13 @@ package com.yollpoll.nmb.net
 
 import android.util.Log
 import com.yollpoll.base.logI
+import com.yollpoll.framework.extensions.shortToast
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.*
 import okio.Buffer
+import org.json.JSONObject
 import java.io.IOException
 import java.nio.charset.Charset
 import kotlin.text.Charsets.UTF_8
@@ -71,12 +76,24 @@ class LoggerInterceptor : Interceptor {
             charset = contentType.charset()
         }
         if (contentLength != 0L) {
-            if(null==charset){
+            if (null == charset) {
                 "contentType is null".logI()
                 return
             }
             val result = buffer.clone().readString(charset)
             "Response: $result".logI()
+            try {
+                val jsonStr = JSONObject(result)
+                GlobalScope.launch(Dispatchers.Main) {
+                    val error = jsonStr.optString("error")
+                    if (error.isNotEmpty()) {
+                        error.shortToast()
+                    }
+                }
+            } catch (e: Exception) {
+
+            }
+
         }
     }
 

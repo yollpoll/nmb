@@ -7,31 +7,36 @@ import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
 
-class NMBInterceptor:Interceptor {
+class NMBInterceptor : Interceptor {
     //header
-    private val headers= hashMapOf(
+    private val headers = hashMapOf(
         "User-Agent" to USER_AGENT
     )
-    private val commonParams= hashMapOf(
+    private val commonParams = hashMapOf(
         "appid" to APP_ID
     )
-    override fun intercept(chain: Interceptor.Chain): Response {
-        val oldRequest=chain.request()
-        val builder=oldRequest.newBuilder()
-        injectParams(oldRequest,builder,commonParams)
-        val newRequest=builder.headers(Headers.of(headers)).build()
 
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val oldRequest = chain.request()
+        val builder = oldRequest.newBuilder()
+        injectParams(oldRequest, builder, commonParams)
+        val newRequest = builder.headers(Headers.of(headers)).build()
         return chain.proceed(newRequest)
     }
 
 
     //注入参数
-    private fun injectParams(request: Request,builder:Request.Builder,params:Map<String,String>){
-        val httpUrlBuilder=request.url().newBuilder()
-        params.forEach{
-            httpUrlBuilder.addQueryParameter(it.key,it.value)
+    private fun injectParams(
+        request: Request,
+        builder: Request.Builder,
+        params: Map<String, String>
+    ) {
+        val httpUrlBuilder = request.url().newBuilder()
+        params.forEach {
+            httpUrlBuilder.addQueryParameter(it.key, it.value)
         }
         builder.url(httpUrlBuilder.build())
     }
+
 
 }

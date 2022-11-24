@@ -20,6 +20,8 @@ import com.yollpoll.extensions.isDarkMod
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.extensions.*
 import com.yollpoll.framework.fast.FastViewModel
+import com.yollpoll.framework.utils.getBoolean
+import com.yollpoll.framework.utils.putBoolean
 import com.yollpoll.nmb.*
 import com.yollpoll.nmb.databinding.ActivitySettingBinding
 import com.yollpoll.nmb.model.bean.DarkMod
@@ -214,6 +216,7 @@ class SettingVm @Inject constructor(
     val crashHandler: MyCrashHandler
 ) :
     FastViewModel(app) {
+    var firstLoad = true
 
     @Bindable
     var collectionId: String? = null
@@ -228,10 +231,29 @@ class SettingVm @Inject constructor(
     @Bindable
     var openLog: Boolean = false
 
+    @Bindable
+    var cookieMod: Boolean = false
+        set(value) {
+            field = value
+            setNoCookie(value)
+            notifyPropertyChanged(BR.cookieMod)
+        }
+
+    @Bindable
+    var noImgMod: Boolean = false
+        set(value) {
+            field = value
+            setNoImage(value)
+            notifyPropertyChanged(BR.noImgMod)
+        }
+
     init {
         viewModelScope.launch {
             initLog()
             collectionId = userRepository.getCollectionId()
+            cookieMod = getBoolean(KEY_NO_COOKIE, false)
+            noImgMod = getBoolean(KEY_NO_IMG, false)
+            firstLoad = false
         }
 
     }
@@ -244,7 +266,7 @@ class SettingVm @Inject constructor(
 
     private fun initLog() {
         viewModelScope.launch {
-            openLog = app.getBoolean(KEY_OPEN_CRASH_HANDLER, false)
+            openLog = getBoolean(KEY_OPEN_CRASH_HANDLER, false)
             notifyPropertyChanged(BR.openLog)
         }
     }
@@ -252,7 +274,23 @@ class SettingVm @Inject constructor(
     fun openCrashHandler(open: Boolean) {
         viewModelScope.launch {
             openLog = open
-            app.putBoolean(KEY_OPEN_CRASH_HANDLER, open)
+            putBoolean(KEY_OPEN_CRASH_HANDLER, open)
+        }
+    }
+
+    private fun setNoCookie(check: Boolean) {
+        if (firstLoad) return
+        viewModelScope.launch {
+            putBoolean(KEY_NO_COOKIE, check)
+            sendMessage(ACTION_NO_COOKIE, check)
+        }
+    }
+
+    private fun setNoImage(check: Boolean) {
+        if (firstLoad) return
+        viewModelScope.launch {
+            putBoolean(KEY_NO_IMG, check)
+            sendMessage(ACTION_NO_IMG, check)
         }
     }
 }

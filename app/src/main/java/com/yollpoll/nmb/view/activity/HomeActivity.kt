@@ -74,6 +74,7 @@ import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.math.max
+import com.yollpoll.framework.utils.getBoolean
 
 @Route(url = ROUTE_HOME)
 @AndroidEntryPoint
@@ -110,28 +111,31 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
     //串列表
     private val threadManager = LinearLayoutManager(this)
-    private val adapterThread = ThreadAdapter(onItemLongClick = { article ->
-        ThreadMenuDialog(MenuAction.MENU_ACTION_HOME, context, copy = {
-            copyStr(context, article.content)
-            "复制到剪切板".shortToast()
-        }, report = {
-            lifecycleScope.launchWhenResumed {
-                gotoReportActivity(context, arrayListOf(article.id))
+    private val adapterThread = ThreadAdapter(
+        onItemLongClick = { article ->
+            ThreadMenuDialog(MenuAction.MENU_ACTION_HOME, context, copy = {
+                copyStr(context, article.content)
+                "复制到剪切板".shortToast()
+            }, report = {
+                lifecycleScope.launchWhenResumed {
+                    gotoReportActivity(context, arrayListOf(article.id))
+                }
+            }).show()
+            true
+        },
+        onUrlClick = {
+            vm.onThreadUrlClick(it)
+        },
+        onImageClick = { item, pos ->
+            lifecycleScope.launch {
+                ImageActivity.gotoImageActivity(
+                    context,
+                    0,
+                    listOf(item.id),
+                    listOf(item.img + item.ext)
+                )
             }
-        }).show()
-        true
-    }, onUrlClick = {
-        vm.onThreadUrlClick(it)
-    }, onImageClick = { item, pos ->
-        lifecycleScope.launch {
-            ImageActivity.gotoImageActivity(
-                context,
-                0,
-                listOf(item.id),
-                listOf(item.img + item.ext)
-            )
-        }
-    }) { item ->
+        }) { item ->
         lifecycleScope.launch {
             ThreadDetailActivity.gotoThreadDetailActivity(item.id, context)
         }
@@ -266,14 +270,26 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         }
     }
 
-    //切换主题刷新界面
-    override fun onThemeChanged(theme: SkinTheme) {
-        super.onThemeChanged(theme)
-        mDataBinding.refresh.isRefreshing = true
-        mDataBinding.rvContent.adapter = adapterThread
-        refreshThread()
+    //一些全局的ui变化事件
+    override fun onUiActionEvent(action: String, data: Any?) {
+        super.onUiActionEvent(action, data)
+        when (action) {
+            ACTION_SELECT_THEME -> {
+                //切换主题刷新界面
+                mDataBinding.refresh.isRefreshing = true
+                mDataBinding.rvContent.adapter = adapterThread
+                refreshThread()
+            }
+            ACTION_NO_IMG -> {
+                //无图模式
+                adapterThread.notifyDataSetChanged()
+            }
+            ACTION_NO_COOKIE -> {
+                //饼干混乱模式
+                adapterThread.notifyDataSetChanged()
+            }
+        }
     }
-
 
     /**
      * 新建串
@@ -469,7 +485,7 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
             repository.refreshCover()
             sendEmptyMessage(MR.HomeActivity_onRefreshCover)
         } catch (e: Exception) {
-            "封面加载失败".logI()
+//            "封面加载失败".logI()
         }
     }
 

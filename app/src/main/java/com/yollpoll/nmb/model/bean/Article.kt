@@ -5,7 +5,9 @@ import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import java.sql.Timestamp
 
-class Article : ArrayList<ArticleItem>()
+
+//class Article : ArrayList<ArticleItem>()
+typealias Article=ArrayList<ArticleItem>
 
 @Entity
 @JsonClass(generateAdapter = true)

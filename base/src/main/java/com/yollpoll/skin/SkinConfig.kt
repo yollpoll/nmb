@@ -11,4 +11,4 @@ const val SKIN_TAG = "skin_tag"
 const val ITEM_LINE = "item_line"
 const val ITEM = "item"
 const val SETTING_ITEM = "setting_item"//各种设置类型的item
-const val DIALOG_BG="dialog_bg"
+const val DIALOG_BG = "dialog_bg"

@@ -25,9 +25,10 @@ import com.yollpoll.framework.extensions.*
 import com.yollpoll.framework.fast.FastActivity
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.framework.paging.getCommonPager
-import com.yollpoll.nmb.App
+import com.yollpoll.framework.utils.getBoolean
+import com.yollpoll.framework.utils.getString
+import com.yollpoll.nmb.*
 import com.yollpoll.nmb.BR
-import com.yollpoll.nmb.MR
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.adapter.ExampleLoadStateAdapter
 import com.yollpoll.nmb.adapter.ThreadAdapter
@@ -46,7 +47,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 @AndroidEntryPoint
 @Route(url = ROUTE_THREAD_DETAIL)
@@ -221,6 +224,8 @@ class ThreadDetailVM @Inject constructor(
     val repository: ArticleDetailRepository,
     val userRepository: UserRepository
 ) : FastViewModel(app) {
+    //混乱饼干模式下饼干映射
+    private val cookieMap = hashMapOf<String, String>()
 
     @Bindable
     var title: String = "无标题"
@@ -305,10 +310,10 @@ class ThreadDetailVM @Inject constructor(
                         //当前第一页，加入head
                         data.add(0, head)
                     }
-
                     return data.filter {
                         return@filter it.id != "9999999"
                     }.map { reply ->
+                        changeCookieRandom(reply)
                         if (reply.user_hash == head.user_hash) {
                             reply.master = "1"
                         } else {
@@ -410,5 +415,33 @@ class ThreadDetailVM @Inject constructor(
             )
             userRepository.addHistory(history)
         }
+    }
+
+    //混乱饼干
+    private fun changeCookieRandom(article: ArticleItem) {
+        val randomCookie = getBoolean(KEY_NO_COOKIE, false)
+        if (!randomCookie) {
+            return
+        }
+        if (article.admin == "1") {
+            //红名特权不许乱改
+            return
+        }
+        if (cookieMap.containsKey(article.user_hash)) {
+            article.user_hash = cookieMap[article.user_hash]!!
+        } else {
+            val newCookie = randomCookie(article.user_hash)
+            cookieMap[article.user_hash] = newCookie
+            article.user_hash = newCookie
+        }
+    }
+
+    //根据饼干随机生产映射
+    private fun randomCookie(cookie: String): String {
+        var newCookie: String = ""
+        for (i in cookie.indices) {
+            newCookie += ('a'..'z').random().toChar()
+        }
+        return newCookie
     }
 }

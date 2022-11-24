@@ -13,10 +13,13 @@ import androidx.databinding.ViewDataBinding
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.observe
 import com.yollpoll.arch.message.liveeventbus.LiveEventBus
+import com.yollpoll.arch.message.liveeventbus.NonType
 import com.yollpoll.arch.message.liveeventbus.ObserverWrapper
 import com.yollpoll.floweventbus.FlowEventBus
 import com.yollpoll.framework.fast.FastActivity
 import com.yollpoll.framework.fast.FastViewModel
+import com.yollpoll.nmb.ACTION_NO_COOKIE
+import com.yollpoll.nmb.ACTION_NO_IMG
 import com.yollpoll.nmb.ACTION_SELECT_THEME
 import com.yollpoll.skin.SkinInflaterFactory
 import com.yollpoll.skin.SkinTheme
@@ -36,21 +39,44 @@ abstract class NMBActivity<BIND : ViewDataBinding, VM : FastViewModel> : FastAct
     override fun onCreate(savedInstanceState: Bundle?) {
         LayoutInflaterCompat.setFactory2(layoutInflater, SkinInflaterFactory)
         super.onCreate(savedInstanceState)
+        initActionEvent()
+    }
+
+
+    private fun initActionEvent() {
         LiveEventBus.use(ACTION_SELECT_THEME, SkinTheme::class.java)
             .observe(this, object : ObserverWrapper<SkinTheme>() {
                 override fun isSticky() = true
                 override fun onChanged(value: SkinTheme?) {
                     value?.let {
-                        onThemeChanged(value)
+                        onUiActionEvent(ACTION_SELECT_THEME, value)
                     }
                 }
 
                 override fun mainThread() = true
 
             })
-    }
+        LiveEventBus.use(ACTION_NO_COOKIE, Boolean::class.java)
+            .observe(this, object : ObserverWrapper<Boolean>() {
+                override fun isSticky() = true
+                override fun onChanged(value: Boolean) {
+                    onUiActionEvent(ACTION_NO_COOKIE, value)
+                }
 
-    abstract fun initViewModel(): VM
+                override fun mainThread() = true
+
+            })
+        LiveEventBus.use(ACTION_NO_IMG, Boolean::class.java)
+            .observe(this, object : ObserverWrapper<Boolean>() {
+                override fun isSticky() = true
+                override fun onChanged(value: Boolean) {
+                    onUiActionEvent(ACTION_NO_IMG, value)
+                }
+
+                override fun mainThread() = true
+
+            })
+    }
 
 
     /**
@@ -89,8 +115,10 @@ abstract class NMBActivity<BIND : ViewDataBinding, VM : FastViewModel> : FastAct
         return null
     }
 
-    open fun onThemeChanged(theme: SkinTheme) {
+    //一些全局通知的ui事件
+    open fun onUiActionEvent(action: String, data: Any? = null) {}
 
-    }
+    abstract fun initViewModel(): VM
+
 
 }

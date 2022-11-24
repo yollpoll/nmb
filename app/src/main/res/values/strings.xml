@@ -64,4 +64,7 @@
     </string-array>
     <string name="collection_id">订阅ID</string>
     <string name="add">添加</string>
+    <string name="cookie_mod">混乱饼干</string>
+    <string name="cookie_mod_detail">列表页面饼干随机显示，同一串内饼干随机显示，同一饼干显示相同，禁止饼干警察!</string>
+    <string name="no_img_mod">无图模式</string>
 </resources>
