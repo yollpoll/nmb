@@ -12,8 +12,9 @@ class ThreadMenuDialog(
     private val action: MenuAction,
     private val context: Context,
     private val reply: (() -> Unit)? = null,
-    private val report: (() -> Unit)?=null,
-    private val copy:(()->Unit)?=null
+    private val report: (() -> Unit)? = null,
+    private val copy: (() -> Unit)? = null,
+    private val copyNo: (() -> Unit)? = null
 ) :
     NMBDialog<DialogThreadMenuBinding, AlertDialog>(context) {
     override fun getLayoutId() = R.layout.dialog_thread_menu
@@ -33,16 +34,20 @@ class ThreadMenuDialog(
 
             }
         }
-        binding.llReply.setOnClickListener{
+        binding.llReply.setOnClickListener {
             reply?.invoke()
             this.dismiss()
         }
-        binding.llReport.setOnClickListener{
+        binding.llReport.setOnClickListener {
             report?.invoke()
             this.dismiss()
         }
-        binding.llCopy.setOnClickListener{
+        binding.llCopy.setOnClickListener {
             copy?.invoke()
+            this.dismiss()
+        }
+        binding.llCopyNo.setOnClickListener {
+            copyNo?.invoke()
             this.dismiss()
         }
     }

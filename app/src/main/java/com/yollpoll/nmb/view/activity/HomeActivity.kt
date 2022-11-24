@@ -113,7 +113,11 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     private val threadManager = LinearLayoutManager(this)
     private val adapterThread = ThreadAdapter(
         onItemLongClick = { article ->
-            ThreadMenuDialog(MenuAction.MENU_ACTION_HOME, context, copy = {
+            ThreadMenuDialog(MenuAction.MENU_ACTION_HOME, context, copyNo =
+            {
+                copyStr(context, article.id)
+                "${article.id} 复制到剪切板".shortToast()
+            }, copy = {
                 copyStr(context, article.content)
                 "复制到剪切板".shortToast()
             }, report = {

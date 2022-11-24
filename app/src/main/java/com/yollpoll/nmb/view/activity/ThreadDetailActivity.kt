@@ -36,6 +36,7 @@ import com.yollpoll.nmb.databinding.ActivityThreadDetailBinding
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.model.bean.CookieBean
 import com.yollpoll.nmb.model.bean.HistoryBean
+import com.yollpoll.nmb.model.bean.ImgTuple
 import com.yollpoll.nmb.model.repository.ArticleDetailRepository
 import com.yollpoll.nmb.model.repository.CookieRepository
 import com.yollpoll.nmb.model.repository.HomeRepository
@@ -78,11 +79,16 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
     override fun initViewModel() = vm
     private val mManager = LinearLayoutManager(this)
     private val mAdapter = ThreadAdapter(false, onItemLongClick = { article ->
-        ThreadMenuDialog(MenuAction.MENU_ACTION_REPLY, context, reply = {
+        ThreadMenuDialog(MenuAction.MENU_ACTION_REPLY, context, reply =
+        {
             lifecycleScope.launchWhenResumed {
                 gotoLinkActivity(context, vm.id, arrayListOf(article.id))
             }
-        }, copy = {
+        }, copyNo = {
+            copyStr(context, article.id)
+            "${article.id} 复制到剪切板".shortToast()
+        },
+            copy = {
             copyStr(context, article.content)
             "复制到剪切板".shortToast()
         }, report = {
@@ -250,12 +256,13 @@ class ThreadDetailVM @Inject constructor(
     val cache = linkedMapOf<String, ArticleItem>()
 
     //图片列表(有图片的item)
-    val imgList: List<ArticleItem>
-        get() {
-            return cache.filter {
-                it.value.img.isNotEmpty()
-            }.map { it.value }
-        }
+//    val imgList: List<ArticleItem>
+//        get() {
+//            return cache.filter {
+//                it.value.img.isNotEmpty()
+//            }.map { it.value }
+//        }
+    val imgList= arrayListOf<ImgTuple>()
 
     //初始化数据
     fun init(id: String, refreshPage: Int, curPage: Int) {
@@ -270,6 +277,10 @@ class ThreadDetailVM @Inject constructor(
                 sendEmptyMessage(MR.ThreadDetailActivity_onHeadLoad)
             } catch (e: Exception) {
 
+            }
+            imgList.addAll(repository.getImages(id))
+            imgList.forEach{
+                it.img?.logE()
             }
         }
     }

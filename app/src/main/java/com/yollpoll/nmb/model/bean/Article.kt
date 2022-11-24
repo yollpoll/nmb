@@ -7,7 +7,7 @@ import java.sql.Timestamp
 
 
 //class Article : ArrayList<ArticleItem>()
-typealias Article=ArrayList<ArticleItem>
+typealias Article = ArrayList<ArticleItem>
 
 @Entity
 @JsonClass(generateAdapter = true)
@@ -15,9 +15,11 @@ data class ArticleItem(
     var admin: String,
     var content: String,
     var email: String?,
+    @ColumnInfo(name="ext")
     var ext: String,
     @PrimaryKey
     var id: String,
+    @ColumnInfo(name="img")
     var img: String,
     var name: String,
     var now: String,
@@ -33,3 +35,9 @@ data class ArticleItem(
     @Ignore
     var Replies: List<ArticleItem>? = null
 }
+
+data class ImgTuple(
+    @ColumnInfo(name = "img") val img: String,
+    @ColumnInfo(name = "ext") val ext: String,
+    @ColumnInfo(name = "id") val id: String,
+    )

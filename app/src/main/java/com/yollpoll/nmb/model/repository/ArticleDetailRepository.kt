@@ -11,6 +11,7 @@ package com.yollpoll.nmb.model.repository
 import androidx.paging.*
 import androidx.room.withTransaction
 import com.yollpoll.base.NMBBasePagingSource
+import com.yollpoll.base.logE
 import com.yollpoll.base.logI
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.extensions.toJson
@@ -22,6 +23,7 @@ import com.yollpoll.framework.paging.getCommonPager
 import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.di.CommonRetrofitFactory
 import com.yollpoll.nmb.model.bean.ArticleItem
+import com.yollpoll.nmb.model.bean.ImgTuple
 import com.yollpoll.nmb.net.HttpService
 import com.yollpoll.nmb.net.getRequestBody
 import kotlinx.coroutines.Dispatchers
@@ -51,7 +53,7 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
                 reply.page = pos
             }
             MainDB.getInstance().getArticleDao().insertAll(replies)
-        }else{
+        } else {
             "load from db".logI()
         }
         return replies
@@ -67,6 +69,17 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
                 MainDB.getInstance().getArticleDao().insertAll(listOf(this))
             }
     }
+
+    suspend fun getImages(id: String): List<ImgTuple> =
+        MainDB.getInstance().getArticleDao().getImageList(id).filter {
+            if (it.img.isNotEmpty()) {
+                "id: ${it.id}".logE()
+                return@filter true
+            }
+            "id: ${it.id}_${it.img}_${it.ext}".logE()
+            return@filter false
+
+        }
 
 
     suspend fun newThread(

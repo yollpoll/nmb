@@ -43,6 +43,5 @@ val MaterialSettingItem = Pair<String, SkinHandler>(SETTING_ITEM) { parent, name
     view
 }
 val MaterialDialogBg = Pair<String, SkinHandler>(DIALOG_BG) { parent, name, view, attrs ->
-    view.setBackgroundColor(view.context.resources.getColor(android.R.color.transparent))
     view
 }

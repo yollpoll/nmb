@@ -55,6 +55,7 @@
         <entry key="app/src/main/res/xml/provider_paths.xml" value="0.31979166666666664" />
         <entry key="base/src/main/res/drawable/shape_dialog.xml" value="0.216" />
         <entry key="base/src/main/res/layout/dialog_common.xml" value="0.3875" />
+        <entry key="base/src/main/res/layout/dialog_layout.xml" value="0.35885416666666664" />
         <entry key="business/src/main/res/layout/activity_home.xml" value="0.4036458333333333" />
         <entry key="qrlib/src/main/res/layout/activity_qr_code.xml" value="0.34479166666666666" />
       </map>

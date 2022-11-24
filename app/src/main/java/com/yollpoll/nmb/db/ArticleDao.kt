@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.yollpoll.nmb.model.bean.ArticleItem
+import com.yollpoll.nmb.model.bean.ImgTuple
 
 @Dao
 interface ArticleDao {
@@ -25,5 +26,9 @@ interface ArticleDao {
     //根据id查询
     @Query("SELECT * FROM ArticleItem WHERE id LIKE :id")
     suspend fun getArticle(id: String): ArticleItem?
+
+    //查询图片
+    @Query("SELECT img,ext,id FROM ArticleItem WHERE replyTo LIKE :replyTo")
+    suspend fun getImageList(replyTo: String): List<ImgTuple>
 
 }

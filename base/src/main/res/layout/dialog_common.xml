@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
@@ -9,24 +10,31 @@
     </data>
 
     <RelativeLayout
+        android:background="?attr/colorPrimaryContainer"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
-        android:background="?attr/colorPrimaryContainer">
+        android:layout_height="450dp">
 
-        <ImageView
-            android:id="@+id/iv_content"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="320dp"
-            android:scaleType="centerCrop"
-            android:src="@mipmap/bg_cover" />
+            android:layout_height="450dp"
+            app:skin_tag="dialog_bg">
 
-        <TextView
-            android:id="@+id/tv_dialog"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/iv_content"
-            android:gravity="center"
-            android:padding="10dp"
-            android:textSize="16sp" />
+            <ImageView
+                android:id="@+id/iv_content"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:scaleType="centerCrop"
+                android:src="@mipmap/bg_cover" />
+
+            <TextView
+                android:id="@+id/tv_dialog"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_content"
+                android:gravity="center"
+                android:padding="10dp"
+                android:textSize="16sp" />
+        </RelativeLayout>
     </RelativeLayout>
+
 </layout>

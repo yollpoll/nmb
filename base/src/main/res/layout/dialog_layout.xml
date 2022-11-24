@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:padding="20dp"
+        app:skin_tag="dialog_bg"
         android:background="?attr/colorPrimaryContainer">
 
         <TextView
