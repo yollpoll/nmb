@@ -247,12 +247,21 @@ class SettingVm @Inject constructor(
             notifyPropertyChanged(BR.noImgMod)
         }
 
+    @Bindable
+    var thumbBigImg: Boolean = false
+        set(value) {
+            field = value
+            setBigImg(value)
+            notifyPropertyChanged(BR.thumbBigImg)
+        }
+
     init {
         viewModelScope.launch {
             initLog()
             collectionId = userRepository.getCollectionId()
             cookieMod = getBoolean(KEY_NO_COOKIE, false)
             noImgMod = getBoolean(KEY_NO_IMG, false)
+            thumbBigImg= getBoolean(KEY_BIG_IMG,false)
             firstLoad = false
         }
 
@@ -291,6 +300,14 @@ class SettingVm @Inject constructor(
         viewModelScope.launch {
             putBoolean(KEY_NO_IMG, check)
             sendMessage(ACTION_NO_IMG, check)
+        }
+    }
+
+    private fun setBigImg(check: Boolean) {
+        if (firstLoad) return
+        viewModelScope.launch {
+            putBoolean(KEY_BIG_IMG, check)
+            sendMessage(ACTION_BIG_IMG, check)
         }
     }
 }

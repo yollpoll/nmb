@@ -68,4 +68,6 @@
     <string name="cookie_mod_detail">列表页面饼干随机显示，同一串内饼干随机显示，同一饼干显示相同，禁止饼干警察!</string>
     <string name="no_img_mod">无图模式</string>
     <string name="copy_no">复制串号</string>
+    <string name="thumb_big_img">缩略大图</string>
+    <string name="thumb_big_img_content">浏览大图时候仍然使用缩率图</string>
 </resources>

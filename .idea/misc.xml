@@ -23,6 +23,7 @@
         <entry key="app/src/main/res/layout/activity_qr.xml" value="0.28541666666666665" />
         <entry key="app/src/main/res/layout/activity_setting.xml" value="0.33" />
         <entry key="app/src/main/res/layout/activity_thread_detail.xml" value="0.3328125" />
+        <entry key="app/src/main/res/layout/activity_thread_image.xml" value="0.3671875" />
         <entry key="app/src/main/res/layout/activity_web.xml" value="0.30572916666666666" />
         <entry key="app/src/main/res/layout/alert_choose_photo.xml" value="0.31197916666666664" />
         <entry key="app/src/main/res/layout/dialog_brush_width.xml" value="0.3609375" />
@@ -36,6 +37,7 @@
         <entry key="app/src/main/res/layout/include_line.xml" value="0.390625" />
         <entry key="app/src/main/res/layout/include_title.xml" value="0.328125" />
         <entry key="app/src/main/res/layout/item_cookie.xml" value="0.34791666666666665" />
+        <entry key="app/src/main/res/layout/item_for_custom_spinner.xml" value="0.334375" />
         <entry key="app/src/main/res/layout/item_forum.xml" value="0.38697916666666665" />
         <entry key="app/src/main/res/layout/item_pic_emoji.xml" value="0.3765625" />
         <entry key="app/src/main/res/layout/item_speech.xml" value="0.32864583333333336" />

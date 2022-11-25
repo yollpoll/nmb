@@ -62,6 +62,7 @@
         <activity android:name=".view.activity.WebActivity"/>
         <activity android:name=".view.activity.SettingActivity"/>
         <activity android:name=".view.activity.HistoryActivity"/>
+        <activity android:name=".view.activity.ThreadImageActivity"/>
     </application>
 
 </manifest>

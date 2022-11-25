@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="view"
+            type="com.yollpoll.nmb.view.activity.ThreadImageActivity" />
+
+        <variable
+            name="viewModel"
+            type="com.yollpoll.nmb.view.activity.ThreadImageVm" />
+    </data>
+
+    <RelativeLayout
+        android:background="?attr/colorPrimaryContainer"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <include
+            android:id="@+id/layout_head"
+            bind:title="@{viewModel.title}"
+            bind:subTitle="@{viewModel.subTitle}"
+            layout="@layout/include_title" />
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_head"
+            />
+
+    </RelativeLayout>
+</layout>

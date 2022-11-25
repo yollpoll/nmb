@@ -73,10 +73,8 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
     suspend fun getImages(id: String): List<ImgTuple> =
         MainDB.getInstance().getArticleDao().getImageList(id).filter {
             if (it.img.isNotEmpty()) {
-                "id: ${it.id}".logE()
                 return@filter true
             }
-            "id: ${it.id}_${it.img}_${it.ext}".logE()
             return@filter false
 
         }

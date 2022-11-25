@@ -28,7 +28,7 @@ interface ArticleDao {
     suspend fun getArticle(id: String): ArticleItem?
 
     //查询图片
-    @Query("SELECT img,ext,id FROM ArticleItem WHERE replyTo LIKE :replyTo")
+    @Query("SELECT img,ext,id FROM ArticleItem WHERE replyTo LIKE :replyTo OR id LIKE :replyTo")
     suspend fun getImageList(replyTo: String): List<ImgTuple>
 
 }

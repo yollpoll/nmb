@@ -10,7 +10,8 @@ data class SettingBean(
     val darkMod: DarkMod,
     val collectionId: String,
     val noImage: Boolean,
-    val noCookie: Boolean
+    val noCookie: Boolean,
+    val thumbBigImg: Boolean,
 )
 
 enum class DarkMod(name: String) {

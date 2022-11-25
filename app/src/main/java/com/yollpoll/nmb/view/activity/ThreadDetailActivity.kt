@@ -89,25 +89,26 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
             "${article.id} 复制到剪切板".shortToast()
         },
             copy = {
-            copyStr(context, article.content)
-            "复制到剪切板".shortToast()
-        }, report = {
-            lifecycleScope.launchWhenResumed {
-                gotoReportActivity(context, arrayListOf(article.id))
-            }
-        }).show()
+                copyStr(context, article.content)
+                "复制到剪切板".shortToast()
+            }, report = {
+                lifecycleScope.launchWhenResumed {
+                    gotoReportActivity(context, arrayListOf(article.id))
+                }
+            }).show()
         true
     }, onUrlClick = {
         vm.onUrlClick(it)
     }, onImageClick = { item, _ ->
         lifecycleScope.launch {
             //浏览大图
-            ImageActivity.gotoImageActivity(
-                context,
-                cur = vm.findImgIndex(item.id),
-                vm.imgList.map { it.id },
-                vm.imgList.map { it.img + it.ext }
-            )
+            gotoThreadImageActivity(context, cur = vm.findImgIndex(item.id), id)
+//            ImageActivity.gotoImageActivity(
+//                context,
+//                cur = vm.findImgIndex(item.id),
+//                vm.imgList.map { it.id },
+//                vm.imgList.map { it.img + it.ext }
+//            )
         }
     })
 
@@ -202,12 +203,13 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
         LinkArticleDialog(context, articleItem, onImgClick = {
             //浏览大图
             lifecycleScope.launch {
-                ImageActivity.gotoImageActivity(
-                    context,
-                    cur = 0,
-                    arrayListOf(articleItem.id),
-                    arrayListOf(articleItem.img + articleItem.ext)
-                )
+                gotoThreadImageActivity(context,0,articleItem.id)
+//                ImageActivity.gotoImageActivity(
+//                    context,
+//                    cur = 0,
+//                    arrayListOf(articleItem.id),
+//                    arrayListOf(articleItem.img + articleItem.ext)
+//                )
             }
         }) {
             vm.onUrlClick(it)
@@ -262,7 +264,7 @@ class ThreadDetailVM @Inject constructor(
 //                it.value.img.isNotEmpty()
 //            }.map { it.value }
 //        }
-    val imgList= arrayListOf<ImgTuple>()
+    val imgList = arrayListOf<ImgTuple>()
 
     //初始化数据
     fun init(id: String, refreshPage: Int, curPage: Int) {
@@ -279,9 +281,6 @@ class ThreadDetailVM @Inject constructor(
 
             }
             imgList.addAll(repository.getImages(id))
-            imgList.forEach{
-                it.img?.logE()
-            }
         }
     }
 
