@@ -2,6 +2,7 @@ package com.yollpoll.nmb.model.repository
 
 import com.yollpoll.base.*
 import com.yollpoll.framework.net.http.RetrofitFactory
+import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.di.CommonRetrofitFactory
 import com.yollpoll.nmb.model.bean.Article
 import com.yollpoll.nmb.model.bean.ArticleItem
@@ -46,7 +47,9 @@ class HomeRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
             START_INDEX//返回第一页
         }) {
             override suspend fun load(pos: Int): List<ArticleItem> {
-                return getThreadList(id, pos)
+                return getThreadList(id, pos).apply {
+                    MainDB.getInstance().getArticleDao().insertAll(this)
+                }
             }
         }
     }
@@ -60,7 +63,9 @@ class HomeRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
             START_INDEX//返回第一页
         }) {
             override suspend fun load(pos: Int): List<ArticleItem> {
-                return getTimeLine(pos, id)
+                return getTimeLine(pos, id).apply {
+                    MainDB.getInstance().getArticleDao().insertAll(this)
+                }
             }
         }
     }

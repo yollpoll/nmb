@@ -3,6 +3,8 @@ package com.yollpoll.nmb.view.activity
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Environment
 import android.os.StrictMode
@@ -15,7 +17,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.ContentView
 import com.yollpoll.arch.annotation.Extra
@@ -49,6 +53,7 @@ import java.io.File
 import java.net.URLDecoder
 import java.net.URLEncoder
 import javax.inject.Inject
+
 @AndroidEntryPoint
 @Route(url = ROUTE_IMAGE)
 class ImageActivity : NMBActivity<ActivityImageBinding, ImageVm>() {
@@ -68,7 +73,8 @@ class ImageActivity : NMBActivity<ActivityImageBinding, ImageVm>() {
             ).build()
             DispatchClient.manager?.dispatch(context, req)
         }
-        suspend fun gotoImageActivity(context: Activity,cur:Int,articleId:String){
+
+        suspend fun gotoImageActivity(context: Activity, cur: Int, articleId: String) {
 
         }
     }
@@ -226,7 +232,15 @@ class ImageFragment : FastFragment<FragmentImageBinding, ImageFragmentVM>() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Glide.with(requireContext()).asBitmap().load(getImgUrl(url))
-            .into(mDataBinding.ivContent)
+            .into(object : SimpleTarget<Bitmap>() {
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    mDataBinding.ivContent.setImageBitmap(resource)
+                    mDataBinding.progressBar.visibility=View.GONE
+                }
+
+            })
+
+
     }
 }
 

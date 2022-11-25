@@ -12,10 +12,23 @@
             type="com.yollpoll.nmb.view.activity.ImageFragmentVM" />
     </data>
 
-    <com.github.chrisbanes.photoview.PhotoView
-        android:id="@+id/iv_content"
-        android:transitionName="img"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <com.github.chrisbanes.photoview.PhotoView
+            android:id="@+id/iv_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:transitionName="img" />
+
+        <androidx.core.widget.ContentLoadingProgressBar
+            android:layout_gravity="center"
+            android:id="@+id/progress_bar"
+            android:layout_width="50dp"
+            style="?android:attr/progressBarStyle"
+            android:layout_height="50dp" />
+    </FrameLayout>
+
 
 </layout>
