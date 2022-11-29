@@ -60,5 +60,5 @@
     <color name="md_theme_dark_surfaceTint">#EBBBBB</color>
     <color name="md_theme_dark_surfaceTintColor">#EBBBBB</color>
     <color name="color_hint">#978F8E</color>
-    <color name="color_ripple">#33302F</color>
+    <color name="color_ripple">#55978F8E</color>
 </resources>
