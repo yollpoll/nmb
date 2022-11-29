@@ -36,6 +36,7 @@ data class ArticleItem(
     var Replies: List<ArticleItem>? = null
 }
 
+@JsonClass(generateAdapter = true)
 data class ImgTuple(
     @ColumnInfo(name = "img") val img: String,
     @ColumnInfo(name = "ext") val ext: String,

@@ -25,7 +25,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".view.activity.LauncherActivity"
-            android:exported="true"/>
+            android:exported="true" />
         <activity
             android:name=".view.activity.HomeActivity"
             android:exported="true">
@@ -57,12 +57,12 @@
             android:theme="@style/TransparentStyle" />
         <activity android:name=".view.activity.CollectionActivity" />
         <activity android:name=".view.activity.MySpeechActivity" />
-        <activity android:name=".view.activity.DrawingActivity"/>
-        <activity android:name=".view.activity.AuthorActivity"/>
-        <activity android:name=".view.activity.WebActivity"/>
-        <activity android:name=".view.activity.SettingActivity"/>
-        <activity android:name=".view.activity.HistoryActivity"/>
-        <activity android:name=".view.activity.ThreadImageActivity"/>
+        <activity android:name=".view.activity.DrawingActivity" />
+        <activity android:name=".view.activity.AuthorActivity" />
+        <activity android:name=".view.activity.WebActivity" />
+        <activity android:name=".view.activity.SettingActivity" />
+        <activity android:name=".view.activity.HistoryActivity" />
+        <activity android:name=".view.activity.ThreadImageActivity" />
     </application>
 
 </manifest>

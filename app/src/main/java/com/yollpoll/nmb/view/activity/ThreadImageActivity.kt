@@ -43,6 +43,7 @@ import com.yollpoll.utils.saveImageToMediaStore
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URLDecoder
@@ -174,7 +175,7 @@ class ThreadImageVm @Inject constructor(
         viewModelScope.launch {
             val opThumbBigImg = getBoolean(KEY_BIG_IMG, false)
             val imgHead = if (opThumbBigImg) imgThumbUrl else imgUrl
-            articleRepository.getImages(id).map {
+            articleRepository.getImagesList(id).map {
                 return@map imgHead + it.img + it.ext
             }.let {
                 imageList.addAll(it)

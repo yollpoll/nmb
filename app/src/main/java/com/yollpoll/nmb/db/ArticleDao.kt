@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.model.bean.ImgTuple
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ArticleDao {
@@ -29,6 +30,9 @@ interface ArticleDao {
 
     //查询图片
     @Query("SELECT img,ext,id FROM ArticleItem WHERE replyTo LIKE :replyTo OR id LIKE :replyTo")
-    suspend fun getImageList(replyTo: String): List<ImgTuple>
+    fun getImageFlow(replyTo: String): Flow<List<ImgTuple>>
+
+    @Query("SELECT img,ext,id FROM ArticleItem WHERE replyTo LIKE :replyTo OR id LIKE :replyTo")
+    fun getImageList(replyTo: String): List<ImgTuple>
 
 }

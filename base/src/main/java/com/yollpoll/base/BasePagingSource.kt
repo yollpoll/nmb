@@ -12,7 +12,7 @@ import kotlin.math.log
  * Created by spq on 2021/5/11
  */
 const val START_INDEX = 1
-const val PAGE_SIZE = 19
+const val PAGE_SIZE = 20
 
 fun <Key : Any, Value : Any> getNMBCommonPager(
     pageSize: Int = PAGE_SIZE,

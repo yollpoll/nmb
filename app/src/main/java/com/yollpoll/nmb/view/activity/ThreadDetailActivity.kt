@@ -100,15 +100,10 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
     }, onUrlClick = {
         vm.onUrlClick(it)
     }, onImageClick = { item, _ ->
-        lifecycleScope.launch {
-            //浏览大图
-            gotoThreadImageActivity(context, cur = vm.findImgIndex(item.id), id)
-//            ImageActivity.gotoImageActivity(
-//                context,
-//                cur = vm.findImgIndex(item.id),
-//                vm.imgList.map { it.id },
-//                vm.imgList.map { it.img + it.ext }
-//            )
+        vm.findImgIndex(item.id) { cur ->
+            lifecycleScope.launch {
+                gotoThreadImageActivity(context, cur, id)
+            }
         }
     })
 
@@ -203,7 +198,7 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
         LinkArticleDialog(context, articleItem, onImgClick = {
             //浏览大图
             lifecycleScope.launch {
-                gotoThreadImageActivity(context,0,articleItem.id)
+                gotoThreadImageActivity(context, 0, articleItem.id)
 //                ImageActivity.gotoImageActivity(
 //                    context,
 //                    cur = 0,
@@ -264,7 +259,7 @@ class ThreadDetailVM @Inject constructor(
 //                it.value.img.isNotEmpty()
 //            }.map { it.value }
 //        }
-    val imgList = arrayListOf<ImgTuple>()
+    lateinit var imgList: Flow<List<ImgTuple>>
 
     //初始化数据
     fun init(id: String, refreshPage: Int, curPage: Int) {
@@ -280,7 +275,7 @@ class ThreadDetailVM @Inject constructor(
             } catch (e: Exception) {
 
             }
-            imgList.addAll(repository.getImages(id))
+            imgList = repository.getImagesFlow(id)
         }
     }
 
@@ -302,14 +297,21 @@ class ThreadDetailVM @Inject constructor(
     }
 
     //找到图片的序列 pos表示当前item的序号
-    fun findImgIndex(id: String): Int {
-        var index = 0
-        for (i in imgList.indices) {
-            if (imgList[i].id == id) {
-                index = i
+    fun findImgIndex(id: String, onFind: (Int) -> Unit) {
+        viewModelScope.launch {
+            imgList.collect { list ->
+                var find = false
+                for (i in list.indices) {
+                    if (list[i].id == id) {
+                        onFind(i)
+                        find = true
+                    }
+                }
+                if (!find) {
+                    onFind(0)
+                }
             }
         }
-        return index
     }
 
 
