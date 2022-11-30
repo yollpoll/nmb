@@ -80,6 +80,10 @@ class ThreadAdapter(
                             binding.tvUser.setTextColor(it)
                             binding.executePendingBindings()
                         } ?: run {
+                            val color=context.getAttrColor(
+                                R.attr.colorOnSecondaryContainer
+                            )
+                            "color: $color".logI()
                             binding.tvUser.setTextColor(
                                 context.getAttrColor(
                                     R.attr.colorOnSecondaryContainer

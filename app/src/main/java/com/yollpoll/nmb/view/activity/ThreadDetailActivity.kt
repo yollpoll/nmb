@@ -30,6 +30,7 @@ import com.yollpoll.framework.fast.FastActivity
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.framework.paging.getCommonPager
 import com.yollpoll.framework.utils.getBoolean
+import com.yollpoll.framework.utils.getInt
 import com.yollpoll.framework.utils.getString
 import com.yollpoll.nmb.*
 import com.yollpoll.nmb.BR
@@ -190,7 +191,7 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
         lifecycleScope.launch {
             val lastPage = getInt("${id}_page", 1)
             val lastIndex = getInt("${id}_index", default = 0)
-            vm.init(id, lastPage, lastPage)
+            vm.init(id, lastPage, lastPage,context.getAttrColor(R.attr.colorOnSecondaryContainer))
         }
     }
 
@@ -271,7 +272,7 @@ class ThreadDetailVM @Inject constructor(
     val tagMap = hashMapOf<String, Int>()
 
     //初始化数据
-    fun init(id: String, refreshPage: Int, curPage: Int) {
+    fun init(id: String, refreshPage: Int, curPage: Int,myDefaultCookieColor:Int) {
         this.id = id
         this.refreshPage = refreshPage
         this.curPage = curPage
@@ -285,6 +286,12 @@ class ThreadDetailVM @Inject constructor(
 
             }
             imgList = repository.getImagesFlow(id)
+            //配置我的饼干的颜色
+            val myCookieColor =
+                getInt(KEY_COOKIE_COLOR, myDefaultCookieColor)
+            cookieRepository.queryCookies().forEach {
+                tagMap[it.name] = myCookieColor
+            }
         }
     }
 
@@ -497,5 +504,6 @@ class ThreadDetailVM @Inject constructor(
         tagMap.clear()
         sendEmptyMessage(MR.ThreadDetailActivity_refresh)
     }
+
 
 }

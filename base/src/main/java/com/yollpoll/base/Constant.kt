@@ -11,6 +11,7 @@ const val KEY_COLLECTION_ID="collection_id"
 const val KEY_NO_COOKIE="no_cookie"
 const val KEY_NO_IMG="no_img"
 const val KEY_BIG_IMG="big_img"
+const val KEY_COOKIE_COLOR="cookie_color"
 
 //eventbus msg
 const val ACTION_TAG_NAME = "action_tag_name"

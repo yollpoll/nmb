@@ -1,7 +1,14 @@
 package com.yollpoll.nmb.view.activity
 
+import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
+import android.graphics.drawable.ShapeDrawable
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.AdapterView
@@ -9,19 +16,24 @@ import android.widget.ArrayAdapter
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.app.AppCompatDelegate.*
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.databinding.Bindable
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.viewModelScope
+import com.yollpoll.annotation.annotation.OnMessage
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.message.MessageManager
 import com.yollpoll.base.CommonDialog
 import com.yollpoll.base.NMBActivity
+import com.yollpoll.base.getAttrColor
+import com.yollpoll.base.logI
 import com.yollpoll.extensions.isDarkMod
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.extensions.*
 import com.yollpoll.framework.fast.FastViewModel
-import com.yollpoll.framework.utils.getBoolean
-import com.yollpoll.framework.utils.putBoolean
+import com.yollpoll.framework.utils.*
 import com.yollpoll.nmb.*
 import com.yollpoll.nmb.databinding.ActivitySettingBinding
 import com.yollpoll.nmb.model.bean.DarkMod
@@ -29,6 +41,7 @@ import com.yollpoll.nmb.model.repository.UserRepository
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_SETTING
 import com.yollpoll.nmb.view.widgets.InputDialog
+import com.yollpoll.nmb.view.widgets.SelectColorDialog
 import com.yollpoll.skin.SkinTheme
 import com.yollpoll.utils.copyStr
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,6 +64,7 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
+        vm.init(context.getAttrColor(R.attr.colorOnSecondaryContainer))
     }
 
     private fun initView() {
@@ -61,6 +75,10 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
         initUITheme()
         initDarkMod()
         initCollection()
+        mDataBinding.layoutMyCookieColor.setOnLongClickListener {
+            vm.resetCookieColor(context.getAttrColor(R.attr.colorOnSecondaryContainer))
+            true
+        }
     }
 
     /**
@@ -207,6 +225,31 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
         initView()
     }
 
+    fun changeCookieColor(view: View) {
+        vm.cookieColor?.let { color ->
+            SelectColorDialog(context, color.red, color.blue, color.green) {
+                vm.changeCookieColor(it)
+            }.show()
+        } ?: run {
+            SelectColorDialog(context) {
+                vm.changeCookieColor(it)
+            }.show()
+        }
+    }
+
+    @OnMessage
+    fun notifyCookieColor(color: Int) {
+        val shape = GradientDrawable()
+        shape.cornerRadius = context.dp2px(20f)
+        shape.setColor(color)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            shape.setStroke(
+                context.dp2px(1f).toInt(),
+                context.getColor(R.color.md_theme_dark_outline)
+            )
+        }
+        mDataBinding.ivCookieColor.background = shape
+    }
 }
 
 @HiltViewModel
@@ -255,16 +298,23 @@ class SettingVm @Inject constructor(
             notifyPropertyChanged(BR.thumbBigImg)
         }
 
-    init {
+    var cookieColor: Int? = null
+        set(value) {
+            field = value
+            sendMessage(MR.SettingActivity_notifyCookieColor, value)
+        }
+
+    fun init(defaultCookieColor:Int) {
         viewModelScope.launch {
             initLog()
             collectionId = userRepository.getCollectionId()
             cookieMod = getBoolean(KEY_NO_COOKIE, false)
             noImgMod = getBoolean(KEY_NO_IMG, false)
-            thumbBigImg= getBoolean(KEY_BIG_IMG,false)
+            thumbBigImg = getBoolean(KEY_BIG_IMG, false)
+            cookieColor =
+                getInt(KEY_COOKIE_COLOR, defaultCookieColor)
             firstLoad = false
         }
-
     }
 
     //保存新的collectionId
@@ -309,6 +359,18 @@ class SettingVm @Inject constructor(
             putBoolean(KEY_BIG_IMG, check)
             sendMessage(ACTION_BIG_IMG, check)
         }
+    }
+
+    fun changeCookieColor(color: Int) {
+        cookieColor = color
+        putInt(KEY_COOKIE_COLOR, color)
+    }
+
+    //恢复饼干颜色
+    fun resetCookieColor(color: Int) {
+        val sp = app.getSharedPreferences(CONFIG_FILE_NAME, Activity.MODE_PRIVATE)
+        sp.edit().remove(KEY_COOKIE_COLOR).apply()
+        cookieColor = getInt(KEY_COOKIE_COLOR, color)
     }
 }
 
