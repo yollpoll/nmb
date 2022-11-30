@@ -2,9 +2,8 @@ package com.yollpoll.nmb.adapter
 
 import android.graphics.Color
 import android.os.Build
-import android.text.Html
-import android.text.Spanned
-import android.text.TextPaint
+import android.os.Bundle
+import android.text.*
 import android.text.style.BackgroundColorSpan
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
@@ -17,6 +16,7 @@ import com.yollpoll.base.logE
 import com.yollpoll.base.logI
 import com.yollpoll.framework.extensions.getBoolean
 import com.yollpoll.framework.extensions.shortToast
+import com.yollpoll.framework.extensions.toJson
 import com.yollpoll.framework.utils.getBoolean
 import com.yollpoll.nmb.BR
 import com.yollpoll.nmb.KEY_NO_IMG
@@ -37,12 +37,12 @@ class ThreadAdapter(
 ) :
     NmbPagingDataAdapter<ArticleItem>(
         R.layout.item_thread,
-        BR.bean, onBindDataBinding = { item, pos, binding ->
+        BR.bean, onBindDataBinding = { item, pos, binding, payLoad ->
             if (null != item) {
                 binding as ItemThreadBinding
                 val context = binding.root.context
                 //图片加载
-                val noImg= getBoolean(KEY_NO_IMG,false)
+                val noImg = getBoolean(KEY_NO_IMG, false)
                 binding.ivContent.apply {
                     if (item.img.isEmpty()) {
                         this.visibility = View.GONE
@@ -68,19 +68,24 @@ class ThreadAdapter(
                 binding.llRoot.setOnClickListener {
                     onItemClick?.invoke(item)
                 }
+                //admin、po的颜色
                 item.admin.let {
                     if (it == "1") {
                         binding.tvUser.setTextColor(context.resources.getColor(R.color.color_red))
                     } else if (item.master != null && item.master == "1") {
-                        "is master".logI()
                         binding.tvUser.setTextColor(context.resources.getColor(R.color.color_yellow_green))
                     } else {
-                        "is not master".logI()
-                        binding.tvUser.setTextColor(
-                            context.getAttrColor(
-                                R.attr.colorOnSecondaryContainer
+                        //设置标记颜色
+                        item.tagColor?.let {
+                            binding.tvUser.setTextColor(it)
+                            binding.executePendingBindings()
+                        } ?: run {
+                            binding.tvUser.setTextColor(
+                                context.getAttrColor(
+                                    R.attr.colorOnSecondaryContainer
+                                )
                             )
-                        )
+                        }
                     }
                 }
                 val htmlContent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
@@ -174,5 +179,21 @@ class ThreadAdapter(
                 binding.llRoot.setOnLongClickListener {
                     return@setOnLongClickListener onItemLongClick?.invoke(item) ?: false
                 }
+            }
+        }, itemSame = { old, new ->
+            old.id == new.id
+        }, contentSame = { old, new ->
+            val same =
+                old.tagColor == new.tagColor && old.content == new.content && old.title == new.title
+                        && old.user_hash == new.user_hash && old.now == new.now
+            same
+        }, getChangePayload = { old, new ->
+            Bundle().apply {
+                new.tagColor?.let {
+                    if (old.tagColor != new.tagColor) {
+                        putInt("tagColor", it)
+                    }
+                }
+
             }
         })

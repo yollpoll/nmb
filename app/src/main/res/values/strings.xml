@@ -70,4 +70,7 @@
     <string name="copy_no">复制串号</string>
     <string name="thumb_big_img">缩略大图</string>
     <string name="thumb_big_img_content">浏览大图时候仍然使用缩率图</string>
+    <string name="mark_cookie">标记饼干</string>
+    <string name="cancel_mark_cookie">取消标记饼干</string>
+    <string name="clear_cookie_mark">清除饼干标记</string>
 </resources>

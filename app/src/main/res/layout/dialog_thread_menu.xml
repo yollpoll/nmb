@@ -24,6 +24,46 @@
                 android:gravity="center"
                 android:text="@string/link" />
 
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line"
+                android:background="?attr/colorOutline" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_mark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center"
+                android:text="@string/mark_cookie" />
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line"
+                android:background="?attr/colorOutline" />
+        </LinearLayout>
+        <LinearLayout
+            android:id="@+id/ll_cancel_mark"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackground"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center"
+                android:text="@string/cancel_mark_cookie" />
+
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/line"

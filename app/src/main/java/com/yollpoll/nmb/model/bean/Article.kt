@@ -15,11 +15,11 @@ data class ArticleItem(
     var admin: String,
     var content: String,
     var email: String?,
-    @ColumnInfo(name="ext")
+    @ColumnInfo(name = "ext")
     var ext: String,
     @PrimaryKey
     var id: String,
-    @ColumnInfo(name="img")
+    @ColumnInfo(name = "img")
     var img: String,
     var name: String,
     var now: String,
@@ -34,6 +34,9 @@ data class ArticleItem(
 ) {
     @Ignore
     var Replies: List<ArticleItem>? = null
+
+    @Ignore
+    var tagColor: Int? = null//标记
 }
 
 @JsonClass(generateAdapter = true)
@@ -41,4 +44,4 @@ data class ImgTuple(
     @ColumnInfo(name = "img") val img: String,
     @ColumnInfo(name = "ext") val ext: String,
     @ColumnInfo(name = "id") val id: String,
-    )
+)

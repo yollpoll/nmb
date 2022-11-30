@@ -17,4 +17,8 @@
         android:id="@+id/action_report"
         android:title="@string/report"
         />
+    <item
+        android:id="@+id/action_clear_cookie"
+        android:title="@string/clear_cookie_mark"
+        />
 </menu>

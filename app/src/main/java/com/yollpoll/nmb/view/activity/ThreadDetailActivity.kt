@@ -2,11 +2,15 @@ package com.yollpoll.nmb.view.activity
 
 import android.app.Application
 import android.content.Context
+import android.graphics.Color
 import android.os.Bundle
 import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
+import androidx.core.graphics.blue
+import androidx.core.graphics.green
+import androidx.core.graphics.red
 import androidx.databinding.Bindable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
@@ -79,11 +83,26 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
     override fun initViewModel() = vm
     private val mManager = LinearLayoutManager(this)
     private val mAdapter = ThreadAdapter(false, onItemLongClick = { article ->
-        ThreadMenuDialog(MenuAction.MENU_ACTION_REPLY, context, reply =
+        val action = article.tagColor?.let {
+            MenuAction.MENU_ACTION_REPLY_CANCEL_MARK
+        } ?: MenuAction.MENU_ACTION_REPLY
+        ThreadMenuDialog(action, context, reply =
         {
             lifecycleScope.launchWhenResumed {
                 gotoLinkActivity(context, vm.id, arrayListOf(article.id))
             }
+        }, mark = {
+            article.tagColor?.let {
+                SelectColorDialog(context, it.red, it.blue, it.green) { color ->
+                    vm.markCookie(article.user_hash, color)
+                }.show()
+            } ?: run {
+                SelectColorDialog(context) { color ->
+                    vm.markCookie(article.user_hash, color)
+                }.show()
+            }
+        }, cancelMark = {
+            vm.cancelMarkCookie(article.user_hash)
         }, copyNo = {
             copyStr(context, article.id)
             "${article.id} 复制到剪切板".shortToast()
@@ -126,6 +145,9 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
             }
             R.id.action_report -> {
 
+            }
+            R.id.action_clear_cookie -> {
+                vm.clearCookieMark()
             }
             else -> {
 
@@ -170,10 +192,6 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
             val lastIndex = getInt("${id}_index", default = 0)
             vm.init(id, lastPage, lastPage)
         }
-//        mAdapter.withLoadStateHeaderAndFooter(
-//            header = ExampleLoadStateAdapter(mAdapter::retry),
-//            footer = ExampleLoadStateAdapter(mAdapter::retry)
-//        )
     }
 
     @OnMessage
@@ -199,12 +217,6 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
             //浏览大图
             lifecycleScope.launch {
                 gotoThreadImageActivity(context, 0, articleItem.id)
-//                ImageActivity.gotoImageActivity(
-//                    context,
-//                    cur = 0,
-//                    arrayListOf(articleItem.id),
-//                    arrayListOf(articleItem.img + articleItem.ext)
-//                )
             }
         }) {
             vm.onUrlClick(it)
@@ -253,13 +265,10 @@ class ThreadDetailVM @Inject constructor(
     val cache = linkedMapOf<String, ArticleItem>()
 
     //图片列表(有图片的item)
-//    val imgList: List<ArticleItem>
-//        get() {
-//            return cache.filter {
-//                it.value.img.isNotEmpty()
-//            }.map { it.value }
-//        }
     lateinit var imgList: Flow<List<ImgTuple>>
+
+    //饼干标记
+    val tagMap = hashMapOf<String, Int>()
 
     //初始化数据
     fun init(id: String, refreshPage: Int, curPage: Int) {
@@ -338,6 +347,7 @@ class ThreadDetailVM @Inject constructor(
                         } else {
                             reply.master = "0"
                         }
+                        reply.tagColor = tagMap[reply.user_hash]
                         //缓存
                         cache[reply.id] = reply
                         reply
@@ -469,4 +479,23 @@ class ThreadDetailVM @Inject constructor(
         }
         return newCookie
     }
+
+    //添加饼干标记
+    fun markCookie(cookie: String, color: Int) {
+        tagMap[cookie] = color
+        sendEmptyMessage(MR.ThreadDetailActivity_refresh)
+    }
+
+    //删除标记
+    fun cancelMarkCookie(cookie: String) {
+        tagMap.remove(cookie)
+        sendEmptyMessage(MR.ThreadDetailActivity_refresh)
+    }
+
+    //清除所有标记
+    fun clearCookieMark() {
+        tagMap.clear()
+        sendEmptyMessage(MR.ThreadDetailActivity_refresh)
+    }
+
 }

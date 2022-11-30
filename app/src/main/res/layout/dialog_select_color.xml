@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorSecondaryContainer"
+        android:orientation="vertical"
+        android:paddingBottom="8dp">
+
+        <RelativeLayout
+            android:id="@+id/rl_color"
+            android:layout_width="match_parent"
+            android:layout_height="160dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true" />
+
+        <RelativeLayout
+            android:id="@+id/rl_red"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_color">
+
+            <TextView
+                android:id="@+id/tv_red"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp"
+                android:text="红"
+                android:textColor="@android:color/holo_red_light" />
+
+            <SeekBar
+                android:id="@+id/seek_red"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@+id/tv_red" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_green"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_red">
+
+            <TextView
+                android:id="@+id/tv_green"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp"
+                android:text="绿"
+                android:textColor="@android:color/holo_green_light" />
+
+            <SeekBar
+                android:id="@+id/seek_green"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@+id/tv_green" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_blue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_green">
+
+            <TextView
+                android:id="@+id/tv_blue"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="20dp"
+                android:text="蓝"
+                android:textColor="@android:color/holo_blue_light" />
+
+            <SeekBar
+                android:id="@+id/seek_blue"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="20dp"
+                android:layout_toRightOf="@+id/tv_blue" />
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/tv_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/rl_blue"
+            android:layout_marginRight="16dp"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="5dp"
+            android:text="@string/sure" />
+
+        <TextView
+            android:id="@+id/tv_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rl_blue"
+            android:layout_toLeftOf="@+id/tv_ok"
+            android:background="?android:attr/selectableItemBackground"
+            android:padding="5dp"
+            android:text="@string/cancel" />
+    </RelativeLayout>
+</layout>

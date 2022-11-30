@@ -95,7 +95,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     private val adapterForum = NmbPagingDataAdapter<ForumDetail>(
         R.layout.item_forum,
         BR.bean,
-        onBindDataBinding = { item, _, binding ->
+        onBindDataBinding = { item, _, binding ,_->
             (binding as ItemForumBinding).llForum.setOnClickListener { v ->
                 //点击事件
                 if (null == item) {

@@ -187,7 +187,9 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
                 vm.replyTo = replyTo
                 linkIds.toListBean<String>()?.let {
                     vm.addLinkIds(it)
-                    mDataBinding.edtContent.setSelection(mDataBinding.edtContent.text.toString().length)
+                    mDataBinding.edtContent.setText(vm.threadContent)
+                    mDataBinding.edtContent.setSelection(vm.threadContent.length)
+                    mDataBinding.edtContent.requestFocus()
                 }
             }
             ACTION_REPORT -> {
@@ -242,8 +244,12 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
                     vm.selectImg(cacheBitmap)
                 }
             } else {
+                val nSection=mDataBinding.edtContent.selectionStart
+                mDataBinding.edtContent.text?.insert(nSection, word)
+                // 可以更新光标位置
+                mDataBinding.edtContent.setSelection(nSection+word.length)
                 //选择了文字
-                vm.threadContent += word
+//                vm.threadContent += word
                 fragment?.dismiss()
             }
         }.show(supportFragmentManager, "chooseEmoji")
