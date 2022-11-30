@@ -148,7 +148,7 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
 
             }
             R.id.action_clear_cookie -> {
-                vm.clearCookieMark()
+                vm.clearCookieMark(context.getAttrColor(R.attr.colorOnSecondaryContainer))
             }
             else -> {
 
@@ -191,7 +191,7 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
         lifecycleScope.launch {
             val lastPage = getInt("${id}_page", 1)
             val lastIndex = getInt("${id}_index", default = 0)
-            vm.init(id, lastPage, lastPage,context.getAttrColor(R.attr.colorOnSecondaryContainer))
+            vm.init(id, lastPage, lastPage, context.getAttrColor(R.attr.colorOnSecondaryContainer))
         }
     }
 
@@ -272,7 +272,7 @@ class ThreadDetailVM @Inject constructor(
     val tagMap = hashMapOf<String, Int>()
 
     //初始化数据
-    fun init(id: String, refreshPage: Int, curPage: Int,myDefaultCookieColor:Int) {
+    fun init(id: String, refreshPage: Int, curPage: Int, myDefaultCookieColor: Int) {
         this.id = id
         this.refreshPage = refreshPage
         this.curPage = curPage
@@ -500,9 +500,16 @@ class ThreadDetailVM @Inject constructor(
     }
 
     //清除所有标记
-    fun clearCookieMark() {
-        tagMap.clear()
-        sendEmptyMessage(MR.ThreadDetailActivity_refresh)
+    fun clearCookieMark(defaultColor: Int) {
+        viewModelScope.launch {
+            tagMap.clear()
+            val cookieColor = getInt(KEY_COOKIE_COLOR, defaultColor)
+            cookieRepository.queryCookies().forEach {
+                tagMap[it.name] = cookieColor
+            }
+            sendEmptyMessage(MR.ThreadDetailActivity_refresh)
+        }
+
     }
 
 
