@@ -45,3 +45,6 @@ data class ImgTuple(
     @ColumnInfo(name = "ext") val ext: String,
     @ColumnInfo(name = "id") val id: String,
 )
+
+@Entity
+data class ShieldArticle(@PrimaryKey val articleId: String)//屏蔽列表

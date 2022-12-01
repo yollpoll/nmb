@@ -95,7 +95,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     private val adapterForum = NmbPagingDataAdapter<ForumDetail>(
         R.layout.item_forum,
         BR.bean,
-        onBindDataBinding = { item, _, binding ,_->
+        onBindDataBinding = { item, _, binding, _ ->
             (binding as ItemForumBinding).llForum.setOnClickListener { v ->
                 //点击事件
                 if (null == item) {
@@ -111,6 +111,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
     //串列表
     private val threadManager = LinearLayoutManager(this)
+
     private val adapterThread = ThreadAdapter(
         onItemLongClick = { article ->
             ThreadMenuDialog(MenuAction.MENU_ACTION_HOME, context, copyNo =
@@ -124,6 +125,8 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
                 lifecycleScope.launchWhenResumed {
                     gotoReportActivity(context, arrayListOf(article.id))
                 }
+            }, shield = {
+                vm.shieldThread(article)
             }).show()
             true
         },
@@ -132,7 +135,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         },
         onImageClick = { item, pos ->
             lifecycleScope.launch {
-                gotoThreadImageActivity(context,0,item.id)
+                gotoThreadImageActivity(context, 0, item.id)
 //                ImageActivity.gotoImageActivity(
 //                    context,
 //                    0,
@@ -371,7 +374,8 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
 
     //刷新串
-    private fun refreshThread() {
+    @OnMessage
+    fun refreshThread() {
         adapterThread.refresh()
         if (!mDataBinding.refresh.isRefreshing) {
             mDataBinding.refresh.isRefreshing = true
@@ -411,7 +415,6 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
     //当前板块
     var curForumDetail: ForumDetail =
         ForumDetail(null, null, "-1", null, null, "时间线", null, null, null, null)
-
 
     //标题
     @Bindable
@@ -545,6 +548,15 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
                 }
             }
         } else if (url.startsWith(">>No.")) {
+        }
+    }
+
+    //屏蔽串
+    fun shieldThread(item: ArticleItem) {
+        viewModelScope.launch {
+            repository.addArticle(item)
+            repository.addShieldThread(item.id)
+            sendEmptyMessage(MR.HomeActivity_refreshThread)
         }
     }
 

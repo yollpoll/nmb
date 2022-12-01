@@ -511,6 +511,4 @@ class ThreadDetailVM @Inject constructor(
         }
 
     }
-
-
 }

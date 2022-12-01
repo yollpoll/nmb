@@ -1,12 +1,10 @@
 package com.yollpoll.nmb.db
 
 import androidx.paging.PagingSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
+import androidx.room.*
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.model.bean.ImgTuple
+import com.yollpoll.nmb.model.bean.ShieldArticle
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -33,6 +31,19 @@ interface ArticleDao {
     fun getImageFlow(replyTo: String): Flow<List<ImgTuple>>
 
     @Query("SELECT img,ext,id FROM ArticleItem WHERE replyTo LIKE :replyTo OR id LIKE :replyTo")
-    fun getImageList(replyTo: String): List<ImgTuple>
+    suspend fun getImageList(replyTo: String): List<ImgTuple>
 
+    //屏蔽列表
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertShield(list: List<ShieldArticle>)
+
+    //查询屏蔽列表
+    @Query("SELECT * FROM ShieldArticle")
+    suspend fun getShieldArticle(): List<ShieldArticle>
+
+    @Query("DELETE  FROM ShieldArticle WHERE articleId LIKE :articleId")
+    suspend fun deleteShieldByArticleId(articleId: String)
+
+    @Query("SELECT * FROM ArticleItem WHERE id LIKE :id")
+    suspend fun getShieldArticleList(id: String): ArticleItem
 }

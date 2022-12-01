@@ -16,7 +16,8 @@ class ThreadMenuDialog(
     private val cancelMark: (() -> Unit)? = null,
     private val report: (() -> Unit)? = null,
     private val copy: (() -> Unit)? = null,
-    private val copyNo: (() -> Unit)? = null
+    private val copyNo: (() -> Unit)? = null,
+    private val shield: (() -> Unit)? = null,
 ) :
     NMBDialog<DialogThreadMenuBinding, AlertDialog>(context) {
     override fun getLayoutId() = R.layout.dialog_thread_menu
@@ -30,7 +31,7 @@ class ThreadMenuDialog(
         super.onInit(dialog, binding)
         when (action) {
             MenuAction.MENU_ACTION_REPLY_CANCEL_MARK -> {
-
+                binding.llShield.visibility = View.GONE
             }
             MenuAction.MENU_ACTION_HOME -> {
                 binding.llReply.visibility = View.GONE
@@ -39,6 +40,7 @@ class ThreadMenuDialog(
             }
             MenuAction.MENU_ACTION_REPLY -> {
                 binding.llCancelMark.visibility = View.GONE
+                binding.llShield.visibility = View.GONE
             }
         }
         binding.llReply.setOnClickListener {
@@ -63,6 +65,10 @@ class ThreadMenuDialog(
         }
         binding.llCancelMark.setOnClickListener {
             cancelMark?.invoke()
+            this.dismiss()
+        }
+        binding.llShield.setOnClickListener {
+            shield?.invoke()
             this.dismiss()
         }
     }

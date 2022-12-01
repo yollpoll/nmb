@@ -50,6 +50,7 @@
                 android:layout_height="@dimen/line"
                 android:background="?attr/colorOutline" />
         </LinearLayout>
+
         <LinearLayout
             android:id="@+id/ll_cancel_mark"
             android:layout_width="match_parent"
@@ -83,6 +84,25 @@
                 android:gravity="center"
                 android:text="@string/copy" />
 
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line"
+                android:background="?attr/colorOutline" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_shield"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center"
+                android:text="@string/shield" />
 
             <View
                 android:layout_width="match_parent"

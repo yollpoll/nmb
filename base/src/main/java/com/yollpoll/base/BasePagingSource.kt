@@ -68,6 +68,11 @@ abstract class NMBBasePagingSource<T : Any>(
             val list = load(pos)
 //                val list = query.invoke()
 //                val list = service.getThreadList(id, pos)
+            if(list.isEmpty()){
+                "list is empty".logI()
+            }else{
+                "list is not empty".logI()
+            }
             LoadResult.Page<Int, T>(
                 list,
                 if (pos <= startIndex) null else pos - 1,//上一个key

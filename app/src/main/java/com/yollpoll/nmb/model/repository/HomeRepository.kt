@@ -6,6 +6,7 @@ import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.di.CommonRetrofitFactory
 import com.yollpoll.nmb.model.bean.Article
 import com.yollpoll.nmb.model.bean.ArticleItem
+import com.yollpoll.nmb.model.bean.ShieldArticle
 import com.yollpoll.nmb.net.HttpService
 import javax.inject.Inject
 
@@ -49,6 +50,8 @@ class HomeRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
             override suspend fun load(pos: Int): List<ArticleItem> {
                 return getThreadList(id, pos).apply {
                     MainDB.getInstance().getArticleDao().insertAll(this)
+                }.filter {
+                    return@filter !getShieldThread().contains(it.id)
                 }
             }
         }
@@ -65,11 +68,52 @@ class HomeRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
             override suspend fun load(pos: Int): List<ArticleItem> {
                 return getTimeLine(pos, id).apply {
                     MainDB.getInstance().getArticleDao().insertAll(this)
+                }.filter {
+                    return@filter !getShieldThread().contains(it.id)
                 }
             }
         }
     }
 
+    //屏蔽板块列表
+    suspend fun getShieldThread(): List<String> {
+        return MainDB.getInstance().getArticleDao().getShieldArticle().map {
+            it.articleId
+        }
+    }
+
+    //插入屏蔽
+    suspend fun addShieldThread(vararg id: String) {
+        id.asList().map {
+            ShieldArticle(it)
+        }.let {
+            MainDB.getInstance().getArticleDao().insertShield(it)
+        }
+
+    }
+
+    //取消屏蔽
+    suspend fun cancelShield(vararg id: String) {
+        id.map {
+            ShieldArticle(it)
+        }.forEach {
+            MainDB.getInstance().getArticleDao().deleteShieldByArticleId(it.articleId)
+        }
+    }
+
+    //获取屏蔽的串
+    suspend fun getShieldArticleList(): List<ArticleItem> {
+//        "size:${MainDB.getInstance().getArticleDao().getShieldArticle().size}".logI()
+        return MainDB.getInstance().getArticleDao().getShieldArticle().map {
+//            "shield item: ${it.articleId}".logI()
+            val article = MainDB.getInstance().getArticleDao().getShieldArticleList(it.articleId)
+            return@map article
+        }
+    }
+
+    suspend fun addArticle(articleItem: ArticleItem) {
+        MainDB.getInstance().getArticleDao().insertAll(listOf(articleItem))
+    }
 
     suspend fun getForumList() = service.getForumList()
 

@@ -30,6 +30,7 @@
     <string name="visit_history">浏览记录</string>
     <string name="link">引用</string>
     <string name="copy">复制内容</string>
+    <string name="shield">屏蔽该串</string>
     <item name="tag_first" type="id"/>
     <item name="tag_second" type="id"/>
     <string name="sure_exit">确认退出？</string>
@@ -75,4 +76,6 @@
     <string name="clear_cookie_mark">清除饼干标记</string>
     <string name="my_cookie_color">标记我的饼干</string>
     <string name="my_cookie_color_content">串内标记我的饼干颜色,长按恢复默认</string>
+    <string name="shield_page">屏蔽列表</string>
+    <string name="shield_page_detail">打开屏蔽列表</string>
 </resources>

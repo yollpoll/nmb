@@ -21,6 +21,7 @@ import androidx.core.graphics.green
 import androidx.core.graphics.red
 import androidx.databinding.Bindable
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
 import com.yollpoll.annotation.annotation.OnMessage
 import com.yollpoll.annotation.annotation.Route
@@ -250,6 +251,12 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
         }
         mDataBinding.ivCookieColor.background = shape
     }
+
+    fun gotoShield(view: View) {
+        lifecycleScope.launch {
+            gotoShieldActivity(context)
+        }
+    }
 }
 
 @HiltViewModel
@@ -304,7 +311,7 @@ class SettingVm @Inject constructor(
             sendMessage(MR.SettingActivity_notifyCookieColor, value)
         }
 
-    fun init(defaultCookieColor:Int) {
+    fun init(defaultCookieColor: Int) {
         viewModelScope.launch {
             initLog()
             collectionId = userRepository.getCollectionId()
