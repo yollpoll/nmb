@@ -78,7 +78,7 @@ class ThreadImageActivity : NMBActivity<ActivityThreadImageBinding, ThreadImageV
 
     private val onPageChangeListener: OnPageChangeListener by lazy {
         OnPageChangeListener {
-            vm.cur = it + 1
+            vm.cur = it
         }
     }
 
@@ -123,10 +123,10 @@ class ThreadImageActivity : NMBActivity<ActivityThreadImageBinding, ThreadImageV
     }
 
     private fun initData() {
-        vm.initData(id, cur.toInt() + 1)
+        vm.initData(id, cur.toInt() )
 //        val adapter = ImagePagerAdapter(vm.imageList, this)
         mDataBinding.viewpager.adapter = adapter
-        mDataBinding.viewpager.setCurrentItem(cur.toInt(), false)
+        mDataBinding.viewpager.setCurrentItem(vm.cur, false)
         mDataBinding.viewpager.registerOnPageChangeCallback(onPageChangeListener)
     }
 
@@ -141,6 +141,8 @@ class ThreadImageActivity : NMBActivity<ActivityThreadImageBinding, ThreadImageV
     @OnMessage
     fun refresh() {
         adapter.notifyDataSetChanged()
+        mDataBinding.viewpager.setCurrentItem(vm.cur, false)
+
     }
 
 

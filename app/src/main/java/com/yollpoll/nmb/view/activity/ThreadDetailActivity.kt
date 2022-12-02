@@ -120,10 +120,9 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
     }, onUrlClick = {
         vm.onUrlClick(it)
     }, onImageClick = { item, _ ->
-        vm.findImgIndex(item.id) { cur ->
-            lifecycleScope.launch {
-                gotoThreadImageActivity(context, cur, id)
-            }
+        lifecycleScope.launch {
+            val cur = vm.findImgIndex(item.id)
+            gotoThreadImageActivity(context, cur, id)
         }
     })
 
@@ -266,7 +265,7 @@ class ThreadDetailVM @Inject constructor(
     val cache = linkedMapOf<String, ArticleItem>()
 
     //图片列表(有图片的item)
-    lateinit var imgList: Flow<List<ImgTuple>>
+    lateinit var imgList: List<ImgTuple>
 
     //饼干标记
     val tagMap = hashMapOf<String, Int>()
@@ -285,7 +284,10 @@ class ThreadDetailVM @Inject constructor(
             } catch (e: Exception) {
 
             }
-            imgList = repository.getImagesFlow(id)
+            //图片列表
+            repository.getImagesFlow(id).collectLatest {
+                imgList = it
+            }
             //配置我的饼干的颜色
             val myCookieColor =
                 getInt(KEY_COOKIE_COLOR, myDefaultCookieColor)
@@ -313,21 +315,13 @@ class ThreadDetailVM @Inject constructor(
     }
 
     //找到图片的序列 pos表示当前item的序号
-    fun findImgIndex(id: String, onFind: (Int) -> Unit) {
-        viewModelScope.launch {
-            imgList.collect { list ->
-                var find = false
-                for (i in list.indices) {
-                    if (list[i].id == id) {
-                        onFind(i)
-                        find = true
-                    }
-                }
-                if (!find) {
-                    onFind(0)
-                }
+    suspend fun findImgIndex(id: String): Int {
+        for (i in imgList.indices) {
+            if (imgList[i].id == id) {
+                return i
             }
         }
+        return 0
     }
 
 
