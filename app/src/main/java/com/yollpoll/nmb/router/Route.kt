@@ -20,4 +20,5 @@ const val ROUTE_AUTHOR="native://nmb?module=author"
 const val ROUTE_SETTING="native://nmb?module=setting"
 const val ROUTE_HISTORY="native://nmb?module=history"
 const val ROUTE_SHIELD_LIST="native://nmb?module=shield"
+const val ROUTE_FORUM_SETTING="native://nmb?module=forum_setting"//板块配置
 

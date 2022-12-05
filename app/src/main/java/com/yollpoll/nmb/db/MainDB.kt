@@ -10,7 +10,7 @@ import com.yollpoll.nmb.App
 import com.yollpoll.nmb.model.bean.*
 
 @Database(
-    entities = [CookieBean::class, MySpeechBean::class, HistoryBean::class, ArticleItem::class, ShieldArticle::class],
+    entities = [CookieBean::class, MySpeechBean::class, HistoryBean::class, ArticleItem::class, ShieldArticle::class, ForumDetail::class],
     version = 5,
     exportSchema = false,
 )
@@ -19,6 +19,7 @@ abstract class MainDB : RoomDatabase() {
     abstract fun getSpeechDao(): MySpeechDao
     abstract fun getHistoryDao(): HistoryDao
     abstract fun getArticleDao(): ArticleDao
+    abstract fun getForumDao(): ForumDao
 
     companion object {
         @Volatile
@@ -112,6 +113,22 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
             "CREATE TABLE `ShieldArticle` (" +
                     "`articleId` TEXT NOT NULL, " +
                     "PRIMARY KEY(`articleId`))"
+        )
+
+        database.execSQL(
+            "CREATE TABLE `forum` (" +
+                    "`createdAt` TEXT, " +
+                    "`fgroup` TEXT, " +
+                    "`id:` TEXT NOT NULL, " +
+                    "`interval` TEXT , " +
+                    "`msg` TEXT NOT NULL, " +
+                    "`name` TEXT NOT NULL, " +
+                    "`showName` TEXT , " +
+                    "`sort` TEXT , " +
+                    "`status` TEXT , " +
+                    "`updateAt` TEXT, " +
+                    "`show` INTEGER NOT NULL DEFAULT 1, " +
+                    "PRIMARY KEY(`id`))"
         )
     }
 }

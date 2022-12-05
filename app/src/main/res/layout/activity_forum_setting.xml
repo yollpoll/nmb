@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:bind="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="view"
+            type="com.yollpoll.nmb.view.activity.ForumSettingActivity" />
+
+        <variable
+            name="viewModel"
+            type="com.yollpoll.nmb.view.activity.ForumSettingVm" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="?attr/colorSecondaryContainer">
+
+        <include
+            android:id="@+id/layout_title"
+            layout="@layout/include_title"
+            bind:layout_constraintTop_toTopOf="parent"
+            bind:title="@{@string/forum_setting}" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            bind:adapter="@{view.adapter}"
+            android:id="@+id/rv_forum"
+            bind:layoutManager="@{view.layoutManager}"
+            bind:layout_constraintTop_toBottomOf="@+id/layout_title" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

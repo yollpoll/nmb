@@ -122,5 +122,4 @@ class HomeRepository @Inject constructor(@CommonRetrofitFactory val retrofitFact
 
     //获取公告
     suspend fun getAnnouncement() = service.getAnnouncement()
-
 }

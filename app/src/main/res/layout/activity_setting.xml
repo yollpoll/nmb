@@ -343,6 +343,37 @@
                 android:background="?attr/colorOutline"
                 app:skin_tag="item_line" />
 
+            <LinearLayout
+                android:id="@+id/rl_forum_setting"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:background="?attr/selectableItemBackground"
+                android:gravity="center_vertical"
+                android:onClick="gotoForumSetting"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tv_forum_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:text="@string/forum_setting" />
+
+                <TextView
+                    android:id="@+id/tv_forum_setting_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:text="@string/forum_setting_detail"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent" />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/line"
+                android:background="?attr/colorOutline"
+                app:skin_tag="item_line" />
         </LinearLayout>
 
     </LinearLayout>

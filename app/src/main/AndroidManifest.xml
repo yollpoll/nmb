@@ -64,6 +64,7 @@
         <activity android:name=".view.activity.HistoryActivity" />
         <activity android:name=".view.activity.ThreadImageActivity" />
         <activity android:name=".view.activity.ShieldActivity"/>
+        <activity android:name=".view.activity.ForumSettingActivity"/>
     </application>
 
 </manifest>

@@ -108,10 +108,10 @@ object SkinInflaterFactory : LayoutInflater.Factory2 {
             null
         }
         if (view == null) {
-            "view is null".logI()
+//            "view is null".logI()
         } else {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                "view is not null: ${view.accessibilityClassName}".logI()
+//                "view is not null: ${view.accessibilityClassName}".logI()
             }
         }
         return view

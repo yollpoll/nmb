@@ -48,10 +48,13 @@ import com.yollpoll.utils.copyStr
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.net.URLEncoder
 import javax.inject.Inject
 
 suspend fun gotoSetting(context: Context) {
-    DispatchClient.manager?.dispatch(context, DispatchRequest.UrlBuilder(ROUTE_SETTING).build())
+    val req = DispatchRequest.RequestBuilder().host("nmb").module("setting").build()
+    DispatchClient.manager?.dispatch(context, req)
+//    DispatchClient.manager?.dispatch(context, DispatchRequest.UrlBuilder(ROUTE_SETTING).build())
 }
 
 @AndroidEntryPoint
@@ -255,6 +258,12 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
     fun gotoShield(view: View) {
         lifecycleScope.launch {
             gotoShieldActivity(context)
+        }
+    }
+
+    fun gotoForumSetting(view: View) {
+        lifecycleScope.launch {
+            gotoForumSettingActivity(context)
         }
     }
 }

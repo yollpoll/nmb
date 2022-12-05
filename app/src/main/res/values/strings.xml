@@ -78,4 +78,8 @@
     <string name="my_cookie_color_content">串内标记我的饼干颜色,长按恢复默认</string>
     <string name="shield_page">屏蔽列表</string>
     <string name="shield_page_detail">打开屏蔽列表</string>
+    <string name="forum_setting">板块设置</string>
+    <string name="forum_setting_detail">调整板块顺序，显示、隐藏板块，修改板块名称</string>
+    <string name="hide">隐藏</string>
+    <string name="show">显示</string>
 </resources>

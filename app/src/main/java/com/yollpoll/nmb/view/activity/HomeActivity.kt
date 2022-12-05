@@ -75,6 +75,7 @@ import javax.inject.Inject
 import kotlin.collections.ArrayList
 import kotlin.math.max
 import com.yollpoll.framework.utils.getBoolean
+import com.yollpoll.nmb.model.repository.ForumRepository
 
 @Route(url = ROUTE_HOME)
 @AndroidEntryPoint
@@ -95,7 +96,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
     private val adapterForum = NmbPagingDataAdapter<ForumDetail>(
         R.layout.item_forum,
         BR.bean,
-        onBindDataBinding = { item, _, binding, _ ->
+        onBindDataBinding = { item, pos, binding, _ ->
             (binding as ItemForumBinding).llForum.setOnClickListener { v ->
                 //点击事件
                 if (null == item) {
@@ -106,6 +107,11 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
                     mDataBinding.drawer.closeDrawer(Gravity.RIGHT)
                 }
                 threadManager.scrollToPosition(0)
+            }
+            if (pos >= vm.forumSize - 1) {
+                binding.line.visibility = View.GONE
+            } else {
+                binding.line.visibility = View.VISIBLE
             }
         })
 
@@ -278,6 +284,11 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         }
     }
 
+    @OnMessage(key = ACTION_REFRESH_FORUM)
+    fun onRefreshForum() {
+        adapterForum.refresh()
+    }
+
     //一些全局的ui变化事件
     override fun onUiActionEvent(action: String, data: Any?) {
         super.onUiActionEvent(action, data)
@@ -407,14 +418,18 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
 //viewModel
 @HiltViewModel
-class HomeVm @Inject constructor(val app: Application, val repository: HomeRepository) :
+class HomeVm @Inject constructor(
+    val app: Application,
+    val repository: HomeRepository,
+    val forumRepository: ForumRepository
+) :
     FastViewModel(app) {
     //当前板块Id
     private var curForumId = MutableLiveData(-1)
 
     //当前板块
     var curForumDetail: ForumDetail =
-        ForumDetail(null, null, "-1", null, null, "时间线", null, null, null, null)
+        ForumDetail(null, null, "-1", null, "", "时间线", null, null, null, null)
 
     //标题
     @Bindable
@@ -432,53 +447,28 @@ class HomeVm @Inject constructor(val app: Application, val repository: HomeRepos
     //板块列表
     val forumList =
         getCommonPager {
-            object : BasePagingSource<Forum>() {
-                override suspend fun load(pos: Int): List<Forum> {
+            object : BasePagingSource<ForumDetail>() {
+                override fun getRefreshKey(state: PagingState<Int, ForumDetail>): Int {
+                    return 1
+                }
+
+                override suspend fun load(pos: Int): List<ForumDetail> {
                     if (pos > 1) {
                         return arrayListOf()
                     }
-                    val list = repository.getForumList()
-                    val cache = ArrayList(list).flatMap {
-                        it.forums
+                    val forumList = forumRepository.getShowForum()
+                    if (forumList.isNotEmpty()) {
+                        selectForum(forumList[0])
                     }
-                    //保存板块列表
-                    saveList(KEY_FORUM_LIST, cache)
-                    return list
+                    forumSize = forumList.size
+                    return forumList
                 }
             }
-        }.flow.flatMapConcat {
-            flowOf(it.flatMap { forum ->
-                if (forum.sort == "1") {
-                    val childForums = arrayListOf<ForumDetail>()
-                    forum.forums.forEach { childForum ->
-                        childForums.add(childForum.apply {
-                            if (this.id == "-1") {
-                                this.name = "时间线1"
-                            }
-                        })
-                        if (childForum.id == "-1") {
-                            //添加创作类时间线
-                            childForums.add(
-                                ForumDetail(
-                                    null,
-                                    null,
-                                    "-2",
-                                    null,
-                                    null,
-                                    "时间线2",
-                                    "时间线2",
-                                    "1",
-                                    null,
-                                    null
-                                )
-                            )
-                        }
-                    }
-                    return@flatMap childForums
-                }
-                forum.forums
-            })
-        }.cachedIn(viewModelScope)
+        }.flow
+
+    //板块总数
+    var forumSize = 1
+
 
     //串列表
     private val _threadPager = MutableLiveData<Pager<Int, ArticleItem>>(getCommonPager {

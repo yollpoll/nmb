@@ -21,10 +21,11 @@
             android:text="@{bean.name}"
             android:textColor="?attr/colorOnSecondaryContainer"
             />
-        <TextView
+        <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/line"
             android:background="?attr/colorAccent"
+            android:id="@+id/line"
             />
     </LinearLayout>
 </layout>

@@ -70,7 +70,7 @@ class CookieActivity : NMBActivity<ActivityCookieBinding, CookieVM>() {
     private val mAdapter = BaseAdapter<CookieBean>(
         layoutId = R.layout.item_cookie,
         BR.cookie,
-        onBindViewHolder = { item, pos, vh ->
+        onBindViewHolder = { item, pos, vh ,_->
             if (null == item) {
                 return@BaseAdapter
             }

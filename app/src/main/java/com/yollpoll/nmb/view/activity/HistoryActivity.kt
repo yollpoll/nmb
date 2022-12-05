@@ -58,7 +58,7 @@ class HistoryActivity : NMBActivity<ActivityHistoryBinding, HistoryVm>() {
     val adapter = BaseAdapter<HistoryBean>(
         R.layout.item_history,
         BR.bean,
-        onBindViewHolder = { item, pos, vh ->
+        onBindViewHolder = { item, pos, vh ,_->
             val binding: ItemHistoryBinding = vh.binding as ItemHistoryBinding
             item?.resto?.apply {
                 binding.tvReply.visibility = View.VISIBLE

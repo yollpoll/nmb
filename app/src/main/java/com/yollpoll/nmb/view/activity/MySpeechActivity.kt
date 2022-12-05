@@ -52,7 +52,7 @@ class MySpeechActivity : NMBActivity<ActivityMySpeechBinding, MySpeechVm>() {
     val adapter = BaseAdapter<MySpeechBean>(
         R.layout.item_speech,
         BR.bean,
-        onBindViewHolder = { item, _, vh ->
+        onBindViewHolder = { item, _, vh ,_->
             val binding:ItemSpeechBinding= vh.binding as ItemSpeechBinding
             "onBind".logI()
             item?.resto?.apply {
