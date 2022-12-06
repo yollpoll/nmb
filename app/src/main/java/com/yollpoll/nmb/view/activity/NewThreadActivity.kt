@@ -9,7 +9,9 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.Animation
@@ -21,23 +23,26 @@ import androidx.core.util.Pair
 import androidx.databinding.Bindable
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.*
+import com.yollpoll.annotation.annotation.OnMessage
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.Extra
 import com.yollpoll.arch.log.LogUtils
+import com.yollpoll.base.CommonDialog
 import com.yollpoll.base.NMBActivity
 import com.yollpoll.base.logI
 import com.yollpoll.floweventbus.FlowEventBus
 import com.yollpoll.framework.dispatch.DispatchRequest
-import com.yollpoll.framework.extensions.shortToast
-import com.yollpoll.framework.extensions.toListBean
-import com.yollpoll.framework.extensions.toListJson
+import com.yollpoll.framework.extensions.*
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.nmb.*
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.databinding.ActivityNewthreadBinding
 import com.yollpoll.nmb.model.bean.CookieBean
+import com.yollpoll.nmb.model.bean.DraftBean
 import com.yollpoll.nmb.model.repository.ArticleDetailRepository
 import com.yollpoll.nmb.model.repository.CookieRepository
+import com.yollpoll.nmb.model.repository.DraftRepository
+import com.yollpoll.nmb.model.repository.ForumRepository
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_NEW_THREAD
 import com.yollpoll.nmb.view.widgets.REQ_CAMERA
@@ -62,6 +67,20 @@ const val ACTION_NEW = "new"
 const val ACTION_REPLAY = "replay"
 const val ACTION_LINK = "link"
 const val ACTION_REPORT = "report"
+
+suspend fun gotoNewThreadWithDraft(context: Context, draft: DraftBean) {
+    val action = draft.reply?.let {
+        ACTION_REPLAY
+    } ?: ACTION_NEW
+
+    val req = DispatchRequest.RequestBuilder().host("nmb").module("new_thread").params(
+        hashMapOf(
+            "draft" to URLEncoder.encode(draft.toJson(), "UTF-8"),
+            "action" to action
+        )
+    ).build()
+    DispatchClient.manager?.dispatch(context, req)
+}
 
 suspend fun gotoNewThreadActivity(context: Context, forumId: String) {
     val req = DispatchRequest.RequestBuilder().host("nmb").module("new_thread").params(
@@ -164,9 +183,27 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
 
     @Extra
     var linkIds: String = ""
+
+    @Extra
+    var draft: String? = ""
     private val vm: NewThreadVm by viewModels()
     override fun getLayoutId() = R.layout.activity_newthread
+    override fun getMenuLayout() = R.menu.menu_new_thread
     override fun initViewModel() = vm
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_draft -> {
+                lifecycleScope.launch {
+                    gotoDraftActivity(context, ACTION_SELECT)
+                }
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initView()
@@ -175,6 +212,11 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
 
     private fun initData() {
         vm.action = action
+        if (!draft.isNullOrEmpty()) {
+            vm.draftBean = draft!!.toJsonBean()
+            forumId = vm.draftBean!!.fid
+            replyTo = vm.draftBean?.reply ?: ""
+        }
         when (action) {
             ACTION_NEW -> {
                 vm.fid = forumId
@@ -201,7 +243,8 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
             }
         }
         FlowEventBus.getFlow<String>(ACTION_TAG_NAME).asLiveData().observe(this) {
-            mDataBinding.tvTag.text = it
+//            mDataBinding.tvTag.text = it
+            vm.forumName = it
         }
         FlowEventBus.getFlow<String>(ACTION_TAG_ID).asLiveData().observe(this) {
             vm.fid = it
@@ -209,8 +252,36 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
         }
     }
 
+    /**
+     * 保存到草稿箱
+     */
+    private fun showDraftDialog() {
+        CommonDialog("保存到草稿箱", "希望将内容保存到草稿箱吗?", context, onCancel = {
+            this@NewThreadActivity.finish()
+        }) {
+            lifecycleScope.launch {
+                vm.saveToDraft()
+                this@NewThreadActivity.finish()
+            }
+        }.show()
+    }
+
+    override fun onBackPressed() {
+        if (vm.threadContent.isNotEmpty()) {
+            showDraftDialog()
+        } else {
+            super.onBackPressed()
+        }
+    }
+
     private fun initView() {
-        initTitle(mDataBinding.layoutTitle.toolbar, true)
+        initTitle(mDataBinding.layoutTitle.toolbar, true) {
+            if (vm.threadContent.isNotEmpty()) {
+                showDraftDialog()
+            } else {
+                this.finish()
+            }
+        }
         when (action) {
             ACTION_NEW -> {
                 vm.title = "新串"
@@ -232,7 +303,9 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
         mDataBinding.edtContent.requestFocus()
     }
 
-    //选择表情
+    /**
+     * 选择表情
+     */
     fun chooseEmoji() {
         ChooseEmojiDialogFragment { word: String?, id: Int, fragment: DialogFragment? ->
             if (word?.isEmpty() != false) {
@@ -244,10 +317,10 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
                     vm.selectImg(cacheBitmap)
                 }
             } else {
-                val nSection=mDataBinding.edtContent.selectionStart
+                val nSection = mDataBinding.edtContent.selectionStart
                 mDataBinding.edtContent.text?.insert(nSection, word)
                 // 可以更新光标位置
-                mDataBinding.edtContent.setSelection(nSection+word.length)
+                mDataBinding.edtContent.setSelection(nSection + word.length)
                 //选择了文字
 //                vm.threadContent += word
                 fragment?.dismiss()
@@ -255,14 +328,18 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
         }.show(supportFragmentManager, "chooseEmoji")
     }
 
-    //选择图片
+    /**
+     * 选择图片
+     */
     fun choosePic() {
         showChoosePicDialog(this) {
             this.cameraUri = it
         }
     }
 
-    //选择板块标签
+    /**
+     * 选择板块标签
+     */
     fun chooseTag() {
         lifecycleScope.launch {
             val pair1: Pair<View, String> = Pair(mDataBinding.tvTag, forumId)
@@ -271,7 +348,9 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
         }
     }
 
-    //显示更多输入项目
+    /**
+     * 显示更多输入项目
+     */
     fun showOrHideTitle() {
         if (mDataBinding.llMoreTitle.visibility == View.VISIBLE) {
             dismissMoreTitle()
@@ -280,7 +359,9 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
         }
     }
 
-    //更多标题参数
+    /**
+     * 更多标题参数
+     */
     private fun showMoreTitle() {
         mDataBinding.llMoreTitle.visibility = View.VISIBLE
         val anim = ObjectAnimator.ofFloat(mDataBinding.imgShowMoreTitle, "rotation", 0f, 180f)
@@ -361,10 +442,21 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
         }
     }
 
-    //绘图
+    /**
+     * 绘图
+     */
     fun gotoDraw() {
         lifecycleScope.launch {
             gotoDrawing(context)
+        }
+    }
+
+    @OnMessage(stick = true)
+    fun onDraftSelect(draft: DraftBean) {
+        lifecycleScope.launch {
+            vm.threadContent = draft.content
+            val bitmap = compressBitmap(draft.img, 1024, 1024)
+            vm.selectImg(bitmap)
         }
     }
 
@@ -374,7 +466,9 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
 class NewThreadVm @Inject constructor(
     val app: Application,
     val repository: ArticleDetailRepository,
-    val cookieRepository: CookieRepository
+    val cookieRepository: CookieRepository,
+    val draftRepository: DraftRepository,
+    val forumRepository: ForumRepository
 ) : FastViewModel(app) {
     init {
         viewModelScope.launch {
@@ -394,6 +488,13 @@ class NewThreadVm @Inject constructor(
     //当前选择图片
     private val currentImg = MutableLiveData<Bitmap?>(null)
     val currentImgLD: LiveData<Bitmap?> = currentImg
+
+    @Bindable
+    var forumName: String = "综合板"
+        set(value) {
+            field = value
+            notifyPropertyChanged(BR.forumName)
+        }
 
     @Bindable
     var curCookie: CookieBean? = null
@@ -445,10 +546,41 @@ class NewThreadVm @Inject constructor(
         }
 
     var action: String = ""
+
     var fid: String = ""
+        set(value) {
+            field = value
+            viewModelScope.launch {
+                forumRepository.queryById(value)?.also {
+                    forumName = it.name
+                }
+            }
+        }
+
     var replyTo: String = ""
 
-    //提交
+    var draftBean: DraftBean? = null
+        set(value) {
+            field = value
+            value?.let {
+                email = it.email ?: ""
+                fid = it.fid
+                name = it.fName
+                waterMask = it.mask == "1"
+                threadContent = it.content
+                threadTitle = it.title ?: ""
+                title = "回复: >>NO.${it.reply}"
+                viewModelScope.launch {
+                    val bitmap = compressBitmap(it.img, 1024, 1024)
+                    selectImg(bitmap)
+                }
+            }
+
+        }
+
+    /**
+     * 提交
+     */
     fun submit() {
         if (threadContent.isEmpty())
             "文本内容为空".shortToast()
@@ -468,7 +600,12 @@ class NewThreadVm @Inject constructor(
         }
     }
 
-    //选择照片
+    /**
+     * 选择照片
+     * @param uri Uri
+     * @param width Int
+     * @param height Int
+     */
     fun selectPhoto(uri: Uri, width: Int = 1024, height: Int = 1024) {
         viewModelScope.launch(Dispatchers.IO) {
             "img uri:${uri.path}".logI()
@@ -478,20 +615,28 @@ class NewThreadVm @Inject constructor(
         }
     }
 
-    //选择图片
+    /**
+     * 选择图片
+     * @param bitmap Bitmap?
+     */
     suspend fun selectImg(bitmap: Bitmap?) {
         withContext(Dispatchers.Main) {
             currentImg.value = bitmap
         }
     }
 
+    /**
+     * 删除图片
+     */
     fun delImg() {
         viewModelScope.launch(Dispatchers.Main) {
             currentImg.value = null
         }
     }
 
-    //发表新串
+    /**
+     * 发表新串
+     */
     private fun newThread() {
         viewModelScope.launch(Dispatchers.IO) {
             showLoading()
@@ -504,7 +649,7 @@ class NewThreadVm @Inject constructor(
                 fid,
                 name,
                 threadTitle,
-                name,
+                email,
                 threadContent,
                 if (waterMask) "1" else "0",
                 file
@@ -514,7 +659,9 @@ class NewThreadVm @Inject constructor(
         }
     }
 
-    //回复
+    /**
+     * 回复
+     */
     private fun reply() {
         viewModelScope.launch(Dispatchers.IO) {
             showLoading()
@@ -532,14 +679,16 @@ class NewThreadVm @Inject constructor(
                 if (waterMask) "1" else "0",
                 file
             )
-            LogUtils.e("res: ${res.string()}")
+//            LogUtils.e("res: ${res.string()}")
             finish()
             hideLoading()
             sendEmptyMessage(MR.ThreadDetailActivity_refresh)
         }
     }
 
-    //举报
+    /**
+     * 举报
+     */
     fun report() {
         viewModelScope.launch(Dispatchers.IO) {
             showLoading()
@@ -557,7 +706,10 @@ class NewThreadVm @Inject constructor(
         }
     }
 
-    //添加引用链接
+    /**
+     * 添加引用链接
+     * @param linkIds List<String>
+     */
     fun addLinkIds(linkIds: List<String>) {
         var content = ""
         linkIds.forEach {
@@ -566,7 +718,10 @@ class NewThreadVm @Inject constructor(
         threadContent = content
     }
 
-
+    /**
+     * 选择饼干
+     * @param cookie CookieBean
+     */
     fun selectCookie(cookie: CookieBean) {
         viewModelScope.launch {
             curCookie?.let {
@@ -578,5 +733,30 @@ class NewThreadVm @Inject constructor(
             curCookie = cookie
             cookieRepository.insertCookie(cookie)
         }
+    }
+
+    /**
+     * 保存到草稿
+     */
+    suspend fun saveToDraft() {
+        showLoading()
+        val bitmap = currentImg.value
+        val path = bitmap?.let {
+            return@let saveBitmapToSd(bitmap, "img.jpg", app.filesDir.absolutePath)
+        }
+        val draft = DraftBean(
+            id = draftBean?.id,
+            reply = if (replyTo.isEmpty()) null else replyTo,
+            fid = fid,
+            fName = forumName,
+            mask = if (waterMask) "1" else "0",
+            email = email,
+            title = threadTitle,
+            content = threadContent,
+            updateTime = System.currentTimeMillis(),
+            img = path
+        )
+        draftRepository.insetDraft(draft)
+        hideLoading()
     }
 }

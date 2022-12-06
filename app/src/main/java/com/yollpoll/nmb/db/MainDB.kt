@@ -10,8 +10,9 @@ import com.yollpoll.nmb.App
 import com.yollpoll.nmb.model.bean.*
 
 @Database(
-    entities = [CookieBean::class, MySpeechBean::class, HistoryBean::class, ArticleItem::class, ShieldArticle::class, ForumDetail::class],
-    version = 5,
+    entities = [CookieBean::class, MySpeechBean::class, HistoryBean::class, ArticleItem::class,
+        ShieldArticle::class, ForumDetail::class, DraftBean::class],
+    version = 6,
     exportSchema = false,
 )
 abstract class MainDB : RoomDatabase() {
@@ -20,6 +21,7 @@ abstract class MainDB : RoomDatabase() {
     abstract fun getHistoryDao(): HistoryDao
     abstract fun getArticleDao(): ArticleDao
     abstract fun getForumDao(): ForumDao
+    abstract fun getDraftDao(): DraftDao
 
     companion object {
         @Volatile
@@ -43,7 +45,8 @@ abstract class MainDB : RoomDatabase() {
                                 MIGRATION_1_3,
                                 MIGRATION_2_3,
                                 MIGRATION_3_4,
-                                MIGRATION_4_5
+                                MIGRATION_4_5,
+                                MIGRATION_5_6,
                             )
                             .fallbackToDestructiveMigration()//没有迁移路径时会破坏性的重建表
                             .build()
@@ -128,6 +131,25 @@ val MIGRATION_4_5 = object : Migration(4, 5) {
                     "`status` TEXT , " +
                     "`updateAt` TEXT, " +
                     "`show` INTEGER NOT NULL DEFAULT 1, " +
+                    "PRIMARY KEY(`id`))"
+        )
+    }
+}
+
+val MIGRATION_5_6 = object : Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL(
+            "CREATE TABLE `draft` (" +
+                    "`fid` TEXT NOT NULL, " +
+                    "`f_name` TEXT NOT NULL, " +
+                    "`mask` TEXT NOT NULL, " +
+                    "`email` TEXT NOT NULL, " +
+                    "`reply` TEXT , " +
+                    "`id` INTEGER, " +
+                    "`title` TEXT, " +
+                    "`content` TEXT NOT NULL, " +
+                    "`update_time` INTEGER NOT NULL DEFAULT 'CURRENT_TIMESTAMP', " +
+                    "`img` TEXT , " +
                     "PRIMARY KEY(`id`))"
         )
     }

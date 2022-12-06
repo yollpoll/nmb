@@ -91,4 +91,13 @@ class ForumRepository @Inject constructor(@CommonRetrofitFactory val retrofitFac
     suspend fun updateForumList(vararg forumDetail: ForumDetail) {
         forumDao.update(*forumDetail)
     }
+    //根据id查询
+    suspend fun queryById(id: String): ForumDetail? {
+        val list = forumDao.queryForum(id)
+        return if (list.isEmpty()) {
+            null
+        } else {
+            list[0]
+        }
+    }
 }

@@ -113,7 +113,7 @@
                         android:layout_height="wrap_content"
                         android:onClick="@{()->view.chooseTag()}"
                         android:padding="10dp"
-                        android:text="综合板1"
+                        android:text="@{viewModel.forumName}"
                         android:textColor="?attr/colorSecondary"
                         android:transitionName="tag" />
 
@@ -238,8 +238,8 @@
                 android:foregroundTintMode="add"
                 android:onClick="@{()->view.chooseEmoji()}"
                 android:padding="5dp"
-                android:tint="?attr/colorOnPrimary"
-                android:src="@mipmap/ic_emoji" />
+                android:src="@mipmap/ic_emoji"
+                android:tint="?attr/colorOnPrimary" />
 
             <ImageView
                 android:id="@+id/img_pic"
@@ -251,8 +251,8 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:onClick="@{()->view.choosePic()}"
                 android:padding="5dp"
-                android:tint="?attr/colorOnPrimary"
-                android:src="@mipmap/ic_pic" />
+                android:src="@mipmap/ic_pic"
+                android:tint="?attr/colorOnPrimary" />
 
             <ImageView
                 android:id="@+id/img_draw"
@@ -264,8 +264,8 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:onClick="@{()->view.gotoDraw()}"
                 android:padding="5dp"
-                android:tint="?attr/colorOnPrimary"
-                android:src="@mipmap/ic_drawer" />
+                android:src="@mipmap/ic_drawer"
+                android:tint="?attr/colorOnPrimary" />
 
             <TextView
                 android:id="@+id/tv_cookie"
@@ -288,8 +288,8 @@
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:onClick="@{()->viewModel.submit()}"
                 android:padding="5dp"
-                android:tint="?attr/colorOnPrimary"
-                android:src="@mipmap/ic_send" />
+                android:src="@mipmap/ic_send"
+                android:tint="?attr/colorOnPrimary" />
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,7 +20,7 @@ open class BaseAdapter<T : Any>(
     private val variableId: Int?,
     private val onBindViewHolder: ((T?, Int, BaseViewHolder<T>, MutableList<Any>) -> Unit)? = null,
     private val itemSame: (T, T) -> Boolean = { old, new -> old == new },
-    private val contentSame: (T, T) -> Boolean,
+    private val contentSame: (T, T) -> Boolean = { old, new -> old == new },
     private val getChangePayload: ((T, T) -> Any?)? = null
 ) : RecyclerView.Adapter<BaseViewHolder<T>>() {
     var oldData = listOf<T>()

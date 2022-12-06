@@ -24,4 +24,7 @@ interface ForumDao {
     @Query("SELECT * FROM forum WHERE show=1 ORDER BY sort")
     suspend fun queryShow(): List<ForumDetail>
 
+    @Query("SELECT * FROM forum WHERE id like :id")
+    suspend fun queryForum(id: String): List<ForumDetail>
+
 }

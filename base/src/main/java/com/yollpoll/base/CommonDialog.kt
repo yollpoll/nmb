@@ -14,6 +14,7 @@ class CommonDialog(
     val title: String,
     val content: String,
     val mContext: Context,
+    val onCancel: (() -> Unit)? = null,
     val onOk: (() -> Unit)? = null
 ) : NMBDialog<DialogLayoutBinding, AlertDialog>(mContext) {
     override fun getLayoutId() = R.layout.dialog_layout
@@ -49,6 +50,7 @@ class CommonDialog(
     }
 
     fun onCancel() {
+        onCancel?.invoke()
         this.dismiss()
     }
 }

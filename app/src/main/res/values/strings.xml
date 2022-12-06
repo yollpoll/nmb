@@ -82,4 +82,6 @@
     <string name="forum_setting_detail">调整板块顺序，显示、隐藏板块，修改板块名称</string>
     <string name="hide">隐藏</string>
     <string name="show">显示</string>
+    <string name="draft_box">草稿箱</string>
+    <string name="draft_box_detail">查看保存的草稿</string>
 </resources>

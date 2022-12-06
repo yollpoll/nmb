@@ -42,6 +42,8 @@ import java.util.ArrayList
 import javax.inject.Inject
 import androidx.core.util.Pair
 import com.yollpoll.nmb.ACTION_TAG_ID
+import com.yollpoll.nmb.model.repository.ForumRepository
+import com.yollpoll.nmb.model.repository.HomeRepository
 import kotlinx.coroutines.delay
 
 fun gotoChooseTag(activity: Activity, tagId: String, vararg pairs: Pair<View, String>) {
@@ -100,7 +102,7 @@ class ChooseTagActivity : NMBActivity<ActivityChooseTagBinding, ChooseTagVm>() {
         }
         v.transitionName = tagId
         //发送消息
-        vm.selectTag(v.getTag(R.id.tag_second) as String,v.getTag(R.id.tag_first) as String)
+        vm.selectTag(v.getTag(R.id.tag_second) as String, v.getTag(R.id.tag_first) as String)
         finishAfterTransition()
     }
 
@@ -128,16 +130,19 @@ class ChooseTagActivity : NMBActivity<ActivityChooseTagBinding, ChooseTagVm>() {
 }
 
 @HiltViewModel
-class ChooseTagVm @Inject constructor(val app: Application) : FastViewModel(app) {
+class ChooseTagVm @Inject constructor(val app: Application, val repository: ForumRepository) :
+    FastViewModel(app) {
     var listForums: List<ForumDetail>? = null
 
     suspend fun initData() = withContext(Dispatchers.IO) {
-        listForums = getList<ForumDetail>(KEY_FORUM_LIST)?.filter {
-            return@filter it.id != "-1"
+        listForums = repository.getAllFromDB().filter {
+            return@filter !it.name.contains("时间线")
+        }.sortedBy {
+            it.sort
         }
     }
 
-    fun selectTag(name: String,id:String) {
+    fun selectTag(name: String, id: String) {
         viewModelScope.launch {
             delay(200)
             FlowEventBus.post(ACTION_TAG_NAME, name)

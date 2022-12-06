@@ -266,6 +266,12 @@ class SettingActivity : NMBActivity<ActivitySettingBinding, SettingVm>() {
             gotoForumSettingActivity(context)
         }
     }
+
+    fun gotoDraftBox(view: View) {
+        lifecycleScope.launch {
+            gotoDraftActivity(context)
+        }
+    }
 }
 
 @HiltViewModel

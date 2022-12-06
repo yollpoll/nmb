@@ -85,7 +85,7 @@ class CollectionActivity : NMBActivity<ActivityCollectionBinding, CollectionVm>(
         true
     }, onImageClick = { item, pos ->
         lifecycleScope.launch {
-            gotoThreadImageActivity(context,0,item.id)
+            gotoThreadImageActivity(context, 0, item.id)
 //            ImageActivity.gotoImageActivity(
 //                context,
 //                0,

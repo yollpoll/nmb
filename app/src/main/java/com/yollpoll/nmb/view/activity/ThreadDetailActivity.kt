@@ -305,7 +305,7 @@ class ThreadDetailVM @Inject constructor(
         allPage = if (head.ReplyCount == null) {
             1
         } else {
-            (head.ReplyCount!!.toInt() / PAGE_SIZE) + 1
+            (head.ReplyCount!!.toInt() / PAGE_SIZE)
         }
         if (!hasAddHistory) {
             saveHistory(head)

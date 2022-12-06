@@ -126,7 +126,7 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
 
     suspend fun newThread(
         fid: String,//板块id
-        name: String,//板块名字
+        name: String,
         title: String,
         email: String,
         content: String,
