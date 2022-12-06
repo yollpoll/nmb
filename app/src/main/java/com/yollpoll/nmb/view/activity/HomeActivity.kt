@@ -457,9 +457,11 @@ class HomeVm @Inject constructor(
                         return arrayListOf()
                     }
                     val forumList = forumRepository.getShowForum()
-                    if (forumList.isNotEmpty()) {
-                        selectForum(forumList[0])
-                    }
+
+                    selectForum(forumList.first {
+                        it.id == "4"
+                    })
+
                     forumSize = forumList.size
                     return forumList
                 }
