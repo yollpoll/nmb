@@ -285,15 +285,14 @@ class ThreadDetailVM @Inject constructor(
 
             }
             //图片列表
-            repository.getImagesFlow(id).collectLatest {
-                imgList = it
-            }
+            imgList = repository.getImagesList(id)
             //配置我的饼干的颜色
             val myCookieColor =
                 getInt(KEY_COOKIE_COLOR, myDefaultCookieColor)
             cookieRepository.queryCookies().forEach {
                 tagMap[it.name] = myCookieColor
             }
+            "color: ${tagMap.toMapJson()}".logI()
         }
     }
 
@@ -316,6 +315,7 @@ class ThreadDetailVM @Inject constructor(
 
     //找到图片的序列 pos表示当前item的序号
     suspend fun findImgIndex(id: String): Int {
+        imgList = repository.getImagesList(id)
         for (i in imgList.indices) {
             if (imgList[i].id == id) {
                 return i
@@ -333,11 +333,15 @@ class ThreadDetailVM @Inject constructor(
             }) {
                 override suspend fun load(pos: Int): List<ArticleItem> {
                     curPage = pos
-                    val data =
-                        ArrayList(repository.getArticleReply(head, pos) ?: return emptyList())
+                    val data: ArrayList<ArticleItem> = arrayListOf()
                     if (pos == 1) {
                         //当前第一页，加入head
                         data.add(0, head)
+                    }
+                    try {
+                        data.addAll(repository.getArticleReply(head, pos) ?: return emptyList())
+                    } catch (e: Exception) {
+                        "加载失败: ${e.message}".logE()
                     }
                     return data.filter {
                         return@filter it.id != "9999999"
@@ -353,6 +357,8 @@ class ThreadDetailVM @Inject constructor(
                         cache[reply.id] = reply
                         reply
                     }
+
+                    return emptyList<ArticleItem>()
                 }
             }
         }.flow.cachedIn(viewModelScope)

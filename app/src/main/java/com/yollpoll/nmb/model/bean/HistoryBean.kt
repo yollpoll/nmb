@@ -16,7 +16,7 @@ data class HistoryBean(
     @PrimaryKey
     val id: Int,
     val name: String,
-    val now: String,
+    var now: String,
     val resto: String?,
     val sage: String?,
     val title: String,

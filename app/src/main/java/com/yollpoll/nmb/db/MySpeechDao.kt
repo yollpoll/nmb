@@ -10,12 +10,12 @@ import com.yollpoll.nmb.model.bean.MySpeechBean
 @Dao
 interface MySpeechDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertAll( mySpeechBean: List<MySpeechBean>)
+    suspend fun insertAll(mySpeechBean: List<MySpeechBean>)
 
     @Query("DELETE FROM myspeechbean")
     suspend fun clearAll()
 
-    @Query("SELECT * FROM myspeechbean")
+    @Query("SELECT * FROM myspeechbean ORDER BY id DESC")
     suspend fun query(): List<MySpeechBean>
 
 //    @Query("SELECT * FROM myspeechbean")

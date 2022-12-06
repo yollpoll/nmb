@@ -108,7 +108,6 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
 
     fun getImagesFlow(id: String): Flow<List<ImgTuple>> =
         MainDB.getInstance().getArticleDao().getImageFlow(id).map { list ->
-            "flow size ${list.size}".logI()
             return@map list.filter {
                 if (it.img.isNotEmpty()) {
                     return@filter true

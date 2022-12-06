@@ -40,6 +40,9 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.logging.SimpleFormatter
 import javax.inject.Inject
 
 /**
@@ -58,7 +61,7 @@ class HistoryActivity : NMBActivity<ActivityHistoryBinding, HistoryVm>() {
     val adapter = BaseAdapter<HistoryBean>(
         R.layout.item_history,
         BR.bean,
-        onBindViewHolder = { item, pos, vh ,_->
+        onBindViewHolder = { item, pos, vh, _ ->
             val binding: ItemHistoryBinding = vh.binding as ItemHistoryBinding
             item?.resto?.apply {
                 binding.tvReply.visibility = View.VISIBLE
@@ -112,7 +115,7 @@ class HistoryActivity : NMBActivity<ActivityHistoryBinding, HistoryVm>() {
     override fun getMenuLayout() = R.menu.menu_history
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId==R.id.action_clear_history){
+        if (item.itemId == R.id.action_clear_history) {
             vm.clearHistory()
             return true
         }
@@ -160,7 +163,10 @@ class HistoryVm @Inject constructor(app: Application, val repository: UserReposi
 
     fun loadHistory() {
         viewModelScope.launch {
-            val list = repository.getHistory()
+            val list = repository.getHistory().map {
+                it.now = historySTF.format(Date(it.updateTime))
+                it
+            }
             historyFlow.emit(list)
         }
     }
@@ -173,13 +179,16 @@ class HistoryVm @Inject constructor(app: Application, val repository: UserReposi
             }
         }
     }
-    fun clearHistory(){
+
+    fun clearHistory() {
         viewModelScope.launch {
             repository.clearHistory()
             loadHistory()
         }
     }
 }
+
+val historySTF = SimpleDateFormat("浏览时间:yyyy-MM-dd hh:mm:ss")
 
 suspend fun gotoHistory(context: Context) {
     val req = DispatchRequest.RequestBuilder().host("nmb").module("history").build()

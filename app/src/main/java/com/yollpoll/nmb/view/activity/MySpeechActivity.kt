@@ -52,22 +52,25 @@ class MySpeechActivity : NMBActivity<ActivityMySpeechBinding, MySpeechVm>() {
     val adapter = BaseAdapter<MySpeechBean>(
         R.layout.item_speech,
         BR.bean,
-        onBindViewHolder = { item, _, vh ,_->
-            val binding:ItemSpeechBinding= vh.binding as ItemSpeechBinding
+        onBindViewHolder = { item, _, vh, _ ->
+            val binding: ItemSpeechBinding = vh.binding as ItemSpeechBinding
             "onBind".logI()
             item?.resto?.apply {
-                binding.tvReply.visibility= View.VISIBLE
-                val replyTo=">>No.${item.resto}"
-                binding.tvReply.text=replyTo
-            }?:apply {
-                binding.tvReply.visibility= View.GONE
+                binding.tvReply.visibility = View.VISIBLE
+                val replyTo = ">>No.${item.resto}"
+                binding.tvReply.text = replyTo
+            } ?: apply {
+                binding.tvReply.visibility = View.GONE
             }
-            binding.llRoot.setOnClickListener{
+            binding.llRoot.setOnClickListener {
                 lifecycleScope.launch {
-                    if(item?.resto==null){
-                        ThreadDetailActivity.gotoThreadDetailActivity(item?.id.toString(),context)
-                    }else{
-                        ThreadDetailActivity.gotoThreadDetailActivity(item.resto.toString(),context)
+                    if (item?.resto == null) {
+                        ThreadDetailActivity.gotoThreadDetailActivity(item?.id.toString(), context)
+                    } else {
+                        ThreadDetailActivity.gotoThreadDetailActivity(
+                            item.resto.toString(),
+                            context
+                        )
                     }
                 }
             }
@@ -124,7 +127,7 @@ class MySpeechVm @Inject constructor(val app: Application, val repository: UserR
     fun loadMySpeech() {
         viewModelScope.launch {
             val list = repository.getSpeakingHistory()
-            val localList=repository.loadSpeechFromLocal()
+            val localList = repository.loadSpeechFromLocal()
             list.addAll(localList)
             speechFLow.emit(list)
             repository.clearLocalSpeech()
