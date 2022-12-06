@@ -315,7 +315,7 @@ class ThreadDetailVM @Inject constructor(
 
     //找到图片的序列 pos表示当前item的序号
     suspend fun findImgIndex(id: String): Int {
-        imgList = repository.getImagesList(id)
+        imgList = repository.getImagesList(this.id)
         for (i in imgList.indices) {
             if (imgList[i].id == id) {
                 return i
