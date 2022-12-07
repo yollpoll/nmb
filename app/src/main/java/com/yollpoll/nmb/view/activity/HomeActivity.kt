@@ -483,6 +483,7 @@ class HomeVm @Inject constructor(
     suspend fun refreshCover() {
         try {
             repository.refreshCover()
+            
             sendEmptyMessage(MR.HomeActivity_onRefreshCover)
         } catch (e: Exception) {
 //            "封面加载失败".logI()
