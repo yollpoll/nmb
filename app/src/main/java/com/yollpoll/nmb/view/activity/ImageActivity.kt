@@ -138,7 +138,7 @@ class ImageActivity : NMBActivity<ActivityImageBinding, ImageVm>() {
 
     private fun initData() {
         vm.initData(urls, names, cur.toInt() + 1)
-        val adapter = ImagePagerAdapter(vm.imageList, this)
+        val adapter = ImagePagerAdapter(this,vm.imageList, )
         mDataBinding.viewpager.adapter = adapter
         mDataBinding.viewpager.setCurrentItem(cur.toInt(), false)
         mDataBinding.viewpager.registerOnPageChangeCallback(onPageChangeListener)

@@ -27,10 +27,10 @@ interface ArticleDao {
     suspend fun getArticle(id: String): ArticleItem?
 
     //查询图片
-    @Query("SELECT img,ext,id FROM ArticleItem WHERE replyTo LIKE :replyTo OR id LIKE :replyTo")
+    @Query("SELECT img,ext,id FROM ArticleItem WHERE replyTo LIKE :replyTo OR id LIKE :replyTo ORDER BY id")
     fun getImageFlow(replyTo: String): Flow<List<ImgTuple>>
 
-    @Query("SELECT img,ext,id FROM ArticleItem WHERE replyTo LIKE :replyTo OR id LIKE :replyTo")
+    @Query("SELECT img,ext,id FROM ArticleItem WHERE replyTo LIKE :replyTo OR id LIKE :replyTo ORDER BY id")
     suspend fun getImageList(replyTo: String): List<ImgTuple>
 
     //屏蔽列表

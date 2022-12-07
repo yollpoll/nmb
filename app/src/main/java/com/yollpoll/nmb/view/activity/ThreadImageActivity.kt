@@ -11,6 +11,7 @@ import androidx.activity.viewModels
 import androidx.databinding.Bindable
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
 import com.yollpoll.annotation.annotation.OnMessage
@@ -18,6 +19,7 @@ import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.ContentView
 import com.yollpoll.arch.annotation.Extra
 import com.yollpoll.arch.annotation.ViewModel
+import com.yollpoll.base.MyDiff
 import com.yollpoll.base.NMBActivity
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.extensions.shortToast
@@ -30,9 +32,11 @@ import com.yollpoll.nmb.KEY_BIG_IMG
 import com.yollpoll.nmb.MR
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.adapter.ImagePagerAdapter
+import com.yollpoll.nmb.adapter.ThreadImagePagerAdapter
 import com.yollpoll.nmb.databinding.ActivityImageBinding
 import com.yollpoll.nmb.databinding.ActivityThreadImageBinding
 import com.yollpoll.nmb.databinding.FragmentImageBinding
+import com.yollpoll.nmb.model.bean.ImgTuple
 import com.yollpoll.nmb.model.repository.ArticleDetailRepository
 import com.yollpoll.nmb.net.imgThumbUrl
 import com.yollpoll.nmb.net.imgUrl
@@ -44,6 +48,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.net.URLDecoder
@@ -72,13 +78,14 @@ class ThreadImageActivity : NMBActivity<ActivityThreadImageBinding, ThreadImageV
     var cur: String = "0"//在数组中的位置
 
     val adapter by lazy {
-        return@lazy ImagePagerAdapter(vm.imageList, this)
+        return@lazy ThreadImagePagerAdapter(this)
     }
 
 
     private val onPageChangeListener: OnPageChangeListener by lazy {
         OnPageChangeListener {
             vm.cur = it
+            vm.curImage = adapter.imageList[it]
         }
     }
 
@@ -123,43 +130,46 @@ class ThreadImageActivity : NMBActivity<ActivityThreadImageBinding, ThreadImageV
     }
 
     private fun initData() {
-        vm.initData(id, cur.toInt() )
-//        val adapter = ImagePagerAdapter(vm.imageList, this)
-        mDataBinding.viewpager.adapter = adapter
-        mDataBinding.viewpager.setCurrentItem(vm.cur, false)
-        mDataBinding.viewpager.registerOnPageChangeCallback(onPageChangeListener)
+        lifecycleScope.launch {
+            vm.initData(id, cur.toInt())
+            mDataBinding.viewpager.adapter = adapter
+            mDataBinding.viewpager.registerOnPageChangeCallback(onPageChangeListener)
+            vm.imgFlow.collectLatest {
+                vm.allSize = it.size
+                adapter.submitData(it)
+                mDataBinding.viewpager.setCurrentItem(vm.cur, false)
+            }
+        }
     }
 
     private fun initView() {
-//        mDataBinding.viewpager.requestDisallowInterceptTouchEvent(true)
-//        mDataBinding.viewpager.setPageTransformer(ZoomOutPageTransformer())
         initTitle(mDataBinding.layoutHead.toolbar, showBackBtn = true) {
             this.finish()
         }
     }
-
-    @OnMessage
-    fun refresh() {
-        adapter.notifyDataSetChanged()
-        mDataBinding.viewpager.setCurrentItem(vm.cur, false)
-
-    }
-
-
 }
 
 @HiltViewModel
 class ThreadImageVm @Inject constructor(
-    val app: Application,
-    val articleRepository: ArticleDetailRepository
+    private val app: Application,
+    private val articleRepository: ArticleDetailRepository
 ) : FastViewModel(app) {
+    private val opThumbBigImg = getBoolean(KEY_BIG_IMG, false)
+    private val imgHead = if (opThumbBigImg) imgThumbUrl else imgUrl
+
+    var allSize: Int = 1
+        set(value) {
+            field = value
+            notifyChange()
+        }
+
     @Bindable
     val title = "图片浏览"
 
     @Bindable
     var subTitle = "1/1"
         get() {
-            return cur.toString() + "/" + imageList.size
+            return "${cur + 1}/$allSize"
         }
 
     @Bindable
@@ -169,89 +179,44 @@ class ThreadImageVm @Inject constructor(
             field = value
             notifyChange()
         }
-    val imageList = arrayListOf<String>()
-    private val nameList = arrayListOf<String>()
+
+    //当前浏览的图片
+    lateinit var curImage: ImgTuple
+
+    lateinit var threadId: String
+
+    val imgFlow by lazy {
+        return@lazy articleRepository.getImagesFlow(id = threadId)
+    }
+
     private val localUri = hashMapOf<String, String>()//本地的保存路径
     fun initData(id: String, cur: Int) {
         this.cur = cur
-        viewModelScope.launch {
-            val opThumbBigImg = getBoolean(KEY_BIG_IMG, false)
-            val imgHead = if (opThumbBigImg) imgThumbUrl else imgUrl
-            articleRepository.getImagesList(id).map {
-                return@map imgHead + it.img + it.ext
-            }.let {
-                imageList.addAll(it)
-                nameList.addAll(it)
-            }
-            sendEmptyMessage(MR.ThreadImageActivity_refresh)
-        }
-//        if (json.isEmpty()) return
-//        this.cur = cur
-//        URLDecoder.decode(json, "UTF-8").toListBean<String>()?.let {
-//            imageList.addAll(it)
-//        }
-//        URLDecoder.decode(names, "UTF-8").toListBean<String>()?.let {
-//            nameList.addAll(it)
-//        }
+        this.threadId = id
     }
 
     suspend fun downloadImg(): String = withContext(Dispatchers.IO) {
         val path = saveImageToMediaStore(
-            getImgUrl(imageList[cur - 1]),
-            nameList[cur - 1],
+            getImgUrl(imgHead + curImage.img + curImage.ext),
+            curImage.img + curImage.ext,
             app
         )
-        localUri[getImgUrl(imageList[cur - 1])] = path
+        localUri[imgHead + curImage.img + curImage.ext] = path
         return@withContext path
     }
 
 
     fun share(context: Activity) {
         viewModelScope.launch(Dispatchers.IO) {
-            localUri[getImgUrl(imageList[cur - 1])]?.let {
+            localUri[imgHead + curImage.img + curImage.ext]?.let {
                 //这张图片已经保存在本地了
                 com.yollpoll.utils.share("匿名版", it, context)
             } ?: run {
                 val path = downloadImg()
-                localUri[getImgUrl(imageList[cur - 1])] = path
+                localUri[imgHead + curImage.img + curImage.ext] = path
                 com.yollpoll.utils.share("匿名版", path, context)
             }
         }
     }
 
 }
-
-////监听页面变化
-//class OnPageChangeListener(private val onChange: ((Int) -> Unit)) :
-//    ViewPager2.OnPageChangeCallback() {
-//    override fun onPageSelected(position: Int) {
-//        super.onPageSelected(position)
-//        onChange.invoke(position)
-//    }
-//}
-
-//@ViewModel(ImageFragmentVM::class)
-//@ContentView(R.layout.fragment_image)
-//class ImageFragment : FastFragment<FragmentImageBinding, ImageFragmentVM>() {
-//    @Extra
-//    var url = ""
-//
-//
-//    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-//        super.onViewCreated(view, savedInstanceState)
-//        Glide.with(requireContext()).asBitmap().load(getImgUrl(url))
-//            .into(mDataBinding.ivContent)
-//    }
-//}
-//
-//class ImageFragmentVM(app: Application) : FastViewModel(app) {
-//
-//}
-//
-//fun getImgUrl(url: String): String {
-//    return if (url.startsWith("http")) {
-//        url
-//    } else {
-//        imgUrl + url
-//    }
-//}

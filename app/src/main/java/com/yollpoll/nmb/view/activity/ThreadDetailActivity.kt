@@ -357,7 +357,6 @@ class ThreadDetailVM @Inject constructor(
                         cache[reply.id] = reply
                         reply
                     }
-
                     return emptyList<ArticleItem>()
                 }
             }
