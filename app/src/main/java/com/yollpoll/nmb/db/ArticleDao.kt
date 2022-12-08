@@ -4,6 +4,7 @@ import androidx.paging.PagingSource
 import androidx.room.*
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.model.bean.ImgTuple
+import com.yollpoll.nmb.model.bean.PageItem
 import com.yollpoll.nmb.model.bean.ShieldArticle
 import kotlinx.coroutines.flow.Flow
 
@@ -46,4 +47,7 @@ interface ArticleDao {
 
     @Query("SELECT * FROM ArticleItem WHERE id LIKE :id")
     suspend fun getShieldArticleList(id: String): ArticleItem
+
+    @Query("SELECT page FROM ArticleItem WHERE replyTo LIKE :id ORDER BY id")
+    suspend fun getAllReplyPage(id: String): List<PageItem>
 }

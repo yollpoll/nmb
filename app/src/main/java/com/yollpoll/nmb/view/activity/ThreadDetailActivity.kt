@@ -24,6 +24,7 @@ import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.Extra
 import com.yollpoll.arch.util.AppUtils
 import com.yollpoll.base.*
+import com.yollpoll.floweventbus.FlowEventBus
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.extensions.*
 import com.yollpoll.framework.fast.FastActivity
@@ -59,6 +60,7 @@ import okhttp3.Cookie
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.coroutines.suspendCoroutine
 
 @AndroidEntryPoint
 @Route(url = ROUTE_THREAD_DETAIL)
@@ -162,6 +164,7 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
         initData()
     }
 
+
     private fun initView() {
         initTitle(mDataBinding.layoutTitle.toolbar, true) {
             this.finish()
@@ -231,8 +234,19 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
     }
 
     override fun onDestroy() {
-        vm.savePageIndex(mManager.findFirstCompletelyVisibleItemPosition())
         super.onDestroy()
+        vm.savePageIndex(mManager.findFirstCompletelyVisibleItemPosition())
+    }
+
+    override fun onStop() {
+        super.onStop()
+        vm.cancelLoadData()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        //开始加载数据
+        vm.loadDataToCache()
     }
 }
 
@@ -292,7 +306,6 @@ class ThreadDetailVM @Inject constructor(
             cookieRepository.queryCookies().forEach {
                 tagMap[it.name] = myCookieColor
             }
-            "color: ${tagMap.toMapJson()}".logI()
         }
     }
 
@@ -508,6 +521,22 @@ class ThreadDetailVM @Inject constructor(
             }
             sendEmptyMessage(MR.ThreadDetailActivity_refresh)
         }
-
     }
+
+    //记载数据到本地数据库
+    fun loadDataToCache() {
+        viewModelScope.launch {
+            FlowEventBus.post(ACTION_UPDATE_THREAD_DETAIL, id)
+        }
+    }
+
+    //取消加载
+    fun cancelLoadData() {
+        viewModelScope.launch {
+            "ThreadReply cancel: $id".logI()
+            FlowEventBus.post(ACTION_UPDATE_THREAD_DETAIL_CANCEL, id)
+        }
+    }
+
+
 }

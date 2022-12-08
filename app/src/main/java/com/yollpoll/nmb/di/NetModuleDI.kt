@@ -12,21 +12,23 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)//生命周期
 class NetModuleDI {
 
-    @ViewModelScoped
+    @Singleton
     @Provides
     @LauncherRetrofitFactory
     fun provideLauncherRetrofitFactory(): RetrofitFactory {
         return launcherRetrofitFactory
     }
 
-    @ViewModelScoped
+    @Singleton
     @Provides
     @CommonRetrofitFactory
     fun provideCommonRetrofitFactory(): RetrofitFactory {

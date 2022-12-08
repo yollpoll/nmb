@@ -13,13 +13,16 @@ import com.yollpoll.nmb.model.repository.ArticleDetailRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ServiceComponent
 import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.scopes.ViewModelScoped
+import dagger.hilt.components.SingletonComponent
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)//生命周期
 class ArticleDetailViewModelDI {
-    @ViewModelScoped
+    @Singleton//作用域
     @Provides
     fun provideRepository(@CommonRetrofitFactory retrofitFactory: RetrofitFactory) =
         ArticleDetailRepository(retrofitFactory)

@@ -1,29 +1,17 @@
 package com.yollpoll.nmb.view.activity
 
-import android.app.ActionBar
-import android.app.Activity
 import android.app.Application
-import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Point
-import android.graphics.Rect
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.os.Build
+import android.content.ComponentName
+import android.content.Intent
+import android.content.ServiceConnection
 import android.os.Bundle
-import android.text.Html
-import android.util.Log
+import android.os.IBinder
 import android.view.Gravity
-import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.viewModels
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
-import androidx.customview.widget.ViewDragHelper
 import androidx.databinding.Bindable
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import androidx.paging.*
@@ -32,50 +20,32 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.yollpoll.annotation.annotation.OnMessage
 import com.yollpoll.annotation.annotation.Route
-import com.yollpoll.arch.annotation.PermissionAuto
-import com.yollpoll.arch.annotation.ViewModel
-import com.yollpoll.arch.log.LogUtils
-import com.yollpoll.arch.message.MessageManager
-import com.yollpoll.arch.message.liveeventbus.LiveEventBus
-import com.yollpoll.arch.message.liveeventbus.ObserverWrapper
 import com.yollpoll.base.*
-import com.yollpoll.framework.dispatch.DispatchRequest
-import com.yollpoll.framework.dispatch.OnBackListener
-import com.yollpoll.framework.dispatch.StartType
 import com.yollpoll.framework.extensions.*
 import com.yollpoll.framework.fast.FastViewModel
-import com.yollpoll.framework.paging.BasePagingDataAdapter
 import com.yollpoll.framework.paging.BasePagingSource
 import com.yollpoll.framework.paging.getCommonPager
-import com.yollpoll.framework.widgets.BaseDialog
 import com.yollpoll.nmb.*
 import com.yollpoll.nmb.BR
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.adapter.ThreadAdapter
 import com.yollpoll.nmb.databinding.ActivityHomeBinding
 import com.yollpoll.nmb.databinding.ItemForumBinding
-import com.yollpoll.nmb.databinding.ItemThreadBinding
 import com.yollpoll.nmb.model.bean.*
+import com.yollpoll.nmb.model.repository.ForumRepository
 import com.yollpoll.nmb.model.repository.HomeRepository
-import com.yollpoll.nmb.net.imgThumbUrl
 import com.yollpoll.nmb.net.realCover
-import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_HOME
+import com.yollpoll.nmb.service.ThreadReplyService
 import com.yollpoll.nmb.view.widgets.*
-import com.yollpoll.skin.SkinTheme
 import com.yollpoll.utils.copyStr
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
-import java.lang.reflect.Field
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import kotlin.math.max
-import com.yollpoll.framework.utils.getBoolean
-import com.yollpoll.nmb.model.repository.ForumRepository
 
 @Route(url = ROUTE_HOME)
 @AndroidEntryPoint
@@ -162,6 +132,18 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         super.onCreate(savedInstanceState)
         initView()
         initData()
+        //启动更新服务
+        lifecycleScope.launch(Dispatchers.IO){
+            val intent = Intent(context, ThreadReplyService::class.java)
+            bindService(intent,object :ServiceConnection{
+                override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+                }
+
+                override fun onServiceDisconnected(name: ComponentName?) {
+                }
+
+            }, BIND_AUTO_CREATE)
+        }
     }
 
     private fun initView() {

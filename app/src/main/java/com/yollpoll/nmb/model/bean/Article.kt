@@ -46,5 +46,7 @@ data class ImgTuple(
     @ColumnInfo(name = "id") val id: String,
 )
 
+data class PageItem(@ColumnInfo(name = "page") val page: Int)
+
 @Entity
 data class ShieldArticle(@PrimaryKey val articleId: String)//屏蔽列表

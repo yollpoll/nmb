@@ -21,6 +21,8 @@ const val ACTION_NO_IMG = "action_no_img"
 const val ACTION_NO_COOKIE = "action_no_cookie"
 const val ACTION_BIG_IMG = "action_big_img"
 const val ACTION_REFRESH_FORUM = "refresh_forum"
+const val ACTION_UPDATE_THREAD_DETAIL="update_thread_detail"
+const val ACTION_UPDATE_THREAD_DETAIL_CANCEL="update_thread_detail_cancel"
 
 const val AUTHOR = "yollpoll"
 const val GIT = "https://github.com/yollpoll/nmb"

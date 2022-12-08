@@ -66,6 +66,8 @@
         <activity android:name=".view.activity.ShieldActivity" />
         <activity android:name=".view.activity.ForumSettingActivity" />
         <activity android:name=".view.activity.DraftActivity" />
+
+        <service android:name=".service.ThreadReplyService" />
     </application>
 
 </manifest>

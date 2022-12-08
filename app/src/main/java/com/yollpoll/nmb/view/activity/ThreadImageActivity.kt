@@ -21,6 +21,8 @@ import com.yollpoll.arch.annotation.Extra
 import com.yollpoll.arch.annotation.ViewModel
 import com.yollpoll.base.MyDiff
 import com.yollpoll.base.NMBActivity
+import com.yollpoll.base.logI
+import com.yollpoll.floweventbus.FlowEventBus
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.extensions.toListBean
@@ -28,9 +30,7 @@ import com.yollpoll.framework.extensions.toListJson
 import com.yollpoll.framework.fast.FastFragment
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.framework.utils.getBoolean
-import com.yollpoll.nmb.KEY_BIG_IMG
-import com.yollpoll.nmb.MR
-import com.yollpoll.nmb.R
+import com.yollpoll.nmb.*
 import com.yollpoll.nmb.adapter.ImagePagerAdapter
 import com.yollpoll.nmb.adapter.ThreadImagePagerAdapter
 import com.yollpoll.nmb.databinding.ActivityImageBinding
@@ -129,6 +129,17 @@ class ThreadImageActivity : NMBActivity<ActivityThreadImageBinding, ThreadImageV
         mDataBinding.viewpager.unregisterOnPageChangeCallback(onPageChangeListener)
     }
 
+    override fun onResume() {
+        super.onResume()
+        vm.loadDataToCache()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        vm.cancelLoadData()
+    }
+
+
     private fun initData() {
         lifecycleScope.launch {
             vm.initData(id, cur.toInt())
@@ -190,9 +201,11 @@ class ThreadImageVm @Inject constructor(
     }
 
     private val localUri = hashMapOf<String, String>()//本地的保存路径
+
     fun initData(id: String, cur: Int) {
         this.cur = cur
         this.threadId = id
+        loadDataToCache()
     }
 
     suspend fun downloadImg(): String = withContext(Dispatchers.IO) {
@@ -219,4 +232,18 @@ class ThreadImageVm @Inject constructor(
         }
     }
 
+    //记载数据到本地数据库
+    fun loadDataToCache() {
+        viewModelScope.launch {
+            FlowEventBus.post(ACTION_UPDATE_THREAD_DETAIL, threadId)
+        }
+    }
+
+    //取消加载
+    fun cancelLoadData() {
+        viewModelScope.launch {
+            "ThreadReply cancel: $threadId".logI()
+            FlowEventBus.post(ACTION_UPDATE_THREAD_DETAIL_CANCEL, threadId)
+        }
+    }
 }

@@ -45,6 +45,7 @@ import com.yollpoll.nmb.model.repository.DraftRepository
 import com.yollpoll.nmb.model.repository.ForumRepository
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_NEW_THREAD
+import com.yollpoll.nmb.service.ThreadReplyService
 import com.yollpoll.nmb.view.widgets.REQ_CAMERA
 import com.yollpoll.nmb.view.widgets.REQ_CROP_PHOTO
 import com.yollpoll.nmb.view.widgets.REQ_PHOTO

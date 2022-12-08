@@ -15,6 +15,7 @@ import com.yollpoll.base.PAGE_SIZE
 import com.yollpoll.base.logE
 import com.yollpoll.base.logI
 import com.yollpoll.extensions.isNetConnected
+import com.yollpoll.floweventbus.FlowEventBus
 import com.yollpoll.framework.extensions.shortToast
 import com.yollpoll.framework.extensions.toJson
 import com.yollpoll.framework.extensions.toListJson
@@ -125,7 +126,6 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
         }
 
 
-
     suspend fun newThread(
         fid: String,//板块id
         name: String,
@@ -179,6 +179,40 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
 
     suspend fun getCollection(page: Int, uuid: String): List<ArticleItem> {
         return service.getCollection(page, uuid)
+    }
+
+    //加载缓存整个串
+    suspend fun startLoadReply(id: String) {
+        val pageSet = hashSetOf<Int>()
+        MainDB.getInstance().getArticleDao().getAllReplyPage(id).map {
+            return@map it.page
+        }.forEach {
+            pageSet.add(it)
+        }
+        val article = getArticle(id)
+        val allPage = 1 + ((article.ReplyCount?.toInt() ?: 0) / PAGE_SIZE)
+        val loadPage = arrayListOf<Int>()//未加载的页数
+        //1-allPage
+        for (i: Int in 1..allPage) {
+            if (!pageSet.contains(i)) {
+                loadPage.add(i)
+            }
+        }
+        run loop@{
+            loadPage.forEach { index ->
+                //加载并缓存
+                val data = (service.getArticleDetail(id, index).Replies ?: emptyList()).filter {
+                    return@filter it.id != "9999999"
+                }.map { reply ->
+                    reply.replyTo = article.id
+                    reply.page = index
+                    reply
+                }
+                //添加缓存
+                MainDB.getInstance().getArticleDao().insertAll(data)
+            }
+        }
+
     }
 
 }
