@@ -11,24 +11,24 @@
 
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:orientation="vertical"
         android:id="@+id/ll_root"
-        android:layout_height="wrap_content">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
 
         <LinearLayout
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginBottom="5dp"
             android:layout_width="match_parent"
-            app:skin_enable="true"
-            app:skin_tag="item"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
             android:background="@drawable/ripple_item"
             android:orientation="vertical"
-            android:transitionName="thread">
+            android:transitionName="thread"
+            app:skin_enable="true"
+            app:skin_tag="item">
 
 
             <LinearLayout
@@ -120,8 +120,9 @@
             android:layout_height="@dimen/line"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
+            android:background="?attr/colorOutline"
             app:skin_enable="true"
-            app:skin_tag="item_line"
-            android:background="?attr/colorOutline" />
+            app:skin_tag="item_line" />
     </LinearLayout>
+
 </layout>
