@@ -62,7 +62,6 @@ suspend fun gotoDraftActivity(context: Context, action: String = ACTION_CONTINUE
             "action" to action
         )
     ).build()
-    DispatchClient.manager
     DispatchClient.manager?.dispatch(context, req)
 }
 

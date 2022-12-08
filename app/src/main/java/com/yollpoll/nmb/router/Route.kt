@@ -22,4 +22,6 @@ const val ROUTE_HISTORY="native://nmb?module=history"
 const val ROUTE_SHIELD_LIST="native://nmb?module=shield"
 const val ROUTE_FORUM_SETTING="native://nmb?module=forum_setting"//板块配置
 const val ROUTE_DRAFT="native://nmb?module=draft"//草稿箱
+const val ROUTE_PAY="native://nmb?module=pay"//打赏
+
 

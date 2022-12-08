@@ -230,7 +230,6 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
     @OnMessage
     fun refresh() {
         mAdapter.refresh()
-//        mManager.smoothScrollToPosition(mDataBinding.rvContent, RecyclerView.State(), 0)
     }
 
     override fun onDestroy() {
