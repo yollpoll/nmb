@@ -246,7 +246,7 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
             }
         }
 
-        lifecycleScope.launchWhenResumed {
+        lifecycleScope.launch {
             launch {
                 vm.forumList.collectLatest {
                     adapterForum.submitData(it)
@@ -377,17 +377,21 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
     //处理标题栏
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.action_forum) {
-            if (mDataBinding.drawer.isDrawerOpen(Gravity.RIGHT)) {
-                mDataBinding.drawer.closeDrawer(Gravity.RIGHT)
-            } else {
-                mDataBinding.drawer.openDrawer(Gravity.RIGHT)
+        when (item.itemId) {
+            R.id.action_forum -> {
+                if (mDataBinding.drawer.isDrawerOpen(Gravity.RIGHT)) {
+                    mDataBinding.drawer.closeDrawer(Gravity.RIGHT)
+                } else {
+                    mDataBinding.drawer.openDrawer(Gravity.RIGHT)
+                }
+                return true
             }
-            return true
-        } else if (item.itemId == R.id.action_announcement) {
-            showAnnouncement()
-        } else if (item.itemId == R.id.action_search) {
-            "功能未开放".shortToast()
+            R.id.action_announcement -> {
+                showAnnouncement()
+            }
+            R.id.action_search -> {
+                "功能未开放".shortToast()
+            }
         }
         // navigation icon的点击交给actionbardrawertoggle来处理
         if (actionBarDrawerToggle.onOptionsItemSelected(item)) {
@@ -503,14 +507,19 @@ class HomeVm @Inject constructor(
     //获取公告
     fun getAnnouncement() {
         viewModelScope.launch {
-            val res = repository.getAnnouncement()
-            _announcement.value = res
-            val lastShow = getLongByDataStore(KEY_SHOW_ANNOUNCEMENT, -1)
-            val now = Date().time
-            if (res.enable && ((lastShow == -1L) || (now - lastShow >= 24 * 60 * 60 * 1000))) {
-                saveLongToDataStore(KEY_SHOW_ANNOUNCEMENT, now)
-                sendEmptyMessage(MR.HomeActivity_showAnnouncement)
+            try {
+                val res = repository.getAnnouncement()
+                _announcement.value = res
+                val lastShow = getLongByDataStore(KEY_SHOW_ANNOUNCEMENT, -1)
+                val now = Date().time
+                if (res.enable && ((lastShow == -1L) || (now - lastShow >= 24 * 60 * 60 * 1000))) {
+                    saveLongToDataStore(KEY_SHOW_ANNOUNCEMENT, now)
+                    sendEmptyMessage(MR.HomeActivity_showAnnouncement)
+                }
+            } catch (e: Exception) {
+
             }
+
         }
     }
 

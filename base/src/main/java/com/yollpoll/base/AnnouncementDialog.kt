@@ -25,11 +25,13 @@ class AnnouncementDialog(
 
     override fun onInit(dialog: AlertDialog, binding: DialogCommonBinding) {
         //文本修改为自定义编辑的模式
-        TransFormContent.trans(
-            Html.fromHtml(content),
-            binding.tvDialog,
-        ) { url ->
-            onUrlClick?.invoke(url)
+        if (content?.isNotEmpty() == true) {
+            TransFormContent.trans(
+                Html.fromHtml(content),
+                binding.tvDialog,
+            ) { url ->
+                onUrlClick?.invoke(url)
+            }
         }
     }
 
