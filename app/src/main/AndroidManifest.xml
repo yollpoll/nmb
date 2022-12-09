@@ -42,7 +42,24 @@
             android:parentActivityName=".view.activity.HomeActivity" />
         <activity android:name=".view.activity.ImageActivity" />
         <activity android:name=".view.activity.CookieActivity" />
-        <activity android:name=".view.activity.NewThreadActivity" />
+        <activity
+            android:name=".view.activity.NewThreadActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="image/*" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.SEND" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <data android:mimeType="text/plain" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="com.yollpoll.nmb.newThread" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
         <!--        <activity android:name="com.huawei.hms.hmsscankit.ScanKitActivity" />-->
         <provider
             android:name="androidx.core.content.FileProvider"

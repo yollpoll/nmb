@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
+import android.os.Parcelable
 import android.provider.MediaStore
 import android.view.KeyEvent
 import android.view.LayoutInflater
@@ -23,6 +24,7 @@ import androidx.core.util.Pair
 import androidx.databinding.Bindable
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.*
+import com.bumptech.glide.Glide
 import com.yollpoll.annotation.annotation.OnMessage
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.Extra
@@ -207,8 +209,34 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        initView()
-        initData()
+
+        when (intent?.action) {
+            Intent.ACTION_SEND -> {
+                if ("text/plain" == intent.type) {
+                    action = ACTION_NEW
+                    forumId = "4"
+                    initView()
+                    intent.getStringExtra(Intent.EXTRA_TEXT)?.let {
+                        // Update UI to reflect text being shared
+                        vm.threadContent = it
+                    }
+                } else if (intent.type?.startsWith("image/") == true) {
+                    action = ACTION_NEW
+                    forumId = "4"
+                    initView()
+                    (intent.getParcelableExtra<Parcelable>(Intent.EXTRA_STREAM) as? Uri)?.let {
+                        // Update UI to reflect image being shared
+                        vm.selectPhoto(it)
+                    }
+                }
+            }
+            else -> {
+                // Handle other intents, such as being started from the home screen
+                initView()
+                initData()
+            }
+        }
+
     }
 
     private fun initData() {
@@ -461,6 +489,20 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
         }
     }
 
+    fun showImage(view: View) {
+        lifecycleScope.launch {
+            vm.currentImgLD.value?.run {
+                saveBitmapToSd(
+                    this,
+                    "new_thread_temp_img.jpg",
+                    context.filesDir.absolutePath
+                )?.run {
+                    gotoImageActivityByFile(context, this)
+                }
+            }
+        }
+    }
+
 }
 
 @HiltViewModel
@@ -546,6 +588,8 @@ class NewThreadVm @Inject constructor(
             notifyPropertyChanged(BR.email)
         }
 
+    var imgPath: String = ""
+
     var action: String = ""
 
     var fid: String = ""
@@ -609,7 +653,6 @@ class NewThreadVm @Inject constructor(
      */
     fun selectPhoto(uri: Uri, width: Int = 1024, height: Int = 1024) {
         viewModelScope.launch(Dispatchers.IO) {
-            "img uri:${uri.path}".logI()
             val path = getPathByUri(uri, app)
             val bitmap = compressBitmap(path, width, height)
             selectImg(bitmap)
@@ -743,7 +786,11 @@ class NewThreadVm @Inject constructor(
         showLoading()
         val bitmap = currentImg.value
         val path = bitmap?.let {
-            return@let saveBitmapToSd(bitmap, "img.jpg", app.filesDir.absolutePath)
+            return@let saveBitmapToSd(
+                bitmap,
+                "${System.currentTimeMillis()}_draft.jpg",
+                app.filesDir.absolutePath
+            )
         }
         val draft = DraftBean(
             id = draftBean?.id,

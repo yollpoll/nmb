@@ -14,22 +14,29 @@
     </data>
 
     <RelativeLayout
-        android:background="?attr/colorPrimaryContainer"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/colorPrimaryContainer">
 
         <include
             android:id="@+id/layout_head"
-            bind:title="@{viewModel.title}"
+            layout="@layout/include_title"
             bind:subTitle="@{viewModel.subTitle}"
-            layout="@layout/include_title" />
+            bind:title="@{viewModel.title}" />
 
         <androidx.viewpager2.widget.ViewPager2
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/layout_head"
-            />
+            android:visibility="gone" />
+
+        <ImageView
+            android:id="@+id/iv_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/layout_head"
+            android:transitionName="img_content" />
 
     </RelativeLayout>
 </layout>

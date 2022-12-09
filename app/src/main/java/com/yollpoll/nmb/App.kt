@@ -1,21 +1,25 @@
 package com.yollpoll.nmb
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.provider.Settings
 import androidx.annotation.ChecksSdkIntAtLeast
+import androidx.core.content.pm.ShortcutInfoCompat
+import androidx.core.content.pm.ShortcutManagerCompat
+import androidx.core.graphics.drawable.IconCompat
 import androidx.datastore.core.DataStore
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.yollpoll.arch.message.MessageManager
 import com.yollpoll.base.NMBApplication
-import com.yollpoll.base.R
 import com.yollpoll.floweventbus.FlowEventBus
 import com.yollpoll.framework.extensions.getString
 import com.yollpoll.framework.extensions.putString
 import com.yollpoll.framework.extensions.saveBean
 import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.model.bean.CookieBean
+import com.yollpoll.nmb.net.NEW_THREAD
 import com.yollpoll.skin.SkinTheme
 import com.yollpoll.skin.skinTheme
 import dagger.hilt.android.HiltAndroidApp
@@ -49,8 +53,11 @@ class App : NMBApplication() {
             cookie = MainDB.getInstance().getCookieDao().queryUsed()
             androidId = Settings.System.getString(contentResolver, Settings.Secure.ANDROID_ID)
         }
+        initFastAction()
         //全局异常捕获
 //        Thread.setDefaultUncaughtExceptionHandler(crashHandler)
+
+
     }
 
 
@@ -61,6 +68,20 @@ class App : NMBApplication() {
             return false
         }
         return true
+    }
+
+    fun initFastAction() {
+        //动态方式添加一
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
+            val shortScan = ShortcutInfoCompat.Builder(this, "new_thread")//唯一标识id
+                .setShortLabel(getString(R.string.new_thread))//短标签
+                .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_launcher))//图标
+                //跳转的目标，定义Activity
+                .setIntent(Intent("com.yollpoll.nmb.newThread", null, this, NEW_THREAD::class.java))
+                .build()
+            //执行添加操作
+            ShortcutManagerCompat.addDynamicShortcuts(this, mutableListOf(shortScan))
+        }
     }
 
 

@@ -3,8 +3,10 @@ package com.yollpoll.nmb.view.activity
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.os.StrictMode
@@ -50,51 +52,57 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.io.Serializable
 import java.net.URLDecoder
 import java.net.URLEncoder
 import javax.inject.Inject
 
+const val ACTION_FROM_URL = "from_url"
+const val ACTION_FROM_PATH = "from_path"
+const val ACTION_FROM_BITMAP = "from_bitmap"
+suspend fun gotoImageActivityByUrl(context: Activity, url: String) {
+    val req = DispatchRequest.RequestBuilder().host("nmb").module("img").params(
+        hashMapOf(
+            "url" to URLEncoder.encode(url, "UTF-8"),
+            "action" to ACTION_FROM_URL
+        )
+    ).build()
+    DispatchClient.manager?.dispatch(context, req)
+}
+
+suspend fun gotoImageActivityByFile(context: Activity, path: String) {
+    val req = DispatchRequest.RequestBuilder().host("nmb").module("img").params(
+        hashMapOf(
+            "path" to path,
+            "action" to ACTION_FROM_PATH
+        )
+    ).build()
+    DispatchClient.manager?.dispatch(context, req)
+}
+
+fun gotoImageByBitmap(context: Context, bitmap: Bitmap) {
+    val intent = Intent(context, ImageActivity::class.java)
+    intent.putExtra("bitmap", bitmap)
+    intent.putExtra("action", ACTION_FROM_BITMAP)
+    context.startActivity(intent)
+}
+
 @AndroidEntryPoint
 @Route(url = ROUTE_IMAGE)
 class ImageActivity : NMBActivity<ActivityImageBinding, ImageVm>() {
-    companion object {
-        suspend fun gotoImageActivity(
-            context: Context,
-            cur: Int,
-            imgNames: List<String>,
-            urls: List<String>
-        ) {
-            val req = DispatchRequest.RequestBuilder().host("nmb").module("img").params(
-                hashMapOf(
-                    "names" to URLEncoder.encode(imgNames.toListJson(), "UTF-8"),
-                    "urls" to URLEncoder.encode(urls.toListJson(), "UTF-8"),
-                    "cur" to cur.toString()
-                )
-            ).build()
-            DispatchClient.manager?.dispatch(context, req)
-        }
-
-        suspend fun gotoImageActivity(context: Activity, cur: Int, articleId: String) {
-
-        }
-    }
-
     val vm: ImageVm by viewModels()
 
     @Extra
-    var urls: String = ""
+    var action: String = ACTION_FROM_URL
 
     @Extra
-    var cur: String = "0"//在数组中的位置
+    var url: String = ""
 
     @Extra
-    var names: String = ""
+    var path: String = ""
 
-    private val onPageChangeListener: OnPageChangeListener by lazy {
-        OnPageChangeListener {
-            vm.cur = it + 1
-        }
-    }
+    var bitmap: Bitmap? = null
+
 
     override fun getMenuLayout() = R.menu.menu_img
     override fun getLayoutId() = R.layout.activity_image
@@ -128,25 +136,33 @@ class ImageActivity : NMBActivity<ActivityImageBinding, ImageVm>() {
             }
         }
         return super.onOptionsItemSelected(item)
-
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mDataBinding.viewpager.unregisterOnPageChangeCallback(onPageChangeListener)
     }
 
     private fun initData() {
-        vm.initData(urls, names, cur.toInt() + 1)
-        val adapter = ImagePagerAdapter(this,vm.imageList, )
-        mDataBinding.viewpager.adapter = adapter
-        mDataBinding.viewpager.setCurrentItem(cur.toInt(), false)
-        mDataBinding.viewpager.registerOnPageChangeCallback(onPageChangeListener)
+        when (action) {
+            ACTION_FROM_URL -> {
+                Glide.with(context).load(url).into(mDataBinding.ivContent)
+                vm.initData(url, path, action, bitmap)
+            }
+            ACTION_FROM_PATH -> {
+                Glide.with(context).load(File(path)).into(mDataBinding.ivContent)
+                vm.initData(url, path, action, bitmap)
+            }
+            ACTION_FROM_BITMAP -> {
+                bitmap = intent.getParcelableExtra<Bitmap>("bitmap")
+                bitmap?.run {
+                    Glide.with(context).load(this).into(mDataBinding.ivContent)
+                }
+                vm.initData(url, path, action, bitmap)
+            }
+        }
     }
 
     private fun initView() {
-//        mDataBinding.viewpager.requestDisallowInterceptTouchEvent(true)
-//        mDataBinding.viewpager.setPageTransformer(ZoomOutPageTransformer())
         initTitle(mDataBinding.layoutHead.toolbar, showBackBtn = true) {
             this.finish()
         }
@@ -158,55 +174,52 @@ class ImageActivity : NMBActivity<ActivityImageBinding, ImageVm>() {
 @HiltViewModel
 class ImageVm @Inject constructor(val app: Application) : FastViewModel(app) {
     @Bindable
-    val title = "图片浏览"
+    val title = "大图"
 
     @Bindable
-    var subTitle = "1/1"
-        get() {
-            return cur.toString() + "/" + imageList.size
-        }
+    var subTitle = ""
 
-    @Bindable
-    var cur: Int = 1
-        //显示用的序号
-        set(value) {
-            field = value
-            notifyChange()
-        }
-    val imageList = arrayListOf<String>()
-    private val nameList = arrayListOf<String>()
-    private val localUri = hashMapOf<String, String>()//本地的保存路径
-    fun initData(json: String, names: String, cur: Int) {
-        if (json.isEmpty()) return
-        this.cur = cur
-        URLDecoder.decode(json, "UTF-8").toListBean<String>()?.let {
-            imageList.addAll(it)
-        }
-        URLDecoder.decode(names, "UTF-8").toListBean<String>()?.let {
-            nameList.addAll(it)
-        }
+    var url: String?=null
+
+    var action: String? = null
+
+    var path: String? = null
+
+    var bitmap: Bitmap? = null
+
+    fun initData(
+        url: String? = null,
+        path: String? = null,
+        action: String? = null,
+        bitmap: Bitmap? = null
+    ) {
+        this.url = url
+        this.path = path
+        this.action = action
+        this.bitmap = bitmap
     }
 
-    suspend fun downloadImg(): String = withContext(Dispatchers.IO) {
-        val path = saveImageToMediaStore(
-            getImgUrl(imageList[cur - 1]),
-            nameList[cur - 1],
-            app
-        )
-        localUri[getImgUrl(imageList[cur - 1])] = path
-        return@withContext path
+    suspend fun downloadImg() = withContext(Dispatchers.IO) {
+        when (action) {
+            ACTION_FROM_URL -> {
+                this@ImageVm.path = saveImageToMediaStore(
+                    getImgUrl(url!!),
+                    "$url.jpg",
+                    app
+                )
+            }
+        }
     }
 
 
     fun share(context: Activity) {
         viewModelScope.launch(Dispatchers.IO) {
-            localUri[getImgUrl(imageList[cur - 1])]?.let {
+            path?.let {
                 //这张图片已经保存在本地了
                 share("匿名版", it, context)
             } ?: run {
-                val path = downloadImg()
-                localUri[getImgUrl(imageList[cur - 1])] = path
-                share("匿名版", path, context)
+                downloadImg()
+                share("匿名版", this@ImageVm.path!!, context)
             }
         }
     }
@@ -235,7 +248,7 @@ class ImageFragment : FastFragment<FragmentImageBinding, ImageFragmentVM>() {
             .into(object : SimpleTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     mDataBinding.ivContent.setImageBitmap(resource)
-                    mDataBinding.progressBar.visibility=View.GONE
+                    mDataBinding.progressBar.visibility = View.GONE
                 }
 
             })

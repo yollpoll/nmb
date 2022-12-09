@@ -133,9 +133,9 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         initView()
         initData()
         //启动更新服务
-        lifecycleScope.launch(Dispatchers.IO){
+        lifecycleScope.launch(Dispatchers.IO) {
             val intent = Intent(context, ThreadReplyService::class.java)
-            bindService(intent,object :ServiceConnection{
+            bindService(intent, object : ServiceConnection {
                 override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
                 }
 
@@ -328,7 +328,8 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
 
     fun showCover() {
         lifecycleScope.launch {
-            ImageActivity.gotoImageActivity(context, 0, arrayListOf("封面"), arrayListOf(realCover))
+            gotoImageActivityByUrl(context, realCover)
+//            ImageActivity.gotoImageActivity(context, 0, arrayListOf("封面"), arrayListOf(realCover))
         }
     }
 

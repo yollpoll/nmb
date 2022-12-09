@@ -151,6 +151,7 @@
                     android:id="@+id/iv_selected"
                     android:layout_width="100dp"
                     android:layout_height="100dp"
+                    android:onClick="showImage"
                     android:scaleType="centerCrop" />
 
                 <CheckBox
@@ -239,7 +240,7 @@
                 android:onClick="@{()->view.chooseEmoji()}"
                 android:padding="5dp"
                 android:src="@mipmap/ic_emoji"
-                android:tint="?attr/colorOnPrimary" />
+                app:tint="?attr/colorOnPrimary" />
 
             <ImageView
                 android:id="@+id/img_pic"
@@ -252,7 +253,7 @@
                 android:onClick="@{()->view.choosePic()}"
                 android:padding="5dp"
                 android:src="@mipmap/ic_pic"
-                android:tint="?attr/colorOnPrimary" />
+                app:tint="?attr/colorOnPrimary" />
 
             <ImageView
                 android:id="@+id/img_draw"
@@ -265,7 +266,7 @@
                 android:onClick="@{()->view.gotoDraw()}"
                 android:padding="5dp"
                 android:src="@mipmap/ic_drawer"
-                android:tint="?attr/colorOnPrimary" />
+                app:tint="?attr/colorOnPrimary" />
 
             <TextView
                 android:id="@+id/tv_cookie"
@@ -289,7 +290,7 @@
                 android:onClick="@{()->viewModel.submit()}"
                 android:padding="5dp"
                 android:src="@mipmap/ic_send"
-                android:tint="?attr/colorOnPrimary" />
+                app:tint="?attr/colorOnPrimary" />
         </RelativeLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
