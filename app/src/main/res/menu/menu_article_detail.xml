@@ -11,14 +11,17 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/action_collect"
-        android:title="@string/collect"
-        />
+        android:title="@string/collect" />
     <item
         android:id="@+id/action_report"
-        android:title="@string/report"
-        />
+        android:title="@string/report" />
     <item
         android:id="@+id/action_clear_cookie"
-        android:title="@string/clear_cookie_mark"
-        />
+        android:title="@string/clear_cookie_mark" />
+    <item
+        android:checked="false"
+        android:checkable="true"
+        android:id="@+id/action_only_po"
+        android:title="@string/only_po" />
+
 </menu>

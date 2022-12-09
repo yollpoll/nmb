@@ -151,6 +151,12 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
             R.id.action_clear_cookie -> {
                 vm.clearCookieMark(context.getAttrColor(R.attr.colorOnSecondaryContainer))
             }
+            R.id.action_only_po -> {
+                val checked = item.isChecked
+                item.isChecked = !checked
+                vm.onlyPo = !checked
+                mAdapter.refresh()
+            }
             else -> {
 
             }
@@ -283,6 +289,9 @@ class ThreadDetailVM @Inject constructor(
     //饼干标记
     val tagMap = hashMapOf<String, Int>()
 
+    //只看po
+    var onlyPo = false
+
     //初始化数据
     fun init(id: String, refreshPage: Int, curPage: Int, myDefaultCookieColor: Int) {
         this.id = id
@@ -357,6 +366,11 @@ class ThreadDetailVM @Inject constructor(
                     }
                     return data.filter {
                         return@filter it.id != "9999999"
+                    }.filter {
+                        if (onlyPo) {
+                            return@filter it.user_hash == head.user_hash
+                        }
+                        true
                     }.map { reply ->
                         changeCookieRandom(reply)
                         if (reply.user_hash == head.user_hash) {

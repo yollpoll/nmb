@@ -84,4 +84,5 @@
     <string name="show">显示</string>
     <string name="draft_box">草稿箱</string>
     <string name="draft_box_detail">查看保存的草稿</string>
+    <string name="only_po">只看po</string>
 </resources>

@@ -3,8 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable-night/ic_checked.xml" value="0.193" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.223" />
         <entry key="app/src/main/res/drawable-v24/shape_new_thread_tag.xml" value="0.23" />
+        <entry key="app/src/main/res/drawable/ic_checked.xml" value="0.216" />
+        <entry key="app/src/main/res/drawable/ic_checked_black.xml" value="0.216" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.223" />
         <entry key="app/src/main/res/drawable/ripple_item.xml" value="0.1685" />
         <entry key="app/src/main/res/drawable/shape_cookie_color.xml" value="0.219" />
