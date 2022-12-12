@@ -20,6 +20,7 @@ import com.yollpoll.framework.extensions.saveBean
 import com.yollpoll.nmb.db.MainDB
 import com.yollpoll.nmb.model.bean.CookieBean
 import com.yollpoll.nmb.net.NEW_THREAD
+import com.yollpoll.nmb.view.activity.NewThreadActivity
 import com.yollpoll.skin.SkinTheme
 import com.yollpoll.skin.skinTheme
 import dagger.hilt.android.HiltAndroidApp
@@ -70,14 +71,21 @@ class App : NMBApplication() {
         return true
     }
 
-    fun initFastAction() {
+    private fun initFastAction() {
         //动态方式添加一
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1) {
             val shortScan = ShortcutInfoCompat.Builder(this, "new_thread")//唯一标识id
                 .setShortLabel(getString(R.string.new_thread))//短标签
                 .setIcon(IconCompat.createWithResource(this, R.mipmap.ic_launcher))//图标
                 //跳转的目标，定义Activity
-                .setIntent(Intent("com.yollpoll.nmb.newThread", null, this, NEW_THREAD::class.java))
+                .setIntent(
+                    Intent(
+                        "com.yollpoll.nmb.newThread",
+                        null,
+                        this,
+                        NewThreadActivity::class.java
+                    )
+                )
                 .build()
             //执行添加操作
             ShortcutManagerCompat.addDynamicShortcuts(this, mutableListOf(shortScan))

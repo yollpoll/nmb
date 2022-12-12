@@ -547,7 +547,7 @@ class NewThreadVm @Inject constructor(
         }
 
     @Bindable
-    var title: String = ""
+    var title: String = "新串"
         set(value) {
             field = value
             notifyPropertyChanged(BR.title)

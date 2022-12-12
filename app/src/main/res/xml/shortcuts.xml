@@ -1,15 +1,19 @@
-<?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
-
     <shortcut
+        android:shortcutId="compose"
         android:enabled="true"
         android:icon="@mipmap/ic_launcher"
-        android:shortcutId="new_thread"
-        android:shortcutShortLabel="@string/new_thread">
+        android:shortcutShortLabel="@string/new_thread"
+        android:shortcutLongLabel="@string/new_thread"
+        >
         <intent
-            android:action="android.intent.action.VIEW"
-            android:targetClass="com.yollpoll.nmb.view.activity.NewThreadActivity"
-            android:targetPackage="com.yollpoll.nmb.view.activity" />
+            android:action="android.intent.action.SEND"
+            android:targetPackage="com.yollpoll.nmb"
+            android:targetClass="com.yollpoll.nmb.view.activity.NewThreadActivityKt" />
+        <!-- If your shortcut is associated with multiple intents, include them
+             here. The last intent in the list determines what the user sees when
+             they launch this shortcut. -->
+        <categories android:name="android.intent.category.DEFAULT" />
     </shortcut>
-
+    <!-- Specify more shortcuts here. -->
 </shortcuts>

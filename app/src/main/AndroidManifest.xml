@@ -36,6 +36,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+<!--            <meta-data android:name="android.app.shortcuts"-->
+<!--                android:resource="@xml/shortcuts" />-->
         </activity>
         <activity
             android:name=".view.activity.ThreadDetailActivity"
@@ -54,10 +56,6 @@
                 <action android:name="android.intent.action.SEND" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="text/plain" />
-            </intent-filter>
-            <intent-filter>
-                <action android:name="com.yollpoll.nmb.newThread" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <!--        <activity android:name="com.huawei.hms.hmsscankit.ScanKitActivity" />-->
@@ -85,8 +83,17 @@
         <activity android:name=".view.activity.ShieldActivity" />
         <activity android:name=".view.activity.ForumSettingActivity" />
         <activity android:name=".view.activity.DraftActivity" />
-
         <service android:name=".service.ThreadReplyService" />
+        <receiver
+            android:name=".view.widgets.ThreadWidget"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
+            </intent-filter>
+            <meta-data
+                android:name="android.appwidget.provider"
+                android:resource="@xml/app_widgets_thread" />
+        </receiver>
     </application>
 
 </manifest>
