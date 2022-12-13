@@ -1,6 +1,7 @@
 package com.yollpoll.utils
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.content.*
 import android.database.Cursor
 import android.net.Uri
@@ -293,4 +294,28 @@ fun View.setViewMargin(
     marginParams.setMargins(leftMargin, topMargin, rightMargin, bottomMargin)
     this.layoutParams = marginParams
     return marginParams
+}
+/**
+ *
+ * @param mContext
+ * @param serviceName
+ * 是包名+服务的类名（例如：com.example.testbackstage.TestService）
+ * @return true代表正在运行，false代表服务没有正在运行
+ */
+fun isServiceWork(mContext: Context, serviceName: String): Boolean {
+    var isWork = false
+    val myAM = mContext
+        .getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+    val myList: List<ActivityManager.RunningServiceInfo> = myAM.getRunningServices(40)
+    if (myList.size <= 0) {
+        return false
+    }
+    for (i in myList.indices) {
+        val mName: String = myList[i].service.getClassName().toString()
+        if (mName == serviceName) {
+            isWork = true
+            break
+        }
+    }
+    return isWork
 }

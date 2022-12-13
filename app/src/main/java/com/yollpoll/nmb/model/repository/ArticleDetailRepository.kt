@@ -212,7 +212,13 @@ class ArticleDetailRepository @Inject constructor(@CommonRetrofitFactory val ret
                 MainDB.getInstance().getArticleDao().insertAll(data)
             }
         }
+    }
 
+    //加载最后一页数据
+    suspend fun loadLastPage(id: String) {
+        val article = MainDB.getInstance().getArticleDao().getArticle(id)
+        val allPage = 1 + ((article?.page ?: 0) / PAGE_SIZE)
+        service.getArticleDetail(id, allPage)
     }
 
 }

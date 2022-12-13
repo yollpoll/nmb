@@ -64,7 +64,7 @@ class MySpeechActivity : NMBActivity<ActivityMySpeechBinding, MySpeechVm>() {
             }
             binding.llRoot.setOnClickListener {
                 lifecycleScope.launch {
-                    if (item?.resto == null) {
+                    if (item?.resto == null || item.resto == 0) {
                         ThreadDetailActivity.gotoThreadDetailActivity(item?.id.toString(), context)
                     } else {
                         ThreadDetailActivity.gotoThreadDetailActivity(

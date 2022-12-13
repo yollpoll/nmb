@@ -25,3 +25,7 @@ annotation class HomeRepositoryAnnotation
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class ArticleDetailAnnotation
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class AppWidgetRepository

@@ -240,7 +240,7 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
 
     override fun onDestroy() {
         super.onDestroy()
-        vm.savePageIndex(mManager.findFirstCompletelyVisibleItemPosition())
+        vm.savePageIndex(mManager.findLastCompletelyVisibleItemPosition())
     }
 
     override fun onStop() {
@@ -538,6 +538,9 @@ class ThreadDetailVM @Inject constructor(
 
     //记载数据到本地数据库
     fun loadDataToCache() {
+        if (id == "0") {
+            return
+        }
         viewModelScope.launch {
             FlowEventBus.post(ACTION_UPDATE_THREAD_DETAIL, id)
         }
@@ -545,6 +548,9 @@ class ThreadDetailVM @Inject constructor(
 
     //取消加载
     fun cancelLoadData() {
+        if (id == "0") {
+            return
+        }
         viewModelScope.launch {
             "ThreadReply cancel: $id".logI()
             FlowEventBus.post(ACTION_UPDATE_THREAD_DETAIL_CANCEL, id)
