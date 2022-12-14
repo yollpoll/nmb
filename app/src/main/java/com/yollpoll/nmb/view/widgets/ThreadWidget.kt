@@ -123,7 +123,7 @@ fun updateAppWidget(context: Context, articleItem: ArticleItem) {
     } else {
         remoteViews.setTextColor(
             R.id.tv_user,
-            context.getAttrColor(R.attr.colorOnSecondaryContainer)
+            context.resources.getColor(R.color.md_theme_light_secondary)
         )
     }
     val htmlContent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {

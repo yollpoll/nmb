@@ -30,11 +30,11 @@ class UpdateAppWidgetWork @AssistedInject constructor(
         //更新串
         val list = homeRepository.getTimeLine(1, 1)
         if (list.size == 0) return@withContext Result.success()
-        val interval = list.size / INTERVAL_TIME
+        val interval = INTERVAL_TIME / list.size
         for (i in 0 until list.size) {
             updateAppWidget(applicationContext, list[i])
-            delay((interval * 60_000).toLong())
-//            delay(5_000)
+//            delay((interval * 60_000).toLong())
+            delay(60_000)
         }
         return@withContext Result.success()
     }
