@@ -4,5 +4,6 @@
     android:minHeight="60dp"
     android:previewImage="@mipmap/app_widget_pic"
     android:resizeMode="horizontal|vertical"
-    android:updatePeriodMillis="1800000"
-    android:widgetCategory="home_screen"/>
+    android:shortcutShortLabel="@string/time_line"
+    android:updatePeriodMillis="86400000"
+    android:widgetCategory="home_screen" />

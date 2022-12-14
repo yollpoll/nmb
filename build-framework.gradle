@@ -56,4 +56,10 @@ dependencies{
     implementation 'com.oguzdev:CircularFloatingActionMenu:1.0.2'
     implementation 'com.getbase:floatingactionbutton:1.10.1'
 //    implementation 'com.tiancaicc.springfloatingactionmenu:library:0.0.2'
+//    implementation 'com.tiancaicc.springfloatingactionmenu:library:0.0.2'
+    implementation myDependencies.work_manager
+    //hilt-workManage扩展
+    implementation 'androidx.hilt:hilt-work:1.0.0'
+    // When using Kotlin.
+    kapt 'androidx.hilt:hilt-compiler:1.0.0'
 }

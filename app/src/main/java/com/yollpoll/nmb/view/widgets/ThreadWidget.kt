@@ -25,11 +25,14 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.SimpleTarget
 import com.bumptech.glide.request.transition.Transition
 import com.yollpoll.arch.util.AppUtils
+import com.yollpoll.base.getAttrColor
 import com.yollpoll.base.logI
 import com.yollpoll.framework.extensions.dp2px
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.model.bean.ArticleItem
 import com.yollpoll.nmb.net.imgThumbUrl
+import com.yollpoll.nmb.schedule.startWork
+import com.yollpoll.nmb.schedule.stopWork
 import com.yollpoll.nmb.service.UpdateThreadWidgetService
 import com.yollpoll.nmb.view.activity.ThreadDetailActivity
 import com.yollpoll.utils.centerCrop
@@ -50,13 +53,14 @@ class ThreadWidget : AppWidgetProvider() {
         context: Context?, appWidgetManager: AppWidgetManager?, appWidgetIds: IntArray?
     ) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
-        if (context == null) return
-        "on widget update".logI()
-        //服务没有启动
-        if (serviceIntent == null) {
-            serviceIntent = Intent(context, UpdateThreadWidgetService::class.java)
-        }
-        context.startService(serviceIntent)
+//        if (context == null) return
+//        "on widget update".logI()
+//        //服务没有启动
+//        if (serviceIntent == null) {
+//            serviceIntent = Intent(context, UpdateThreadWidgetService::class.java)
+//        }
+//        context.startService(serviceIntent)
+        startWork()
     }
 
     //广播
@@ -69,6 +73,7 @@ class ThreadWidget : AppWidgetProvider() {
         serviceIntent?.let {
             context?.stopService(it)
         }
+        stopWork()
     }
 
     override fun onEnabled(context: Context?) {
@@ -115,6 +120,11 @@ fun updateAppWidget(context: Context, articleItem: ArticleItem) {
 
     if (articleItem.admin == "1") {
         remoteViews.setTextColor(R.id.tv_user, context.resources.getColor(R.color.color_red))
+    } else {
+        remoteViews.setTextColor(
+            R.id.tv_user,
+            context.getAttrColor(R.attr.colorOnSecondaryContainer)
+        )
     }
     val htmlContent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
         Html.fromHtml(articleItem.content, HtmlCompat.FROM_HTML_MODE_COMPACT, {

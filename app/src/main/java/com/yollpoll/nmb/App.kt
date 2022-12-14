@@ -9,6 +9,8 @@ import androidx.core.content.pm.ShortcutInfoCompat
 import androidx.core.content.pm.ShortcutManagerCompat
 import androidx.core.graphics.drawable.IconCompat
 import androidx.datastore.core.DataStore
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import com.google.android.material.color.DynamicColors
 import com.google.android.material.color.DynamicColorsOptions
 import com.yollpoll.arch.message.MessageManager
@@ -28,7 +30,7 @@ import kotlinx.coroutines.*
 import javax.inject.Inject
 
 @HiltAndroidApp
-class App : NMBApplication() {
+class App : NMBApplication(), Configuration.Provider {
     companion object {
         lateinit var INSTANCE: App
     }
@@ -80,17 +82,18 @@ class App : NMBApplication() {
                 //跳转的目标，定义Activity
                 .setIntent(
                     Intent(
-                        "com.yollpoll.nmb.newThread",
-                        null,
-                        this,
-                        NewThreadActivity::class.java
+                        "com.yollpoll.nmb.newThread", null, this, NewThreadActivity::class.java
                     )
-                )
-                .build()
+                ).build()
             //执行添加操作
             ShortcutManagerCompat.addDynamicShortcuts(this, mutableListOf(shortScan))
         }
     }
+
+    @Inject
+    lateinit var workerFactory: HiltWorkerFactory
+    override fun getWorkManagerConfiguration(): Configuration =
+        Configuration.Builder().setWorkerFactory(workerFactory).build()
 
 
 //    var appSkinTheme: SkinTheme = SkinTheme.NULL

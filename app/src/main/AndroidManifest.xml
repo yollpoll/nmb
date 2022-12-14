@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.yollpoll.nmb">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -36,8 +37,8 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-<!--            <meta-data android:name="android.app.shortcuts"-->
-<!--                android:resource="@xml/shortcuts" />-->
+            <!--            <meta-data android:name="android.app.shortcuts"-->
+            <!--                android:resource="@xml/shortcuts" />-->
         </activity>
         <activity
             android:name=".view.activity.ThreadDetailActivity"
@@ -83,6 +84,7 @@
         <activity android:name=".view.activity.ShieldActivity" />
         <activity android:name=".view.activity.ForumSettingActivity" />
         <activity android:name=".view.activity.DraftActivity" />
+
         <service android:name=".service.ThreadReplyService" />
         <receiver
             android:name=".view.widgets.ThreadWidget"
@@ -94,7 +96,18 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/app_widgets_thread" />
         </receiver>
-        <service android:name=".service.UpdateThreadWidgetService"/>
+        <service android:name=".service.UpdateThreadWidgetService" />
+        <provider
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <!-- If you are using androidx.startup to initialize other components -->
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
     </application>
 
 </manifest>
