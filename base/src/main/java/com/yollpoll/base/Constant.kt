@@ -29,5 +29,6 @@ const val AUTHOR = "yollpoll"
 const val GIT = "https://github.com/yollpoll/nmb"
 const val EMAIL = "iamspq@gmail.com"
 const val FIR = "http://d.firim.pro/newnmb"//fir仓库
+const val OFFICIAL_WEB="https://www.nmbxd1.com/Member/User/Index/login.html"//官网
 
 

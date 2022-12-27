@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide
 import com.yollpoll.annotation.annotation.OnMessage
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.base.*
+import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.extensions.*
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.framework.paging.BasePagingSource
@@ -35,6 +36,7 @@ import com.yollpoll.nmb.model.bean.*
 import com.yollpoll.nmb.model.repository.ForumRepository
 import com.yollpoll.nmb.model.repository.HomeRepository
 import com.yollpoll.nmb.net.realCover
+import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_HOME
 import com.yollpoll.nmb.service.ThreadReplyService
 import com.yollpoll.nmb.view.widgets.*
@@ -42,6 +44,7 @@ import com.yollpoll.utils.copyStr
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.util.*
@@ -339,6 +342,18 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
         }
     }
 
+    fun gotoDonate(){
+        lifecycleScope.launch {
+            gotoImageByResource(context,R.mipmap.ic_donate)
+        }
+    }
+
+    fun gotoOfficial(){
+        lifecycleScope.launch {
+            DispatchClient.manager?.dispatch(context,DispatchRequest.UrlBuilder(OFFICIAL_WEB).build())
+        }
+    }
+
     //封面图片刷新
     @OnMessage
     fun onRefreshCover() {
@@ -399,6 +414,21 @@ class HomeActivity : NMBActivity<ActivityHomeBinding, HomeVm>() {
             return true
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    var onBackPress=false
+
+    override fun onBackPressed() {
+        if(onBackPress){
+            super.onBackPressed()
+        }else{
+            "再按一次返回桌面".shortToast()
+            onBackPress=true
+            lifecycleScope.launch {
+                delay(3000)
+                onBackPress=false
+            }
+        }
     }
 
 }

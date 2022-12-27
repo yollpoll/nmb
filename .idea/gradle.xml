@@ -14,6 +14,7 @@
             <option value="$PROJECT_DIR$/base" />
             <option value="$PROJECT_DIR$/business" />
             <option value="$PROJECT_DIR$/ilog" />
+            <option value="$PROJECT_DIR$/iqr" />
             <option value="$PROJECT_DIR$/log" />
             <option value="$PROJECT_DIR$/qrlib" />
           </set>

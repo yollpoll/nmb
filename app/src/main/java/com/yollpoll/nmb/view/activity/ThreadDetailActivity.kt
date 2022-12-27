@@ -70,8 +70,7 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
 
     companion object {
         suspend fun gotoThreadDetailActivity(
-            id: String,
-            context: Context
+            id: String, context: Context
         ) {
             val req = DispatchRequest.RequestBuilder().host("nmb").module("thread_detail").params(
                 hashMapOf("id" to id)
@@ -89,8 +88,7 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
         val action = article.tagColor?.let {
             MenuAction.MENU_ACTION_REPLY_CANCEL_MARK
         } ?: MenuAction.MENU_ACTION_REPLY
-        ThreadMenuDialog(action, context, reply =
-        {
+        ThreadMenuDialog(action, context, reply = {
             lifecycleScope.launchWhenResumed {
                 gotoLinkActivity(context, vm.id, arrayListOf(article.id))
             }
@@ -109,15 +107,14 @@ class ThreadDetailActivity : NMBActivity<ActivityThreadDetailBinding, ThreadDeta
         }, copyNo = {
             copyStr(context, article.id)
             "${article.id} 复制到剪切板".shortToast()
-        },
-            copy = {
-                copyStr(context, article.content)
-                "复制到剪切板".shortToast()
-            }, report = {
-                lifecycleScope.launchWhenResumed {
-                    gotoReportActivity(context, arrayListOf(article.id))
-                }
-            }).show()
+        }, copy = {
+            copyStr(context, article.content)
+            "复制到剪切板".shortToast()
+        }, report = {
+            lifecycleScope.launchWhenResumed {
+                gotoReportActivity(context, arrayListOf(article.id))
+            }
+        }).show()
         true
     }, onUrlClick = {
         vm.onUrlClick(it)
@@ -309,8 +306,7 @@ class ThreadDetailVM @Inject constructor(
             //图片列表
             imgList = repository.getImagesList(id)
             //配置我的饼干的颜色
-            val myCookieColor =
-                getInt(KEY_COOKIE_COLOR, myDefaultCookieColor)
+            val myCookieColor = getInt(KEY_COOKIE_COLOR, myDefaultCookieColor)
             cookieRepository.queryCookies().forEach {
                 tagMap[it.name] = myCookieColor
             }
@@ -371,7 +367,8 @@ class ThreadDetailVM @Inject constructor(
                             return@filter it.user_hash == head.user_hash
                         }
                         true
-                    }.map { reply ->
+                    }.mapIndexed { index, reply ->
+                        reply.index =index + (pos - 1) * PAGE_SIZE
                         changeCookieRandom(reply)
                         if (reply.user_hash == head.user_hash) {
                             reply.master = "1"
@@ -383,7 +380,6 @@ class ThreadDetailVM @Inject constructor(
                         cache[reply.id] = reply
                         reply
                     }
-                    return emptyList<ArticleItem>()
                 }
             }
         }.flow.cachedIn(viewModelScope)

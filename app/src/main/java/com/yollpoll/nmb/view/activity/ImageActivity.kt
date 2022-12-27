@@ -5,6 +5,7 @@ import android.app.Application
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
@@ -35,6 +36,7 @@ import com.yollpoll.framework.extensions.toListBean
 import com.yollpoll.framework.extensions.toListJson
 import com.yollpoll.framework.fast.FastFragment
 import com.yollpoll.framework.fast.FastViewModel
+import com.yollpoll.nmb.Iqr
 import com.yollpoll.nmb.R
 import com.yollpoll.nmb.adapter.ImagePagerAdapter
 import com.yollpoll.nmb.databinding.ActivityImageBinding
@@ -42,10 +44,7 @@ import com.yollpoll.nmb.databinding.FragmentImageBinding
 import com.yollpoll.nmb.net.imgUrl
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_IMAGE
-import com.yollpoll.utils.ImageDownloader
-import com.yollpoll.utils.getCurrentDate
-import com.yollpoll.utils.saveImageToMediaStore
-import com.yollpoll.utils.share
+import com.yollpoll.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -59,32 +58,33 @@ import javax.inject.Inject
 
 const val ACTION_FROM_URL = "from_url"
 const val ACTION_FROM_PATH = "from_path"
-const val ACTION_FROM_BITMAP = "from_bitmap"
+const val ACTION_FROM_RESOURCE = "from_resource"
 suspend fun gotoImageActivityByUrl(context: Activity, url: String) {
     val req = DispatchRequest.RequestBuilder().host("nmb").module("img").params(
         hashMapOf(
-            "url" to URLEncoder.encode(url, "UTF-8"),
-            "action" to ACTION_FROM_URL
+            "url" to URLEncoder.encode(url, "UTF-8"), "action" to ACTION_FROM_URL
         )
     ).build()
-    DispatchClient.manager?.dispatch(context, req)
+    DispatchClient.manager.dispatch(context, req)
 }
 
 suspend fun gotoImageActivityByFile(context: Activity, path: String) {
     val req = DispatchRequest.RequestBuilder().host("nmb").module("img").params(
         hashMapOf(
-            "path" to path,
-            "action" to ACTION_FROM_PATH
+            "path" to path, "action" to ACTION_FROM_PATH
         )
     ).build()
-    DispatchClient.manager?.dispatch(context, req)
+    DispatchClient.manager.dispatch(context, req)
 }
 
-fun gotoImageByBitmap(context: Context, bitmap: Bitmap) {
-    val intent = Intent(context, ImageActivity::class.java)
-    intent.putExtra("bitmap", bitmap)
-    intent.putExtra("action", ACTION_FROM_BITMAP)
-    context.startActivity(intent)
+suspend fun gotoImageByResource(context: Context, resourceId: Int) {
+    val req = DispatchRequest.RequestBuilder().host("nmb").module("img").params(
+        hashMapOf(
+            "action" to ACTION_FROM_RESOURCE, "resourceId" to resourceId.toString()
+        )
+    ).build()
+    DispatchClient.manager.dispatch(context, req)
+
 }
 
 @AndroidEntryPoint
@@ -101,7 +101,8 @@ class ImageActivity : NMBActivity<ActivityImageBinding, ImageVm>() {
     @Extra
     var path: String = ""
 
-    var bitmap: Bitmap? = null
+    @Extra
+    var resourceId: String = "0"
 
 
     override fun getMenuLayout() = R.menu.menu_img
@@ -122,7 +123,18 @@ class ImageActivity : NMBActivity<ActivityImageBinding, ImageVm>() {
                 //下载图片
                 lifecycleScope.launch {
                     try {
-                        vm.downloadImg()
+                        if (action == ACTION_FROM_RESOURCE) {
+                            if (resourceId == "0")
+                                return@launch
+                            val bitmap =
+                                BitmapFactory.decodeResource(context.resources, resourceId.toInt())
+                            saveBitmapToSd(
+                                bitmap, "donate.png", context.filesDir.absolutePath
+                            )
+                            bitmap.recycle()
+                        } else {
+                            vm.downloadImg()
+                        }
                         "保存成功".shortToast()
                     } catch (e: Exception) {
                         "保存失败".shortToast()
@@ -146,18 +158,18 @@ class ImageActivity : NMBActivity<ActivityImageBinding, ImageVm>() {
         when (action) {
             ACTION_FROM_URL -> {
                 Glide.with(context).load(url).into(mDataBinding.ivContent)
-                vm.initData(url, path, action, bitmap)
+                vm.initData(url, path, action)
             }
             ACTION_FROM_PATH -> {
                 Glide.with(context).load(File(path)).into(mDataBinding.ivContent)
-                vm.initData(url, path, action, bitmap)
+                vm.initData(url, path, action)
             }
-            ACTION_FROM_BITMAP -> {
-                bitmap = intent.getParcelableExtra<Bitmap>("bitmap")
-                bitmap?.run {
-                    Glide.with(context).load(this).into(mDataBinding.ivContent)
+            ACTION_FROM_RESOURCE -> {
+                if (resourceId != "0") {
+//                    mDataBinding.ivContent.setImageResource(resourceId.toInt())
+                    mDataBinding.ivContent.setImageResource(R.mipmap.ic_donate)
                 }
-                vm.initData(url, path, action, bitmap)
+                vm.initData(url, path, action)
             }
         }
     }
@@ -168,44 +180,39 @@ class ImageActivity : NMBActivity<ActivityImageBinding, ImageVm>() {
         }
     }
 
-
 }
 
 @HiltViewModel
 class ImageVm @Inject constructor(val app: Application) : FastViewModel(app) {
+
     @Bindable
     val title = "大图"
 
     @Bindable
     var subTitle = ""
 
-    var url: String?=null
+    var url: String? = null
 
     var action: String? = null
 
     var path: String? = null
 
-    var bitmap: Bitmap? = null
 
     fun initData(
         url: String? = null,
         path: String? = null,
         action: String? = null,
-        bitmap: Bitmap? = null
     ) {
         this.url = url
         this.path = path
         this.action = action
-        this.bitmap = bitmap
     }
 
     suspend fun downloadImg() = withContext(Dispatchers.IO) {
         when (action) {
             ACTION_FROM_URL -> {
                 this@ImageVm.path = saveImageToMediaStore(
-                    getImgUrl(url!!),
-                    "$url.jpg",
-                    app
+                    getImgUrl(url!!), "$url.jpg", app
                 )
             }
         }
@@ -222,6 +229,10 @@ class ImageVm @Inject constructor(val app: Application) : FastViewModel(app) {
                 share("匿名版", this@ImageVm.path!!, context)
             }
         }
+    }
+
+    fun doQr(){
+//        qr.analysisQr()
     }
 
 }

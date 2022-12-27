@@ -141,7 +141,7 @@ class QRCodeActivity : NMBActivity<ActivityQrCodeBinding, QrVm>() {
                 "获取图片失败".shortToast()
                 return@registerForActivityResult
             }
-            analysisQr(uri, context, onResult = { list ->
+            QrUtils().analysisQr(uri, context, onResult = { list ->
                 val sb = StringBuilder()
                 list.forEach {
                     sb.append(it)

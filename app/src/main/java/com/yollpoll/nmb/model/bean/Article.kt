@@ -15,12 +15,9 @@ data class ArticleItem(
     var admin: String,
     var content: String,
     var email: String?,
-    @ColumnInfo(name = "ext")
-    var ext: String,
-    @PrimaryKey
-    var id: String,
-    @ColumnInfo(name = "img")
-    var img: String,
+    @ColumnInfo(name = "ext") var ext: String,
+    @PrimaryKey var id: String,
+    @ColumnInfo(name = "img") var img: String,
     var name: String,
     var now: String,
     var ReplyCount: String?,
@@ -37,6 +34,11 @@ data class ArticleItem(
 
     @Ignore
     var tagColor: Int? = null//标记
+
+    @Ignore
+    var index: Int? = null//第x条回复
+
+
 }
 
 @JsonClass(generateAdapter = true)

@@ -480,7 +480,7 @@ class NewThreadActivity : NMBActivity<ActivityNewthreadBinding, NewThreadVm>() {
         }
     }
 
-    @OnMessage(stick = true)
+    @OnMessage(stick = false)
     fun onDraftSelect(draft: DraftBean) {
         lifecycleScope.launch {
             vm.threadContent = draft.content

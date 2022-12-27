@@ -65,7 +65,7 @@
             android:id="@+id/ll_setting"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/ll_collect"
+            android:layout_below="@+id/ll_donate"
             android:onClick="@{()->view.gotoSetting()}"
             android:orientation="vertical">
 
@@ -78,13 +78,14 @@
                 android:textColor="?attr/colorTertiary" />
 
         </LinearLayout>
+
         <LinearLayout
             android:background="?attr/selectableItemBackground"
             android:id="@+id/ll_history"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:onClick="@{()->view.gotoMySpeech()}"
-            android:layout_below="@+id/ll_setting"
+            android:layout_below="@+id/ll_official"
             android:orientation="vertical">
 
             <TextView
@@ -115,6 +116,43 @@
                 android:textColor="?attr/colorTertiary" />
 
 
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="?attr/selectableItemBackground"
+            android:id="@+id/ll_donate"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->view.gotoDonate()}"
+            android:layout_below="@+id/ll_visit_history"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_donate"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center"
+                android:text="@string/donate"
+                android:textColor="@color/color_red" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="?attr/selectableItemBackground"
+            android:id="@+id/ll_official"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="@{()->view.gotoOfficial()}"
+            android:layout_below="@+id/ll_collect"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/tv_ll_official"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/item_height"
+                android:gravity="center"
+                android:text="@string/official"
+                android:textColor="?attr/colorTertiary"/>
         </LinearLayout>
 
         <LinearLayout

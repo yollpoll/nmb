@@ -17,19 +17,27 @@ import com.yollpoll.nmb.view.activity.gotoWeb
 private const val TAG = "Dispatch"
 
 object DispatchClient {
-    var manager: DispatcherManager? = null
-        get() {
-            if (null == field) {
-                field = DispatcherManager.ManagerBuilder().apply {
-                    this.addInterceptors(WebDispatchInterceptor)
-                    if (BuildConfig.DEBUG) {
-                        this.addInterceptors(DispatcherLogInterceptor)
-                    }
-                }
-                    .build()
+    //    var manager: DispatcherManager? = null
+//        get() {
+//            if (null == field) {
+//                field = DispatcherManager.ManagerBuilder().apply {
+//                    this.addInterceptors(WebDispatchInterceptor)
+//                    if (BuildConfig.DEBUG) {
+//                        this.addInterceptors(DispatcherLogInterceptor)
+//                    }
+//                }
+//                    .build()
+//            }
+//            return field!!
+//        }
+    val manager: DispatcherManager by lazy {
+        return@lazy DispatcherManager.ManagerBuilder().apply {
+            this.addInterceptors(WebDispatchInterceptor)
+            if (BuildConfig.DEBUG) {
+                this.addInterceptors(DispatcherLogInterceptor)
             }
-            return field!!
-        }
+        }.build()
+    }
 }
 
 /**

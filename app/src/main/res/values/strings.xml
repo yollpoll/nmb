@@ -87,4 +87,6 @@
     <string name="only_po">只看po</string>
     <string name="new_thread">发表新串</string>
     <string name="time_line">时间线</string>
+    <string name="donate">打赏</string>
+    <string name="official">注册</string>
 </resources>

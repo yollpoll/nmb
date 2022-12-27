@@ -22,10 +22,7 @@ import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.base.*
 import com.yollpoll.framework.dispatch.DispatchRequest
 import com.yollpoll.framework.dispatch.StartType
-import com.yollpoll.framework.extensions.saveBean
-import com.yollpoll.framework.extensions.shortToast
-import com.yollpoll.framework.extensions.toJson
-import com.yollpoll.framework.extensions.toJsonBean
+import com.yollpoll.framework.extensions.*
 import com.yollpoll.framework.fast.FastActivity
 import com.yollpoll.framework.fast.FastViewModel
 import com.yollpoll.nmb.*
@@ -222,7 +219,7 @@ class CookieVM @Inject constructor(val app: Application, val repository: CookieR
             try {
                 val cookie = cookieJson.toJsonBean<CookieBean>()
                 if (null == cookie) {
-                    "cookie解析出错".shortToast()
+                    "cookie解析出错:$cookieJson".longToast()
                     return@launch
                 }
                 useCookie(cookie)
