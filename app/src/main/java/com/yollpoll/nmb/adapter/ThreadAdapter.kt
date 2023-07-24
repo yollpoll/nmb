@@ -30,6 +30,7 @@ import com.yollpoll.nmb.net.imgThumbUrl
 import com.yollpoll.nmb.view.widgets.getCommonGlideOptions
 import com.yollpoll.utils.MyClickableSpan
 import com.yollpoll.utils.TransFormContent
+import java.util.regex.Pattern
 
 
 class ThreadAdapter(
@@ -38,36 +39,30 @@ class ThreadAdapter(
     val onUrlClick: ((String) -> Unit)? = null,
     val onImageClick: ((ArticleItem, Int) -> Unit)? = null,
     val onItemClick: (((ArticleItem) -> Unit))? = null,
-) : NmbPagingDataAdapter<ArticleItem>(R.layout.item_thread,
-    BR.bean,
-    itemSame = { old, new ->
-        old.id == new.id
-    },
-    contentSame = { old, new ->
-        val same =
-            old.tagColor == new.tagColor && old.content == new.content && old.title == new.title && old.user_hash == new.user_hash && old.now == new.now
-        same
-    },
-    getChangePayload = { old, new ->
-        Bundle().apply {
-            new.tagColor?.let {
-                if (old.tagColor != new.tagColor) {
-                    putInt("tagColor", it)
-                }
+) : NmbPagingDataAdapter<ArticleItem>(R.layout.item_thread, BR.bean, itemSame = { old, new ->
+    old.id == new.id
+}, contentSame = { old, new ->
+    val same =
+        old.tagColor == new.tagColor && old.content == new.content && old.title == new.title && old.user_hash == new.user_hash && old.now == new.now
+    same
+}, getChangePayload = { old, new ->
+    Bundle().apply {
+        new.tagColor?.let {
+            if (old.tagColor != new.tagColor) {
+                putInt("tagColor", it)
             }
-
         }
-    }){
+
+    }
+}) {
 
     override fun onBindViewHolder(
-        holder: BaseViewHolder<ArticleItem>,
-        position: Int,
-        payLoad: MutableList<Any>
+        holder: BaseViewHolder<ArticleItem>, position: Int, payLoad: MutableList<Any>
     ) {
         super.onBindViewHolder(holder, position, payLoad)
-        val pos=holder.bindingAdapterPosition
-        val item=getItem(pos)
-        val binding=holder.binding
+        val pos = holder.bindingAdapterPosition
+        val item = getItem(pos)
+        val binding = holder.binding
 
         if (null != item) {
             binding as ItemThreadBinding
@@ -126,69 +121,18 @@ class ThreadAdapter(
                     null
                 }) { opening, tag, output, xmlReader ->
                     if (tag == "h") {
-                        "find h tag".logI()
-//                        val blurMask=BlurMaskFilter(10f,BlurMaskFilter.Blur.NORMAL)
-//                        val blurSpan=MaskFilterSpan(blurMask)
-//                        output.setSpan(blurSpan,0,output.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//                        output.setSpan(object:ClickableSpan(){
-//                            override fun onClick(widget: View) {
-//                                "onclick".shortToast()
-////                                output.removeSpan(blurSpan)
-////                                notifyItemChanged(pos)
-//                            }
-//
-//                            override fun updateDrawState(ds: TextPaint) {
-//
-//                            }
-//                        },0,output.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-
-//                            output.setSpan(
-//                                BackgroundColorSpan(context.getAttrColor(R.attr.colorPrimary)),
-//                                0,
-//                                output.length,
-//                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-//                            )
-//                            output.setSpan(
-//                                ForegroundColorSpan(context.getAttrColor(R.attr.colorPrimary)),
-//                                0,
-//                                output.length,
-//                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-//                            )
-//                            output.setSpan(
-//                                object : ClickableSpan() {
-//                                    override fun updateDrawState(ds: TextPaint) {
-//                                    }
-//                                    override fun onClick(widget: View) {
-//                                        "clock".shortToast()
-//                                        //背景颜色
-//                                        output.setSpan(
-//                                            BackgroundColorSpan(context.getColor(R.color.transparent)),
-//                                            0,
-//                                            output.length,
-//                                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-//                                        )
-//                                        //文字颜色
-//                                        val color=context.getAttrColor(android.R.attr.textColor)
-//                                        val colorHex="#FF"+Integer.toHexString(color).let {
-//                                            var color=it
-//                                            while (color.length<6){
-//                                                color= "0$color"
-//                                            }
-//                                            return@let color
-//                                        }
-//                                        val realColor=Color.parseColor(colorHex)
-//                                        output.setSpan(
-//                                            ForegroundColorSpan(realColor),
-//                                            0,
-//                                            output.length,
-//                                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-//                                        )
-//                                    }
-//                                },
-//                                0,
-//                                output.length,
-//                                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-//                            )
+//                        output.setSpan(
+//                            BackgroundColorSpan(context.getAttrColor(R.attr.colorPrimary)),
+//                            0,
+//                            output.length,
+//                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+//                        )
+//                        output.setSpan(
+//                            ForegroundColorSpan(context.getAttrColor(R.attr.colorPrimary)),
+//                            0,
+//                            output.length,
+//                            Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+//                        )
                     }
                 }
             } else {
@@ -204,14 +148,14 @@ class ThreadAdapter(
             if (!home) {
                 binding.tvContent.maxLines = Int.MAX_VALUE
                 item.index?.run {
-                    if(this==0){
-                        binding.tvReplyCount.text="主楼"
-                    }else{
-                        binding.tvReplyCount.text="${item.index}楼"
+                    if (this == 0) {
+                        binding.tvReplyCount.text = "主楼"
+                    } else {
+                        binding.tvReplyCount.text = "${item.index}楼"
                     }
-                    binding.tvReplyCount.visibility=View.VISIBLE
-                }?: run {
-                    binding.tvReplyCount.visibility=View.GONE
+                    binding.tvReplyCount.visibility = View.VISIBLE
+                } ?: run {
+                    binding.tvReplyCount.visibility = View.GONE
                 }
             } else {
                 binding.tvReplyCount.visibility = View.VISIBLE

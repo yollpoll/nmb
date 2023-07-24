@@ -36,19 +36,19 @@ class MyFAB : FloatingActionButton, CoordinatorLayout.AttachedBehavior {
 
     private val gestureDetector =
         GestureDetector(context, object : GestureDetector.SimpleOnGestureListener() {
-            override fun onSingleTapUp(e: MotionEvent?): Boolean {
+            override fun onSingleTapUp(e: MotionEvent): Boolean {
                 "onClick".logI()
                 onClick?.invoke()
                 return true
             }
 
-            override fun onDown(e: MotionEvent?): Boolean {
+            override fun onDown(e: MotionEvent): Boolean {
                 return true
             }
 
             override fun onFling(
-                e1: MotionEvent?,
-                e2: MotionEvent?,
+                e1: MotionEvent,
+                e2: MotionEvent,
                 velocityX: Float,
                 velocityY: Float
             ): Boolean {
@@ -80,7 +80,7 @@ class MyFAB : FloatingActionButton, CoordinatorLayout.AttachedBehavior {
             }
         })
 
-    override fun dispatchTouchEvent(event: MotionEvent?): Boolean {
+    override fun dispatchTouchEvent(event: MotionEvent): Boolean {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             gestureDetector.onTouchEvent(event)
         } else {

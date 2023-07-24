@@ -1,5 +1,6 @@
 package com.yollpoll.utils
 
+import android.graphics.BlurMaskFilter
 import android.graphics.Color
 import android.text.SpannableString
 import android.text.Spanned
@@ -7,6 +8,7 @@ import android.text.TextPaint
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.text.style.ForegroundColorSpan
+import android.text.style.MaskFilterSpan
 import android.text.style.URLSpan
 import android.util.Log
 import android.view.View
@@ -49,29 +51,7 @@ object TransFormContent {
                     ds.color = Color.parseColor("#7cb342")
                 }
             }, matcher.start(), matcher.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//            spannableString.setSpan(
-//                ForegroundColorSpan(Color.parseColor("#7cb342")),
-//                matcher.start(),
-//                matcher.end(),
-//                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
-//            )
         }
-
-//        val urlRegex =
-//            "www*"
-//        val patternUrl = Pattern.compile(urlRegex)
-//        val matcherUrl = patternUrl.matcher(content)
-//        while (matcherUrl.find()) {
-//            "find url ${
-//                spannableString.toString()
-//            }".logE()
-//            val group = matcherUrl.group()
-//            spannableString.setSpan(object : ClickableSpan() {
-//                override fun onClick(widget: View) {
-//                    onClickListener?.invoke(group)
-//                }
-//            }, matcherUrl.start(), matcherUrl.end(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-//        }
 
         tv.text = spannableString
 //        tv.setLinkTextColor(Color.parseColor("#7cb342"))
@@ -81,5 +61,6 @@ object TransFormContent {
         tv.isFocusable = false
         tv.isClickable = false
         tv.isLongClickable = false
+        tv.setOnTouchListener(LinkMovementMethodOverride())
     }
 }

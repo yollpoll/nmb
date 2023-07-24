@@ -1,14 +1,14 @@
 package com.yollpoll.utils
 
+import android.text.Layout
 import android.text.Selection
 import android.text.Spannable
-import android.text.method.BaseMovementMethod
+import android.text.Spanned
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.view.MotionEvent
+import android.view.View
 import android.widget.TextView
-import com.yollpoll.base.logE
-import com.yollpoll.utils.ClickSpanMovementMethod
 
 /**
  * Created by yollpoll on 2018/4/27.
@@ -19,10 +19,10 @@ class ClickSpanMovementMethod : LinkMovementMethod() {
         if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
             var x = event.x.toInt()
             var y = event.y.toInt()
-            x -= widget.totalPaddingLeft
-            y -= widget.totalPaddingTop
-            x += widget.scrollX
-            y += widget.scrollY
+//            x -= widget.totalPaddingLeft
+//            y -= widget.totalPaddingTop
+//            x += widget.scrollX
+//            y += widget.scrollY
             val layout = widget.layout
             val line = layout.getLineForVertical(y)
             val off = layout.getOffsetForHorizontal(line, x.toFloat())
@@ -47,8 +47,7 @@ class ClickSpanMovementMethod : LinkMovementMethod() {
 //                    }
                 } else {
                     Selection.setSelection(
-                        buffer, buffer.getSpanStart(link[0]),
-                        buffer.getSpanEnd(link[0])
+                        buffer, buffer.getSpanStart(link[0]), buffer.getSpanEnd(link[0])
                     )
                 }
                 return true
@@ -72,5 +71,40 @@ class ClickSpanMovementMethod : LinkMovementMethod() {
                 }
                 return sInstance
             }
+    }
+}
+
+class LinkMovementMethodOverride : View.OnTouchListener {
+    override fun onTouch(v: View, event: MotionEvent): Boolean {
+        val widget = v as TextView
+        val text: Any = widget.text
+        if (text is Spanned) {
+            val buffer: Spanned = text as Spanned
+            val action = event.action
+            if (action == MotionEvent.ACTION_UP || action == MotionEvent.ACTION_DOWN) {
+                var x = event.x.toInt()
+                var y = event.y.toInt()
+                x -= widget.totalPaddingLeft
+                y -= widget.totalPaddingTop
+                x += widget.scrollX
+                y += widget.scrollY
+                val layout: Layout = widget.layout
+                val line: Int = layout.getLineForVertical(y)
+                val off: Int = layout.getOffsetForHorizontal(line, x.toFloat())
+                val link: Array<ClickableSpan> = buffer.getSpans(
+                    off, off, ClickableSpan::class.java
+                )
+                if (link.size != 0) {
+                    if (action == MotionEvent.ACTION_UP) {
+                        link[0].onClick(widget)
+                    } else if (action == MotionEvent.ACTION_DOWN) {
+                        // Selection only works on Spannable text. In our case setSelection doesn't work on spanned text
+                        //Selection.setSelection(buffer, buffer.getSpanStart(link[0]), buffer.getSpanEnd(link[0]));
+                    }
+                    return true
+                }
+            }
+        }
+        return false
     }
 }

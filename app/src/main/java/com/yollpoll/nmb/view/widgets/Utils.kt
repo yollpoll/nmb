@@ -205,13 +205,17 @@ fun showChoosePicDialog(
                 scope.showRequestReasonDialog(deniedList, message, "Allow", "Deny")
             }.request { allGranted, grantedList, deniedList ->
                 if (allGranted) {
-                    val intent = Intent()
-                    intent.type = "image/*"
-                    intent.action = Intent.ACTION_GET_CONTENT
-                    activity.startActivityForResult(
-                        intent,
-                        reqPhotoCode
-                    )
+                    val intent = Intent(MediaStore.ACTION_PICK_IMAGES)
+                    activity.startActivityForResult(intent, reqPhotoCode)
+
+
+//                    val intent = Intent()
+//                    intent.type = "image/*"
+//                    intent.action = Intent.ACTION_GET_CONTENT
+//                    activity.startActivityForResult(
+//                        intent,
+//                        reqPhotoCode
+//                    )
                 } else {
                     "您拒绝了如下权限：$deniedList".shortToast()
                 }

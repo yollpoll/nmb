@@ -4,14 +4,13 @@ import android.animation.ObjectAnimator
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Bundle
 import android.os.Parcelable
 import android.provider.MediaStore
-import android.view.KeyEvent
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
@@ -24,7 +23,6 @@ import androidx.core.util.Pair
 import androidx.databinding.Bindable
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.*
-import com.bumptech.glide.Glide
 import com.yollpoll.annotation.annotation.OnMessage
 import com.yollpoll.annotation.annotation.Route
 import com.yollpoll.arch.annotation.Extra
@@ -47,7 +45,6 @@ import com.yollpoll.nmb.model.repository.DraftRepository
 import com.yollpoll.nmb.model.repository.ForumRepository
 import com.yollpoll.nmb.router.DispatchClient
 import com.yollpoll.nmb.router.ROUTE_NEW_THREAD
-import com.yollpoll.nmb.service.ThreadReplyService
 import com.yollpoll.nmb.view.widgets.REQ_CAMERA
 import com.yollpoll.nmb.view.widgets.REQ_CROP_PHOTO
 import com.yollpoll.nmb.view.widgets.REQ_PHOTO
@@ -658,6 +655,7 @@ class NewThreadVm @Inject constructor(
             selectImg(bitmap)
         }
     }
+
 
     /**
      * 选择图片
