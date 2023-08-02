@@ -11,7 +11,7 @@ object FlowEventBus {
     private val bus: HashMap<String, MutableSharedFlow<out Any>> = hashMapOf()
 
     private fun <T : Any> with(key: String): MutableSharedFlow<T> {
-        if (!bus.containsKey(key)) {
+        if (!bus.containsKey(key)|| bus[key]==null) {
             val flow = MutableSharedFlow<T>()
             bus[key] = flow
         }
